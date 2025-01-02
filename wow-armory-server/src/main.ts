@@ -19,6 +19,16 @@ async function bootstrap() {
   // Habilitar middleware de cookies
   app.use(cookieParser());
 
+  app.enableCors({
+    origin: ['http://localhost:5173', 'https://wow-armory.pages.dev'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true,
+    maxAge: 60 * 60 * 24 * 30,
+    exposedHeaders: 'Set-Cookie',
+  });
+
   // Inicia la aplicación
   const port = process.env.PORT || 3000; // Usa una variable de entorno para el puerto si está definida
   await app.listen(port);

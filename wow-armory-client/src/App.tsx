@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CharacterCard } from './components/CharacterCard';
 import { CharacterBanner } from './components/CharacterBanner';
 import { RecentAchievements } from './components/RecentAchievements';
@@ -6,6 +6,9 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer';
 import { mockCharacter } from './data/mockCharacter';
+import useDetail from './hooks/useDetails';
+import { useAuth } from './hooks/useAuth';
+import { use } from 'framer-motion/client';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -14,6 +17,17 @@ function App() {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle('dark');
   };
+  const URI = import.meta.env.VITE_SERVER_URL
+  const {data} = useDetail(`${URI}/auth/characters/grobbulus/billiemoi`);
+  const {isAuthenticated} = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log('not authenticated')
+      return
+    }
+    console.log(data)
+  }, [data, isAuthenticated])
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
