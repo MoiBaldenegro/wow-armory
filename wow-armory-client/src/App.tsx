@@ -17,8 +17,8 @@ function App() {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle('dark');
   };
-  const URI = import.meta.env.VITE_SERVER_URL
-  const {data} = useDetail(`${URI}/auth/characters/grobbulus/billiemoi`);
+  const URI = import.meta.env.VITE_SERVER_URI;
+  const {data} = useDetail(`${URI}/auth/character/grobbulus/billiemoi`);
   const {isAuthenticated} = useAuth();
 
   useEffect(() => {
