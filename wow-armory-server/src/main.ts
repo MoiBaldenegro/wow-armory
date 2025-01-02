@@ -19,14 +19,34 @@ async function bootstrap() {
   // Habilitar middleware de cookies
   app.use(cookieParser());
 
+  // Middleware personalizado para agregar cabeceras CORS si enableCors no es suficiente
+  app.use((req, res, next) => {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'https://wow-armory.pages.dev',
+    ];
+    const origin = req.headers.origin;
+
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET,HEAD,PUT,PATCH,POST,DELETE',
+    );
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    );
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    next();
+  });
+
   app.enableCors({
     origin: ['http://localhost:5173', 'https://wow-armory.pages.dev'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: true,
-    maxAge: 60 * 60 * 24 * 30,
-    exposedHeaders: 'Set-Cookie',
+    credentials: true, // Permitir credenciales (cookies, Authorization headers, etc.)
   });
 
   // Inicia la aplicación
