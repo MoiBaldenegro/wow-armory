@@ -5,7 +5,7 @@ import axios from 'axios';
 export class AuthService {
   public clientId = process.env.BLIZZARD_CLIENT_ID; // Reemplaza con tu Client ID
   public clientSecret = process.env.BLIZZARD_CLIENT_SECRET; // Reemplaza con tu Client Secret
-  public redirectUri = 'http://localhost:3000/auth/callback'; // La URI de redirección que configuraste
+  public redirectUri = process.env.BLIZZARD_REDIRECT_URI; // La URI de redirección que configuraste
   private tokenUri = 'https://oauth.battle.net/token'; // Para la región US
   private apiUrl = 'https://us.api.blizzard.com/profile/wow/character'; // Endpoint de Blizzard para obtener los datos del personaje
 
