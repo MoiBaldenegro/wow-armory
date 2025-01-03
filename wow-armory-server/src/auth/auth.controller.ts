@@ -1,4 +1,13 @@
-import { Controller, Get, Query, Res, Req, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Res,
+  Req,
+  Param,
+  Headers,
+} from '@nestjs/common';
+
 import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
 import { randomBytes } from 'crypto';
@@ -52,11 +61,11 @@ export class AuthController {
   async getCharacter(
     @Param('realmSlug') realmSlug: string,
     @Param('characterName') characterName: string,
-    @Req() req: Request,
+    @Headers('Authorization') authorization: string, // Cambiar para obtener el token desde los encabezados
     @Res() res: Response,
   ): Promise<any> {
-    // Lee el token de las cookies
-    const accessToken = req.cookies['accessToken'];
+    // Lee el token de los encabezados (Authorization)
+    const accessToken = authorization ? authorization.split(' ')[1] : null;
     console.log('Token de acceso:', accessToken);
 
     if (!accessToken) {
