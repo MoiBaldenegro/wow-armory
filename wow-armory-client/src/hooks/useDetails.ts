@@ -1,6 +1,6 @@
 import axios from 'axios';
-
 import { useCallback, useEffect, useState } from 'react';
+
 type dataType<T> = T | null;
 type errorType = Error | null;
 
@@ -20,21 +20,40 @@ export const useDetail = <T>(url: string): Params<T> => {
       //reset state before executions
       setIsLoading(true);
       setIsError(null);
+
       try {
+        // Obtén el token de las cookies (suponiendo que usas document.cookie)
+        const accessToken = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('accessToken='))
+          ?.split('=')[1];
+
+        // Si no se encuentra el token
+        if (!accessToken) {
+          setIsLoading(false);
+          setIsError(new Error('Token de acceso no encontrado.'));
+          return;
+        }
+
+        // Realiza la solicitud con el token en los headers
         const response = await axios(url, {
           signal: abortSignal,
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Incluir el token en los headers
+          },
         });
+
         if (!response) {
           setIsLoading(false);
           setIsError(
             new Error(
-              'Hubo un eror en al solicitud de la API, revisa tu conexion y reintenta.',
+              'Hubo un error en la solicitud de la API, revisa tu conexión y reintenta.',
             ),
           );
           return;
         }
+
         setData(response.data as dataType<T>);
-        return;
       } catch (error) {
         if (axios.isCancel(error)) {
           setIsLoading(false);
@@ -43,7 +62,6 @@ export const useDetail = <T>(url: string): Params<T> => {
         }
         setIsLoading(false);
         setIsError(error as Error);
-        return;
       } finally {
         setIsLoading(false);
       }
@@ -55,7 +73,6 @@ export const useDetail = <T>(url: string): Params<T> => {
     if (!url) return;
     const controller = new AbortController();
     fetchData(controller.signal);
-    console.log(data);
     return () => {
       controller.abort();
     };
