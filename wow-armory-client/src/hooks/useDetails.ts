@@ -22,7 +22,6 @@ export const useDetail = <T>(url: string): Params<T> => {
       setIsError(null);
 
       try {
-        // Obtén el token de las cookies (suponiendo que usas document.cookie)
         const accessToken = document.cookie
           .split('; ')
           .find((row) => row.startsWith('accessToken='))
@@ -39,7 +38,7 @@ export const useDetail = <T>(url: string): Params<T> => {
         const response = await axios(url, {
           signal: abortSignal,
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Incluir el token en los headers
+            Authorization: `Bearer ${accessToken}`, 
           },
         });
 
