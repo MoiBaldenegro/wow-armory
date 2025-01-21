@@ -1,4 +1,3 @@
-// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
@@ -25,21 +24,22 @@ async function bootstrap() {
       saveUninitialized: false,
       name: 'wow_session',
       cookie: {
-        secure: true, // Importante: true para HTTPS
+        secure: process.env.NODE_ENV === 'production', // Solo en producción debe ser `true`
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24,
-        sameSite: 'none', // Importante para cross-site cookies
-        domain: '.onrender.com', // Ajusta según tu dominio
+        maxAge: 1000 * 60 * 60 * 24, // 1 día de duración de la cookie
+        sameSite: 'none', // Necesario para cookies cross-site
+        domain:
+          process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined, // Ajuste para producción
       },
     }),
   );
 
   app.use(cookieParser());
 
-  // Configura CORS antes de las rutas
+  // Configura CORS para permitir cookies
   app.enableCors({
     origin: ['https://wow-armory.pages.dev', 'http://localhost:5173'],
-    credentials: true,
+    credentials: true, // Permite el uso de cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   });

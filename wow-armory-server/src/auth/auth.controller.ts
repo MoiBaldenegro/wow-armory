@@ -17,16 +17,17 @@ export class AuthController {
 
   @Get('login')
   login(@Req() req: Request, @Res() res: Response) {
-    const state = randomBytes(16).toString('hex');
+    const state = randomBytes(16).toString('hex'); // Genera un valor 'state' aleatorio
+    req.session.oauth_state = state; // Guarda el state en la sesión
 
-    req.session.oauth_state = state;
+    // URL de autorización de Blizzard con el 'state'
     const authorizeUrl = `https://oauth.battle.net/authorize?client_id=${
       this.authService.clientId
     }&redirect_uri=${
       this.authService.redirectUri
     }&response_type=code&scope=wow.profile&state=${state}`;
 
-    // En lugar de redirect, devolvemos la URL
+    // Devolvemos la URL para redirigir al usuario a Blizzard
     res.json({ url: authorizeUrl });
   }
 
@@ -37,21 +38,23 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    // Verifica que el 'state' recibido coincida con el 'state' guardado en la sesión
     if (!req.session.oauth_state || req.session.oauth_state !== state) {
       return res.redirect(
-        'https://wow-armory.pages.dev/error?message=invalid_state',
+        'https://wow-armory.pages.dev/error?message=invalid_state', // Si no coincide, redirige con un error
       );
     }
 
     try {
+      // Si el 'state' es válido, intercambia el código por un token de acceso
       const tokenData = await this.authService.getAccessToken(code);
-      req.session.access_token = tokenData.access_token;
+      req.session.access_token = tokenData.access_token; // Guarda el token en la sesión
 
-      return res.redirect('https://wow-armory.pages.dev/profile');
+      return res.redirect('https://wow-armory.pages.dev/profile'); // Redirige al perfil después del login exitoso
     } catch (error) {
       console.error('Error en callback:', error);
       return res.redirect(
-        'https://wow-armory.pages.dev/error?message=auth_failed',
+        'https://wow-armory.pages.dev/error?message=auth_failed', // Si falla la autenticación, redirige con error
       );
     }
   }
@@ -59,7 +62,7 @@ export class AuthController {
   @Get('session-check')
   checkSession(@Req() req: Request) {
     return {
-      authenticated: !!req.session.access_token,
+      authenticated: !!req.session.access_token, // Verifica si hay un token de acceso en la sesión
       statusCode: 200,
     };
   }
@@ -79,7 +82,7 @@ export class AuthController {
     }
 
     try {
-      // Usar el token de la sesión para obtener los datos
+      // Usar el token de la sesión para obtener los datos del personaje
       const characterData = await this.authService.getCharacterData(
         realmSlug,
         characterName,
