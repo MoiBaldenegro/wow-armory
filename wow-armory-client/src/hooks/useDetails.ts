@@ -27,13 +27,16 @@ export const useDetail = <T>(url: string): Params<T> => {
           .split('; ')
           .find((row) => row.startsWith('accessToken='))
           ?.split('=')[1];
+          console.log(accessToken);
 
         // Si no se encuentra el token
         if (!accessToken) {
+          console.log('No se encontro el token');
           setIsLoading(false);
           setIsError(new Error('Token de acceso no encontrado.'));
           return;
         }
+        console.log(`Token encontrado: ${accessToken}`);
 
         // Realiza la solicitud con el token en los headers
         const response = await axios(url, {
