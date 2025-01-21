@@ -1,7 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
 import * as dotenv from 'dotenv';
+
+// Extender la interfaz de Express.Session
+declare module 'express-session' {
+  interface SessionData {
+    oauth_state: string;
+    access_token: string;
+  }
+}
 
 // Carga las variables de entorno antes de cualquier otra cosa
 dotenv.config();
@@ -18,6 +27,22 @@ async function bootstrap() {
 
   // Habilitar middleware de cookies
   app.use(cookieParser());
+
+  // Configurar sesiones
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || 'mi-secreto-temporal', // Usa una variable de entorno en producción
+      resave: false,
+      saveUninitialized: false,
+      name: 'wow_session',
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24, // 24 horas
+        sameSite: 'lax'
+      }
+    })
+  );
 
   // Middleware personalizado para agregar cabeceras CORS si enableCors no es suficiente
   app.use((req, res, next) => {
@@ -50,7 +75,7 @@ async function bootstrap() {
   });
 
   // Inicia la aplicación
-  const port = process.env.PORT || 3000; // Usa una variable de entorno para el puerto si está definida
+  const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Servidor escuchando en http://localhost:${port}`);
 }
