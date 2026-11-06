@@ -1,71 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
 export class AuthService {
-  public clientId = process.env.BLIZZARD_CLIENT_ID; // Reemplaza con tu Client ID
-  public clientSecret = process.env.BLIZZARD_CLIENT_SECRET; // Reemplaza con tu Client Secret
-  public redirectUri = process.env.BLIZZARD_REDIRECT_URI; // La URI de redirección que configuraste
-  private tokenUri = 'https://oauth.battle.net/token'; // Para la región US
-  private apiUrl = 'https://us.api.blizzard.com/profile/wow/character'; // Endpoint de Blizzard para obtener los datos del personaje
+  constructor(private readonly config: ConfigService) {}
 
-  // Intercambiar código por token de acceso
-  async getAccessToken(code: string): Promise<any> {
-    const response = await axios.post(this.tokenUri, null, {
-      params: {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        code,
-        redirect_uri: this.redirectUri,
-        grant_type: 'authorization_code',
-      },
-    });
-
-    return response.data;
-  }
-
-  // Obtener los datos del personaje utilizando el token de acceso
+  /**
+   * Fetches a character from Blizzard using the user access token kept in the
+   * server-side session. This method is migrated to the character context in
+   * job 007.
+   */
   async getCharacterData(
     realmSlug: string,
     characterName: string,
     accessToken: string,
-  ): Promise<any> {
-    try {
-      console.log('Haciendo request a la API de Blizzard...');
-      console.log(
-        `URL de Blizzard: ${this.apiUrl}/${realmSlug}/${characterName}`,
-      );
+  ): Promise<unknown> {
+    const region = this.config.get<string>('BLIZZARD_REGION', 'us');
+    const namespace = this.config.get<string>(
+      'BLIZZARD_NAMESPACE',
+      'profile-classic-us',
+    );
 
-      const response = await axios.get(
-        `${this.apiUrl}/${realmSlug}/${characterName}`,
+    try {
+      const response = await axios.get<unknown>(
+        `https://${region}.api.blizzard.com/profile/wow/character/${realmSlug}/${characterName}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Usamos el token de acceso
+            Authorization: `Bearer ${accessToken}`,
           },
           params: {
-            namespace: 'profile-classic-us', // Namespace para la región US
-            locale: 'en_US', // Idioma
+            namespace,
+            locale: 'en_US',
           },
         },
       );
-      console.log('Respuesta de la API de Blizzard:', response.data); // Log de la respuesta
-      return response.data; // Devuelve la información del personaje
-    } catch (error) {
-      console.error('Error al obtener los datos del personaje:', error);
+
+      return response.data;
+    } catch {
       throw new Error('Error al obtener los datos del personaje');
     }
-  }
-
-  // Validar el token (opcional)
-  async checkToken(token: string): Promise<any> {
-    const response = await axios.get(
-      'https://oauth.battle.net/oauth/check_token',
-      {
-        params: {
-          token,
-        },
-      },
-    );
-    return response.data;
   }
 }

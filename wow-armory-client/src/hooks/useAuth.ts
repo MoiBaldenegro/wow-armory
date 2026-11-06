@@ -1,31 +1,15 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
+import {
+  AuthContext,
+  type AuthContextValue,
+} from '../providers/auth-context';
 
-export const useAuth = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState<Error | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const URI = import.meta.env.VITE_SERVER_URI;
+export const useAuth = (): AuthContextValue => {
+  const context = useContext(AuthContext);
 
-  useEffect(() => {
-    const fetchAuthStatus = async () => {
-      setIsLoading(true); 
-      try {
-        const response = await axios(`${URI}/auth/login`, {
-          withCredentials: true, 
-        });
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        setIsError(error as Error);
-      } finally {
-        setIsLoading(false); 
-      }
-    };
+  if (!context) {
+    throw new Error('useAuth must be used inside an AuthProvider.');
+  }
 
-    fetchAuthStatus();
-  }, []);
-
-  return { isAuthenticated, isLoading, isError };
+  return context;
 };
