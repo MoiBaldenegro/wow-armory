@@ -32,10 +32,6 @@ export function Header() {
     return () => window.removeEventListener('scroll', updateCompactState);
   }, []);
 
-  const handleSearch = () => {
-    // La búsqueda real se conecta en el job de personaje.
-  };
-
   const handleAuthAction = async () => {
     setIsActionPending(true);
 
@@ -77,7 +73,7 @@ export function Header() {
         <div className="flex items-center gap-3 sm:gap-6">
           <Logo isCompact={isCompact} />
           <div className="min-w-0 flex-1">
-            <SearchBar isCompact={isCompact} onSearch={handleSearch} />
+            <SearchBar isCompact={isCompact} />
           </div>
           <button
             type="button"

@@ -1,14 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import type { Character } from '../../domain/character/Character';
 import { createTestDependencies } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
 import { ThemeProvider } from '../providers/ThemeProvider';
 import { UseCasesProvider } from '../providers/UseCasesProvider';
 import { AppRouter } from './AppRouter';
 
-function renderAt(path: string) {
+function renderAt(path: string, character: Character | null = null) {
   window.history.pushState({}, '', path);
-  const { useCases } = createTestDependencies();
+  const { useCases, characterRepository } = createTestDependencies();
+  characterRepository.result = character;
 
   return render(
     <UseCasesProvider useCases={useCases}>
@@ -26,21 +28,25 @@ describe('AppRouter', () => {
     renderAt('/');
 
     expect(
-      screen.getByRole('heading', { name: 'Thrall', level: 1 }),
+      screen.getByRole('heading', { name: 'Busca un personaje', level: 1 }),
     ).toBeInTheDocument();
   });
 
-  it('renders the character profile shell with the route params', () => {
-    renderAt('/character/grobbulus/billiemoi');
+  it('renders the character profile with repository data', async () => {
+    renderAt('/character/grobbulus/billiemoi', {
+      name: 'Billiemoi',
+      realmSlug: 'grobbulus',
+      level: 60,
+      characterClass: 'Mage',
+      race: 'Gnome',
+      itemLevel: 245,
+      achievementPoints: 500,
+    });
 
     expect(
-      screen.getByRole('heading', { name: 'Ficha de personaje' }),
+      await screen.findByRole('heading', { name: 'Billiemoi', level: 1 }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Todavía no hay datos para billiemoi de grobbulus.',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Gnome · Mage')).toBeInTheDocument();
   });
 
   it('renders the profile route', () => {

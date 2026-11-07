@@ -1,4 +1,3 @@
-import React from 'react';
 import { Github, Twitter, Linkedin, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 

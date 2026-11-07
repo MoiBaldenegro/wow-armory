@@ -46,7 +46,7 @@ export function ProfilePage() {
               aria-busy={isLoading}
               className="rounded-lg border-2 border-black bg-gray-900 px-4 py-2 font-bold text-white shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:border-white dark:bg-white dark:text-gray-900 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255)] dark:hover:bg-gray-200 dark:focus-visible:ring-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Cerrar sesión
+              {isLoading ? 'Cerrando sesión…' : 'Cerrar sesión'}
             </button>
           </div>
         ) : (
@@ -61,7 +61,7 @@ export function ProfilePage() {
               aria-busy={isLoading}
               className="rounded-lg border-2 border-black bg-gray-900 px-4 py-2 font-bold text-white shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:border-white dark:bg-white dark:text-gray-900 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255)] dark:hover:bg-gray-200 dark:focus-visible:ring-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Iniciar sesión
+              {isLoading ? 'Iniciando sesión…' : 'Iniciar sesión'}
             </button>
           </div>
         )}
