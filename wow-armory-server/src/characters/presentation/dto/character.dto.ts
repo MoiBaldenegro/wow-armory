@@ -5,6 +5,7 @@ export interface AchievementDto {
   name: string;
   points?: number;
   completedAt?: string;
+  iconUrl?: string;
 }
 
 export interface GuildDto {
@@ -62,6 +63,7 @@ export function toCharacterDto(character: Character): CharacterDto {
       name: achievement.name,
       points: achievement.points,
       completedAt: achievement.completedAt?.toISOString(),
+      iconUrl: achievement.iconUrl,
     }));
   }
 

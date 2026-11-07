@@ -44,6 +44,16 @@ import { ClientCredentialsTokenProvider } from './ClientCredentialsTokenProvider
               'profile-us',
             ),
           },
+          staticNamespaces: {
+            classic: config.get<string>(
+              'BLIZZARD_STATIC_NAMESPACE_CLASSIC',
+              'static-classic-us',
+            ),
+            retail: config.get<string>(
+              'BLIZZARD_STATIC_NAMESPACE_RETAIL',
+              'static-us',
+            ),
+          },
         }),
       inject: [CHARACTER_TOKEN_PROVIDER, ConfigService],
     },

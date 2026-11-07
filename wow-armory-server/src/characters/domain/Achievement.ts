@@ -5,6 +5,7 @@ export interface AchievementProps {
   name: string;
   points?: number;
   completedAt?: Date;
+  iconUrl?: string;
 }
 
 export class Achievement {
@@ -20,6 +21,7 @@ export class Achievement {
       name: props.name,
       points: props.points,
       completedAt: props.completedAt,
+      iconUrl: props.iconUrl,
     });
   }
 
@@ -37,5 +39,9 @@ export class Achievement {
 
   get completedAt(): Date | undefined {
     return this.props.completedAt;
+  }
+
+  get iconUrl(): string | undefined {
+    return this.props.iconUrl;
   }
 }

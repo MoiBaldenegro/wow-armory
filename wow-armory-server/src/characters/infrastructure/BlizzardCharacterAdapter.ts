@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ApplicationTokenProvider } from '../application/ports/ApplicationTokenProvider';
 import { Character } from '../domain/Character';
+import { Achievement } from '../domain/Achievement';
 import { CharacterName } from '../domain/CharacterName';
 import {
   BlizzardRateLimited,
@@ -17,6 +18,7 @@ export interface BlizzardApiConfig {
   region: string;
   namespace: string;
   namespaces?: Partial<Record<'retail' | 'classic', string>>;
+  staticNamespaces?: Partial<Record<'retail' | 'classic', string>>;
   locale?: string;
 }
 
@@ -55,7 +57,8 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
         timeout: REQUEST_TIMEOUT_MS,
       });
 
-      return this.mapper.toDomain(response.data, realm);
+      const character = this.mapper.toDomain(response.data, realm);
+      return this.enrichAchievementMedia(character, mode);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const status = error.response?.status;
@@ -70,6 +73,87 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
               error.response?.headers as Record<string, unknown> | undefined,
             ),
           );
+        }
+      }
+
+      private async enrichAchievementMedia(
+        character: Character,
+        mode: 'retail' | 'classic',
+      ): Promise<Character> {
+        if (!character.achievements?.length) {
+          return character;
+        }
+
+        const achievements = await Promise.all(
+          character.achievements.map(async (achievement, index) => {
+            const iconUrl =
+              index >= 12 || achievement.id === undefined
+                ? undefined
+                : await this.getAchievementIcon(achievement.id, mode);
+
+            return Achievement.create({
+              id: achievement.id,
+              name: achievement.name,
+              points: achievement.points,
+              completedAt: achievement.completedAt,
+              iconUrl,
+            });
+          }),
+        );
+
+        return Character.create({
+          name: character.name,
+          realmSlug: character.realmSlug,
+          level: character.level,
+          characterClass: character.characterClass,
+          race: character.race,
+          specialization: character.specialization,
+          itemLevel: character.itemLevel,
+          achievementPoints: character.achievementPoints,
+          lastLogin: character.lastLogin,
+          guild: character.guild,
+          achievements,
+        });
+      }
+
+      private async getAchievementIcon(
+        achievementId: number,
+        mode: 'retail' | 'classic',
+      ): Promise<string | undefined> {
+        try {
+          const response = await axios.get<unknown>(
+            `https://${this.config.region}.api.blizzard.com/data/wow/media/achievement/${achievementId}`,
+            {
+              headers: {
+                Authorization: `******`,
+              },
+              params: {
+                namespace:
+                  this.config.staticNamespaces?.[mode] ??
+                  `static-${this.config.region}`,
+                locale: this.config.locale ?? 'en_US',
+              },
+              timeout: REQUEST_TIMEOUT_MS,
+            },
+          );
+          const assets = (response.data as Record<string, unknown>)?.assets;
+          const asset = Array.isArray(assets)
+            ? assets.find(
+                (value) =>
+                  typeof (value as Record<string, unknown>)?.value === 'string',
+              )
+            : undefined;
+
+          return typeof (asset as Record<string, unknown> | undefined)?.value ===
+            'string'
+            ? ((asset as Record<string, unknown>).value as string)
+            : undefined;
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            return undefined;
+          }
+
+          throw error;
         }
       }
 

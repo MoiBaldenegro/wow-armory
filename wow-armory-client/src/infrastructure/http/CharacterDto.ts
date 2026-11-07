@@ -3,6 +3,7 @@ export interface AchievementDto {
   name: string;
   points?: number;
   completedAt?: string;
+  iconUrl?: string;
 }
 
 export interface GuildDto {

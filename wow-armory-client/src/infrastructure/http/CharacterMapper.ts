@@ -47,6 +47,10 @@ function toAchievement(dto: AchievementDto): Achievement {
     achievement.completedAt = completedAt;
   }
 
+  if (dto.iconUrl !== undefined) {
+    achievement.iconUrl = dto.iconUrl;
+  }
+
   return achievement;
 }
 

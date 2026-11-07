@@ -3,4 +3,5 @@ export interface Achievement {
   name: string;
   points?: number;
   completedAt?: Date;
+  iconUrl?: string;
 }
