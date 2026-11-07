@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { createTestDependencies } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
@@ -13,7 +14,9 @@ function renderHome() {
     <UseCasesProvider useCases={useCases}>
       <ThemeProvider>
         <AuthProvider>
-          <HomePage />
+          <MemoryRouter>
+            <HomePage />
+          </MemoryRouter>
         </AuthProvider>
       </ThemeProvider>
     </UseCasesProvider>,
@@ -21,21 +24,18 @@ function renderHome() {
 }
 
 describe('HomePage', () => {
-  it('renders the existing mock character content', () => {
+  it('renders the empty state with the character search', () => {
     renderHome();
 
     expect(
-      screen.getByRole('heading', { name: 'Thrall', level: 1 }),
+      screen.getByRole('heading', { name: 'Busca un personaje', level: 1 }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Guardians of Azeroth'),
+      screen.getByRole('search', { name: 'Buscar personaje' }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: /Recent Achievements/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Glory of the Dragonflight Hero'),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Reino')).toBeInTheDocument();
+    expect(screen.getByLabelText('Nombre')).toBeInTheDocument();
+    expect(screen.queryByText('Thrall')).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Cambiar a tema oscuro' }),
     ).toBeInTheDocument();

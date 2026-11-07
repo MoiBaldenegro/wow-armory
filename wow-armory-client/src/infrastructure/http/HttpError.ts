@@ -26,13 +26,41 @@ export class HttpError extends Error {
   }
 }
 
-function parseRetryAfter(value: unknown): number | undefined {
-  if (typeof value !== 'string' && typeof value !== 'number') {
+// IMF-fixdate, the HTTP-date format senders must generate (RFC 9110 5.6.7),
+// e.g. `Wed, 21 Oct 2026 07:28:00 GMT`.
+const HTTP_DATE_PATTERN =
+  /^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/;
+
+/**
+ * Reads `Retry-After` as delay-seconds or as an HTTP date. Dates become the
+ * remaining seconds, rounded up and never negative.
+ */
+export function parseRetryAfter(value: unknown): number | undefined {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) && value >= 0 ? value : undefined;
+  }
+
+  if (typeof value !== 'string') {
     return undefined;
   }
 
-  const seconds = Number(value);
-  return Number.isFinite(seconds) && seconds >= 0 ? seconds : undefined;
+  const trimmed = value.trim();
+
+  if (/^\d+$/.test(trimmed)) {
+    return Number(trimmed);
+  }
+
+  if (!HTTP_DATE_PATTERN.test(trimmed)) {
+    return undefined;
+  }
+
+  const timestamp = Date.parse(trimmed);
+
+  if (Number.isNaN(timestamp)) {
+    return undefined;
+  }
+
+  return Math.max(0, Math.ceil((timestamp - Date.now()) / 1000));
 }
 
 function readErrorCode(data: unknown): string | undefined {

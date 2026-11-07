@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { HttpError, toHttpError } from './HttpError';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { HttpError, parseRetryAfter, toHttpError } from './HttpError';
 
 function axiosResponseError(
   status: number,
@@ -61,4 +61,50 @@ describe('HttpError', () => {
     expect(error.status).toBe(0);
     expect(error.code).toBe('ECONNABORTED');
   });
+});
+
+describe('parseRetryAfter', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('accepts delay seconds as string or number', () => {
+    expect(parseRetryAfter('42')).toBe(42);
+    expect(parseRetryAfter(' 0 ')).toBe(0);
+    expect(parseRetryAfter(7)).toBe(7);
+  });
+
+  it('converts an HTTP date into the remaining seconds, rounded up', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-21T07:27:00.500Z'));
+
+    expect(parseRetryAfter('Wed, 21 Oct 2026 07:28:00 GMT')).toBe(60);
+  });
+
+  it('returns 0 for an HTTP date in the past', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-21T08:00:00Z'));
+
+    expect(parseRetryAfter('Wed, 21 Oct 2026 07:28:00 GMT')).toBe(0);
+  });
+
+  it('reads an HTTP date from the Retry-After header of a 429', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-21T07:27:30Z'));
+
+    const error = toHttpError(
+      axiosResponseError(429, {
+        'retry-after': 'Wed, 21 Oct 2026 07:28:00 GMT',
+      }),
+    );
+
+    expect(error.retryAfterSeconds).toBe(30);
+  });
+
+  it.each(['soon', '', '-5', '1.5', 'Wed, 99 Foo 2026 07:28:00 GMT', null])(
+    'returns undefined for the unparseable value %s',
+    (value) => {
+      expect(parseRetryAfter(value)).toBeUndefined();
+    },
+  );
 });

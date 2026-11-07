@@ -1,4 +1,3 @@
-import React from 'react';
 import { Sword } from 'lucide-react';
 
 interface LogoProps {

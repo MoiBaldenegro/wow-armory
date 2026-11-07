@@ -138,6 +138,32 @@ describe('ProfilePage', () => {
     });
     expect(button).toHaveAttribute('aria-busy', 'true');
     expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('Iniciando sesión…');
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  it('keeps the logout button mounted with loading text while logging out', async () => {
+    const { useCases, authRepository } = createTestDependencies({
+      logout: {
+        execute: () => new Promise(() => undefined),
+      } as unknown as UseCases['logout'],
+    });
+    authRepository.session = {
+      authenticated: true,
+      user: { battletag: 'Player#1234' },
+    };
+
+    renderProfile(useCases);
+
+    const button = await screen.findByRole('button', {
+      name: 'Cerrar sesión',
+    });
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(button).toBeDisabled();
+    });
+    expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(button).toHaveTextContent('Cerrando sesión…');
   });
 });
