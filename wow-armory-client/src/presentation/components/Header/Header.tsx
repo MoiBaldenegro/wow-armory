@@ -32,9 +32,8 @@ export function Header() {
     return () => window.removeEventListener('scroll', updateCompactState);
   }, []);
 
-  const handleSearch = (query: string) => {
-    console.log('Searching for:', query);
-    // Implement search logic here
+  const handleSearch = () => {
+    // La búsqueda real se conecta en el job de personaje.
   };
 
   const handleAuthAction = async () => {
