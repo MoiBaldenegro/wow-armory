@@ -17,52 +17,17 @@ export const useDetail = <T>(url: string): Params<T> => {
 
   const fetchData = useCallback(
     async (abortSignal: AbortSignal) => {
-      //reset state before executions
       setIsLoading(true);
       setIsError(null);
 
       try {
-        const accessToken = document.cookie
-          .split('; ')
-          .find((row) => row.startsWith('accessToken='))
-          ?.split('=')[1];
-          console.log(accessToken);
-
-        // Si no se encuentra el token
-        if (!accessToken) {
-          console.log('No se encontro el token');
-          setIsLoading(false);
-          setIsError(new Error('Token de acceso no encontrado.'));
-          return;
-        }
-        console.log(`Token encontrado: ${accessToken}`);
-
-        // Realiza la solicitud con el token en los headers
-        const response = await axios(url, {
+        const response = await axios.get<T>(url, {
           signal: abortSignal,
-          headers: {
-            Authorization: `Bearer ${accessToken}`, 
-          },
+          withCredentials: true,
         });
 
-        if (!response) {
-          setIsLoading(false);
-          setIsError(
-            new Error(
-              'Hubo un error en la solicitud de la API, revisa tu conexión y reintenta.',
-            ),
-          );
-          return;
-        }
-
-        setData(response.data as dataType<T>);
+        setData(response.data);
       } catch (error) {
-        if (axios.isCancel(error)) {
-          setIsLoading(false);
-          setIsError(error as Error);
-          return;
-        }
-        setIsLoading(false);
         setIsError(error as Error);
       } finally {
         setIsLoading(false);
@@ -73,12 +38,14 @@ export const useDetail = <T>(url: string): Params<T> => {
 
   useEffect(() => {
     if (!url) return;
+
     const controller = new AbortController();
     fetchData(controller.signal);
+
     return () => {
       controller.abort();
     };
-  }, [fetchData]);
+  }, [fetchData, url]);
 
   return { data, isLoading, isError };
 };

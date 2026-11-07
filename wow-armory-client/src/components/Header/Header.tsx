@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Loader2, LogIn, LogOut } from 'lucide-react';
 import { Logo } from './Logo';
 import { SearchBar } from './SearchBar';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Header() {
   const [isCompact, setIsCompact] = useState(false);
+  const [isActionPending, setIsActionPending] = useState(false);
   const { scrollY } = useScroll();
-  
+  const { isAuthenticated, isLoading, user, login, logout } = useAuth();
+
   const headerBackground = useTransform(
     scrollY,
     [0, 50],
@@ -32,23 +36,35 @@ export function Header() {
     console.log('Searching for:', query);
     // Implement search logic here
   };
-  const login = async () => {
+
+  const handleAuthAction = async () => {
+    setIsActionPending(true);
+
     try {
-      // Llamamos al endpoint /auth/login de nuestro backend
-      const response = await fetch('https://wow-armory.onrender.com/auth/login');
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Si obtenemos la URL de autorización de Blizzard, redirigimos al usuario
-        if (data.url) {
-          window.location.href = data.url;  // Redirige al usuario a Blizzard para autorizar
-        }
+      if (isAuthenticated) {
+        await logout();
+      } else {
+        await login();
       }
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+    } finally {
+      setIsActionPending(false);
     }
   };
+
+  const isBusy = isActionPending || isLoading;
+  const authLabel = isBusy
+    ? 'Cargando…'
+    : isAuthenticated
+      ? 'Cerrar sesión'
+      : 'Iniciar sesión';
+  const authAriaLabel = isBusy
+    ? 'Cargando…'
+    : isAuthenticated
+      ? user?.battletag
+        ? `Cerrar sesión de ${user.battletag}`
+        : 'Cerrar sesión'
+      : 'Iniciar sesión';
+  const AuthIcon = isBusy ? Loader2 : isAuthenticated ? LogOut : LogIn;
 
   return (
     <motion.header
@@ -59,10 +75,26 @@ export function Header() {
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm"
     >
       <div className="container mx-auto px-4">
-        <button className="flex items-center gap-2 text-white" onClick={login}>Iniciar session</button>
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex items-center gap-3 sm:gap-6">
           <Logo isCompact={isCompact} />
-          <SearchBar isCompact={isCompact} onSearch={handleSearch} />
+          <div className="min-w-0 flex-1">
+            <SearchBar isCompact={isCompact} onSearch={handleSearch} />
+          </div>
+          <button
+            type="button"
+            onClick={handleAuthAction}
+            disabled={isBusy}
+            aria-busy={isBusy}
+            aria-label={authAriaLabel}
+            title={user?.battletag}
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-white/30 bg-gray-900/90 px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4"
+          >
+            <AuthIcon
+              className={`h-4 w-4 ${isBusy ? 'animate-spin' : ''}`}
+              aria-hidden="true"
+            />
+            <span className="hidden sm:inline">{authLabel}</span>
+          </button>
         </div>
       </div>
     </motion.header>
