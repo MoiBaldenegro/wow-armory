@@ -90,7 +90,7 @@ export class BlizzardCharacterDetailsAdapter {
 
     return (
       await Promise.all(
-        items.map(async (value) => {
+        items.map(async (value): Promise<CharacterEquipmentItem | undefined> => {
           const item = value as RawRecord;
           const slot = (item.slot as RawRecord | undefined)?.name;
           const name = (item.name as string | undefined) ?? undefined;
