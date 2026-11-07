@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Loader2, LogIn, LogOut } from 'lucide-react';
 import { Logo } from './Logo';
@@ -81,7 +82,7 @@ export function Header() {
             disabled={isBusy}
             aria-busy={isBusy}
             aria-label={authAriaLabel}
-            title={user?.battletag}
+            title={user?.battletag ?? user?.accountId}
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-white/30 bg-gray-900/90 px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4"
           >
             <AuthIcon
@@ -90,6 +91,14 @@ export function Header() {
             />
             <span className="hidden sm:inline">{authLabel}</span>
           </button>
+          {isAuthenticated && (
+            <Link
+              to="/profile"
+              className="hidden rounded-lg border border-amber-300/50 bg-amber-400/10 px-3 py-2 text-sm font-semibold text-amber-100 transition-colors hover:bg-amber-400/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 sm:inline-flex"
+            >
+              Mi perfil
+            </Link>
+          )}
         </div>
       </div>
     </motion.header>

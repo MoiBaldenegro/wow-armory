@@ -12,6 +12,7 @@ interface SessionResponseDto {
   authenticated: boolean;
   user?: {
     battletag?: string;
+    accountId?: string;
   };
 }
 
@@ -33,7 +34,10 @@ export class HttpAuthRepository implements AuthRepository {
       const session: Session = { authenticated: dto.authenticated };
 
       if (dto.user !== undefined) {
-        session.user = { battletag: dto.user.battletag };
+        session.user = {
+          battletag: dto.user.battletag,
+          accountId: dto.user.accountId,
+        };
       }
 
       return session;

@@ -6,6 +6,7 @@ export interface OAuthTokenSet {
   refreshToken?: string;
   expiresIn: number;
   battletag?: string;
+  accountId?: string;
 }
 
 export interface OAuthProvider {

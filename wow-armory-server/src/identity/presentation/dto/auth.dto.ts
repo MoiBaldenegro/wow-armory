@@ -6,6 +6,7 @@ export interface SessionResponseDto {
   authenticated: boolean;
   user?: {
     battletag?: string;
+    accountId?: string;
   };
 }
 

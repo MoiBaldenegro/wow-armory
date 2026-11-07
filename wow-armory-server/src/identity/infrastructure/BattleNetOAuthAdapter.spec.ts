@@ -4,6 +4,7 @@ import { RefreshToken } from '../domain/RefreshToken';
 import { BattleNetOAuthAdapter } from './BattleNetOAuthAdapter';
 
 const TOKEN_URL = 'https://oauth.battle.net/token';
+const USERINFO_URL = 'https://oauth.battle.net/userinfo';
 
 function createAdapter(): BattleNetOAuthAdapter {
   return new BattleNetOAuthAdapter({
@@ -32,7 +33,9 @@ describe('BattleNetOAuthAdapter', () => {
       'https://api.example.com/auth/callback',
     );
     expect(url.searchParams.get('response_type')).toBe('code');
-    expect(url.searchParams.get('scope')).toBe('wow.profile');
+    expect(url.searchParams.get('scope')).toBe(
+      'openid battletag wow.profile',
+    );
     expect(url.searchParams.get('state')).toBe('random-state');
     expect(url.toString()).not.toContain('super-secret');
   });
@@ -45,11 +48,25 @@ describe('BattleNetOAuthAdapter', () => {
         expires_in: 3600,
       },
     } as never);
+    const get = jest.spyOn(axios, 'get').mockResolvedValue({
+      data: {
+        id: 12345,
+        battletag: 'Tester#1234',
+      },
+    } as never);
     const adapter = createAdapter();
 
     const tokenSet = await adapter.exchangeCode('authorization-code');
 
     expect(tokenSet.accessToken).toBe('access-token');
+    expect(tokenSet.battletag).toBe('Tester#1234');
+    expect(tokenSet.accountId).toBe('12345');
+    expect(get).toHaveBeenCalledWith(
+      USERINFO_URL,
+      expect.objectContaining({
+        headers: { Authorization: 'Bearer access-token' },
+      }),
+    );
 
     const [url, body, config] = post.mock.calls[0] as [
       string,

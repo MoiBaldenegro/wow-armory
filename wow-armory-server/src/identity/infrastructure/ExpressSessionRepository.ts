@@ -33,6 +33,7 @@ export class ExpressSessionRepository implements SessionRepository {
         : undefined,
       expiresAt: new Date(session.expiresAt ?? 0),
       battletag: session.battletag,
+      accountId: session.accountId,
     });
   }
 
@@ -43,6 +44,7 @@ export class ExpressSessionRepository implements SessionRepository {
     session.refreshToken = authSession.refreshToken?.value;
     session.expiresAt = authSession.expiresAt.getTime();
     session.battletag = authSession.battletag;
+    session.accountId = authSession.accountId;
 
     await this.saveStore();
   }

@@ -1,5 +1,6 @@
 export interface SessionUser {
   battletag?: string;
+  accountId?: string;
 }
 
 export interface Session {

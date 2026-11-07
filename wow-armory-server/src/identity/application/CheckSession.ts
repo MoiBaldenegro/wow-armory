@@ -3,6 +3,7 @@ import { SessionRepository } from '../domain/ports/SessionRepository';
 
 export interface CheckSessionUser {
   battletag?: string;
+  accountId?: string;
 }
 
 export interface CheckSessionResult {
@@ -34,7 +35,14 @@ export class CheckSession {
 
     return {
       authenticated: true,
-      ...(session.battletag ? { user: { battletag: session.battletag } } : {}),
+      ...(session.battletag || session.accountId
+        ? {
+            user: {
+              ...(session.battletag ? { battletag: session.battletag } : {}),
+              ...(session.accountId ? { accountId: session.accountId } : {}),
+            },
+          }
+        : {}),
     };
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export function ProfilePage() {
@@ -13,9 +14,19 @@ export function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 px-4 py-16 text-gray-900 dark:bg-gray-900 dark:text-white">
-      <div className="mx-auto max-w-3xl rounded-xl border-4 border-black bg-white p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0)] sm:p-8 dark:border-white dark:bg-gray-800 dark:shadow-[8px_8px_0px_0px_rgba(255,255,255)]">
-        <h1 className="text-3xl font-black">Mi perfil</h1>
+    <main className="min-h-screen bg-gray-100 px-4 py-24 text-gray-900 dark:bg-gray-900 dark:text-white">
+      <div className="mx-auto max-w-4xl rounded-xl border-4 border-black bg-white p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0)] sm:p-8 dark:border-white dark:bg-gray-800 dark:shadow-[8px_8px_0px_0px_rgba(255,255,255)]">
+        <div className="flex items-start gap-4">
+          <div className="rounded-full border-2 border-amber-500 bg-amber-100 p-3 text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+            <UserRound aria-hidden="true" />
+          </div>
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-amber-600 dark:text-amber-300">
+              Battle.net
+            </p>
+            <h1 className="text-3xl font-black">Mi perfil</h1>
+          </div>
+        </div>
 
         {error && (
           <div
@@ -35,10 +46,28 @@ export function ProfilePage() {
           </p>
         ) : isAuthenticated ? (
           <div className="mt-6 space-y-6">
-            <p className="text-lg text-gray-700 dark:text-gray-200">
-              Sesión iniciada como{' '}
-              <strong>{user?.battletag ?? 'jugador de Battle.net'}</strong>.
-            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-900">
+                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                  BattleTag
+                </p>
+                <p className="mt-2 text-xl font-black">
+                  {user?.battletag ??
+                    (user?.accountId
+                      ? `Cuenta ${user.accountId}`
+                      : 'Battle.net conectado')}
+                </p>
+              </div>
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-900">
+                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                  Estado
+                </p>
+                <p className="mt-2 flex items-center gap-2 text-xl font-black text-emerald-600 dark:text-emerald-400">
+                  <ShieldCheck aria-hidden="true" className="h-5 w-5" />
+                  Sesión activa
+                </p>
+              </div>
+            </div>
             <button
               type="button"
               onClick={() => void logout()}

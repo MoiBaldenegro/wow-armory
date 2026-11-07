@@ -8,6 +8,7 @@ export interface AuthSessionProps {
   refreshToken?: RefreshToken;
   expiresAt: Date;
   battletag?: string;
+  accountId?: string;
 }
 
 export class AuthSession {
@@ -32,6 +33,7 @@ export class AuthSession {
         : undefined,
       expiresAt: new Date(now.getTime() + tokenSet.expiresIn * 1000),
       battletag: tokenSet.battletag,
+      accountId: tokenSet.accountId,
     });
   }
 
@@ -51,6 +53,10 @@ export class AuthSession {
     return this.props.battletag;
   }
 
+  get accountId(): string | undefined {
+    return this.props.accountId;
+  }
+
   isExpiringWithin(marginMs: number, now = new Date()): boolean {
     return this.props.expiresAt.getTime() - now.getTime() <= marginMs;
   }
@@ -63,6 +69,7 @@ export class AuthSession {
         : this.props.refreshToken,
       expiresAt: new Date(now.getTime() + tokenSet.expiresIn * 1000),
       battletag: tokenSet.battletag ?? this.props.battletag,
+      accountId: tokenSet.accountId ?? this.props.accountId,
     });
   }
 }

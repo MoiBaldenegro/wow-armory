@@ -9,6 +9,7 @@ import {
 
 const AUTHORIZE_URL = 'https://oauth.battle.net/authorize';
 const TOKEN_URL = 'https://oauth.battle.net/token';
+const USERINFO_URL = 'https://oauth.battle.net/userinfo';
 
 export interface BattleNetOAuthConfig {
   clientId: string;
@@ -22,6 +23,12 @@ interface RawTokenResponse {
   expires_in?: number | string;
 }
 
+interface UserInfoResponse {
+  id?: string | number;
+  sub?: string;
+  battletag?: string;
+}
+
 export class BattleNetOAuthAdapter implements OAuthProvider {
   constructor(private readonly config: BattleNetOAuthConfig) {}
 
@@ -30,7 +37,7 @@ export class BattleNetOAuthAdapter implements OAuthProvider {
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
       response_type: 'code',
-      scope: 'wow.profile',
+      scope: 'openid battletag wow.profile',
       state: state.value,
     });
 
@@ -47,7 +54,14 @@ export class BattleNetOAuthAdapter implements OAuthProvider {
         grant_type: 'authorization_code',
       });
 
-      return this.toTokenSet(data, TokenExchangeError);
+      const tokenSet = this.toTokenSet(data, TokenExchangeError);
+      const userInfo = await this.getUserInfo(tokenSet.accessToken);
+
+      return {
+        ...tokenSet,
+        battletag: userInfo.battletag,
+        accountId: userInfo.id?.toString() ?? userInfo.sub,
+      };
     } catch (error) {
       if (error instanceof TokenExchangeError) {
         throw error;
@@ -91,6 +105,17 @@ export class BattleNetOAuthAdapter implements OAuthProvider {
     );
 
     return response.data;
+  }
+
+  private async getUserInfo(accessToken: string): Promise<UserInfoResponse> {
+    const response = await axios.get<UserInfoResponse>(USERINFO_URL, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      timeout: 10_000,
+    });
+
+    return response.data ?? {};
   }
 
   private toTokenSet(

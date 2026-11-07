@@ -2,6 +2,7 @@ import { createContext } from 'react';
 
 export interface AuthUser {
   battletag?: string;
+  accountId?: string;
 }
 
 export interface AuthContextValue {

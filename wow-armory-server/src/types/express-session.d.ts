@@ -7,5 +7,6 @@ declare module 'express-session' {
     refreshToken?: string;
     expiresAt?: number;
     battletag?: string;
+    accountId?: string;
   }
 }
