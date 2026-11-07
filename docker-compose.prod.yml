@@ -1,0 +1,41 @@
+services:
+  server:
+    build:
+      context: ./wow-armory-server
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      SESSION_STORE: ${SESSION_STORE:-redis}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET is required}
+      REDIS_URL: ${REDIS_URL:?REDIS_URL is required}
+      BLIZZARD_CLIENT_ID: ${BLIZZARD_CLIENT_ID:?BLIZZARD_CLIENT_ID is required}
+      BLIZZARD_CLIENT_SECRET: ${BLIZZARD_CLIENT_SECRET:?BLIZZARD_CLIENT_SECRET is required}
+      BLIZZARD_REDIRECT_URI: ${BLIZZARD_REDIRECT_URI:?BLIZZARD_REDIRECT_URI is required}
+      BLIZZARD_REGION: ${BLIZZARD_REGION:-us}
+      BLIZZARD_NAMESPACE: ${BLIZZARD_NAMESPACE:-profile-classic-us}
+      CLIENT_URL: ${CLIENT_URL:?CLIENT_URL is required}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
+      COOKIE_SECURE: "true"
+      COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-none}
+      TRUST_PROXY: ${TRUST_PROXY:-1}
+      LOG_FORMAT: json
+    ports:
+      - "${SERVER_PORT:-3000}:3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  client:
+    build:
+      context: ./wow-armory-client
+      args:
+        VITE_SERVER_URI: ${VITE_SERVER_URI:?VITE_SERVER_URI is required}
+    ports:
+      - "${CLIENT_PORT:-8080}:80"
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
