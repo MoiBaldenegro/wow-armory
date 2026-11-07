@@ -4,7 +4,7 @@ import {
   type AuthContextValue,
 } from '../providers/auth-context';
 
-export const useAuth = (): AuthContextValue => {
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
 
   if (!context) {
@@ -12,4 +12,4 @@ export const useAuth = (): AuthContextValue => {
   }
 
   return context;
-};
+}
