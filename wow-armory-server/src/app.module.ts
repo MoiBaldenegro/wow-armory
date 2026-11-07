@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
+import { CharactersModule } from './characters/infrastructure/characters.module';
 import { validateEnv } from './config/env.validation';
 import { IdentityModule } from './identity/infrastructure/identity.module';
 
@@ -13,7 +13,7 @@ import { IdentityModule } from './identity/infrastructure/identity.module';
       cache: true,
       validate: validateEnv,
     }),
-    AuthModule,
+    CharactersModule,
     IdentityModule,
   ],
   controllers: [AppController],
