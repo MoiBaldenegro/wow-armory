@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -16,6 +16,19 @@ export function ProfilePage() {
   const { isAuthenticated, isLoading, error, user, login, logout } = useAuth();
   const profileState = useWowProfile(isAuthenticated);
   const [hasCheckedSession, setHasCheckedSession] = useState(!isLoading);
+  const [selectedMode, setSelectedMode] = useState<'all' | 'retail' | 'classic'>(
+    'all',
+  );
+  const visibleCharacters = useMemo(() => {
+    if (profileState.status !== 'success') {
+      return [];
+    }
+
+    return profileState.profile.characters.filter(
+      (character) =>
+        selectedMode === 'all' || character.mode === selectedMode,
+    );
+  }, [profileState, selectedMode]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -92,6 +105,31 @@ export function ProfilePage() {
                 <h2 className="text-2xl font-black text-amber-100">
                   Mis personajes
                 </h2>
+                <p className="mt-2 max-w-3xl text-sm text-amber-50/70">
+                  Battle.net separa los personajes por catálogo. Consultamos
+                  Retail y Classic por separado; por eso un reino solo aparece
+                  si Blizzard lo devuelve para tu cuenta y región.
+                </p>
+                <label
+                  htmlFor="profile-game-mode"
+                  className="mt-4 block max-w-xs text-sm font-bold text-amber-100"
+                >
+                  Catálogo de personajes
+                  <select
+                    id="profile-game-mode"
+                    value={selectedMode}
+                    onChange={(event) =>
+                      setSelectedMode(
+                        event.target.value as 'all' | 'retail' | 'classic',
+                      )
+                    }
+                    className="mt-1 w-full rounded-lg border border-amber-300/40 bg-black/50 px-3 py-2 text-amber-50"
+                  >
+                    <option value="all">Todos los catálogos</option>
+                    <option value="retail">Retail</option>
+                    <option value="classic">Classic</option>
+                  </select>
+                </label>
                 {profileState.status === 'loading' && (
                   <p className="mt-3 text-amber-50/70">
                     Cargando personajes de Battle.net…
@@ -103,11 +141,11 @@ export function ProfilePage() {
                   </p>
                 )}
                 {profileState.status === 'success' &&
-                  (profileState.profile.characters.length > 0 ? (
+                  (visibleCharacters.length > 0 ? (
                     <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                      {profileState.profile.characters.map((character) => (
+                      {visibleCharacters.map((character) => (
                         <li
-                          key={`${character.realmSlug}-${character.name}`}
+                          key={`${character.mode}-${character.realmSlug}-${character.name}`}
                           className="rounded-lg border border-amber-300/30 bg-black/25 p-4"
                         >
                           <Link
@@ -115,12 +153,15 @@ export function ProfilePage() {
                               character.realmSlug,
                             )}/${encodeURIComponent(
                               character.name.toLowerCase(),
-                            )}`}
+                            )}?mode=${character.mode}`}
                             className="font-bold text-amber-100 hover:text-amber-300"
                           >
                             {character.name}
                           </Link>
                           <p className="mt-1 text-sm text-amber-50/65">
+                            <span className="mr-2 uppercase tracking-wide text-amber-300/80">
+                              {character.mode}
+                            </span>
                             {character.realmName ?? character.realmSlug}
                             {character.level !== undefined
                               ? ` · Nivel ${character.level}`
@@ -131,7 +172,9 @@ export function ProfilePage() {
                     </ul>
                   ) : (
                     <p className="mt-3 text-amber-50/70">
-                      Battle.net no devolvió personajes para esta cuenta.
+                      No hay personajes en el catálogo seleccionado. Battle.net
+                      solo muestra personajes vinculados a esta cuenta y
+                      región.
                     </p>
                   ))}
               </section>

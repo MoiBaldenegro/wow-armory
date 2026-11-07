@@ -2,11 +2,13 @@ import axios from 'axios';
 import { TokenProvider } from '../domain/ports/TokenProvider';
 
 type RawRecord = Record<string, unknown>;
+type WowMode = 'retail' | 'classic';
 
 export interface WowProfileCharacter {
   name: string;
   realmSlug: string;
   realmName?: string;
+  mode: WowMode;
   level?: number;
   playableClassId?: number;
   playableRaceId?: number;
@@ -46,22 +48,52 @@ export class BattleNetWowProfileAdapter {
       return null;
     }
 
-    const response = await axios.get<unknown>(
-      `https://${this.region}.api.blizzard.com/profile/user/wow`,
-      {
-        headers: { Authorization: `Bearer ${token.value}` },
-        params: {
-          namespace: `profile-${this.region}`,
-          locale: this.locale,
-        },
-        timeout: 10_000,
-      },
+    const results = await Promise.allSettled(
+      (['retail', 'classic'] as const).map(async (mode) => {
+        const response = await axios.get<unknown>(
+          `https://${this.region}.api.blizzard.com/profile/user/wow`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+              namespace:
+                mode === 'retail'
+                  ? `profile-${this.region}`
+                  : `profile-classic-${this.region}`,
+              locale: this.locale,
+            },
+            timeout: 10_000,
+          },
+        );
+
+        return this.mapProfile(response.data, mode);
+      }),
     );
 
-    return this.mapProfile(response.data);
+    const profiles = results
+      .filter(
+        (result): result is PromiseFulfilledResult<WowProfile> =>
+          result.status === 'fulfilled',
+      )
+      .map((result) => result.value);
+
+    if (profiles.length === 0) {
+      throw new Error('No WoW profile namespace was available.');
+    }
+
+    const characters = new Map<string, WowProfileCharacter>();
+    for (const profile of profiles) {
+      for (const character of profile.characters) {
+        characters.set(
+          `${character.mode}:${character.realmSlug}:${character.name.toLowerCase()}`,
+          character,
+        );
+      }
+    }
+
+    return { characters: [...characters.values()] };
   }
 
-  private mapProfile(payload: unknown): WowProfile {
+  private mapProfile(payload: unknown, mode: WowMode): WowProfile {
     const root = record(payload);
     const accounts = Array.isArray(root?.wow_accounts) ? root.wow_accounts : [];
     const characters: WowProfileCharacter[] = [];
@@ -86,6 +118,7 @@ export class BattleNetWowProfileAdapter {
           name,
           realmSlug,
           realmName: stringValue(realm?.name),
+          mode,
           level: numberValue(character?.level),
           playableClassId: numberValue(record(character?.playable_class)?.id),
           playableRaceId: numberValue(record(character?.playable_race)?.id),

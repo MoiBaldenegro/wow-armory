@@ -7,6 +7,7 @@ interface WowProfileDto {
     name: string;
     realmSlug: string;
     realmName?: string;
+    mode?: 'retail' | 'classic';
     level?: number;
     playableClassId?: number;
     playableRaceId?: number;
@@ -20,7 +21,12 @@ export class HttpWowProfileRepository implements WowProfileRepository {
     const dto = await this.http.get<WowProfileDto>('/profile/user/wow');
 
     return {
-      characters: Array.isArray(dto.characters) ? dto.characters : [],
+      characters: Array.isArray(dto.characters)
+        ? dto.characters.map((character) => ({
+            ...character,
+            mode: character.mode ?? 'classic',
+          }))
+        : [],
     };
   }
 }
