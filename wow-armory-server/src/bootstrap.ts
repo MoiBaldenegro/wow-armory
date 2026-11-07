@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
+import cookieParser = require('cookie-parser');
+import session = require('express-session');
 import { parseOrigins, TrustProxy } from './config/env.validation';
 import { AppLogger } from './shared/infrastructure/logging/app-logger';
 import {
