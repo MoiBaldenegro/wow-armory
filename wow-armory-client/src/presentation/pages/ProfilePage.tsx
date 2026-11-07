@@ -19,6 +19,24 @@ export function ProfilePage() {
   const [selectedMode, setSelectedMode] = useState<'all' | 'retail' | 'classic'>(
     'all',
   );
+  const [selectedRealm, setSelectedRealm] = useState('all');
+  const availableRealms = useMemo(() => {
+    if (profileState.status !== 'success') {
+      return [];
+    }
+
+    return [...new Map(
+      profileState.profile.characters
+        .filter(
+          (character) =>
+            selectedMode === 'all' || character.mode === selectedMode,
+        )
+        .map((character) => [
+          character.realmSlug,
+          character.realmName ?? character.realmSlug,
+        ]),
+    )].sort(([, first], [, second]) => first.localeCompare(second));
+  }, [profileState, selectedMode]);
   const visibleCharacters = useMemo(() => {
     if (profileState.status !== 'success') {
       return [];
@@ -26,9 +44,10 @@ export function ProfilePage() {
 
     return profileState.profile.characters.filter(
       (character) =>
-        selectedMode === 'all' || character.mode === selectedMode,
+      (selectedMode === 'all' || character.mode === selectedMode) &&
+      (selectedRealm === 'all' || character.realmSlug === selectedRealm),
     );
-  }, [profileState, selectedMode]);
+  }, [profileState, selectedMode, selectedRealm]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -128,6 +147,25 @@ export function ProfilePage() {
                     <option value="all">Todos los catálogos</option>
                     <option value="retail">Retail</option>
                     <option value="classic">Classic</option>
+                  </select>
+                </label>
+                <label
+                  htmlFor="profile-realm"
+                  className="mt-4 block max-w-xs text-sm font-bold text-amber-100"
+                >
+                  Reino disponible en tu cuenta
+                  <select
+                    id="profile-realm"
+                    value={selectedRealm}
+                    onChange={(event) => setSelectedRealm(event.target.value)}
+                    className="mt-1 w-full rounded-lg border border-amber-300/40 bg-black/50 px-3 py-2 text-amber-50"
+                  >
+                    <option value="all">Todos los reinos</option>
+                    {availableRealms.map(([slug, name]) => (
+                      <option key={slug} value={slug}>
+                        {name}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 {profileState.status === 'loading' && (
