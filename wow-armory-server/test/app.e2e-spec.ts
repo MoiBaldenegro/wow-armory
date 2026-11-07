@@ -4,6 +4,17 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/bootstrap';
 import {
+  buildCharacter,
+  FakeCharacterRepository,
+} from '../src/characters/application/testing/fakes';
+import { CHARACTER_REPOSITORY } from '../src/characters/characters.tokens';
+import { Achievement } from '../src/characters/domain/Achievement';
+import {
+  BlizzardRateLimited,
+  BlizzardUnavailable,
+} from '../src/characters/domain/errors/CharacterError';
+import { Guild } from '../src/characters/domain/Guild';
+import {
   DEFAULT_TOKEN_SET,
   FakeOAuthProvider,
 } from '../src/identity/application/testing/fakes';
@@ -176,10 +187,138 @@ describe('Identity authentication (e2e)', () => {
     await request(app.getHttpServer()).get('/auth/session-check').expect(404);
     await request(app.getHttpServer()).get('/auth/logout').expect(404);
   });
+});
 
-  it('keeps the legacy character endpoint alive', async () => {
+describe('Characters (e2e)', () => {
+  let app: INestApplication;
+  let repository: FakeCharacterRepository;
+
+  const LOGIN_TIMESTAMP = 1700000000000;
+
+  beforeAll(async () => {
+    repository = new FakeCharacterRepository();
+
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    })
+      .overrideProvider(CHARACTER_REPOSITORY)
+      .useValue(repository)
+      .compile();
+
+    app = moduleFixture.createNestApplication();
+    configureApp(app);
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  beforeEach(() => {
+    repository.reset();
+  });
+
+  function seedCharacter(): void {
+    repository.result = buildCharacter({
+      specialization: 'Arms',
+      lastLogin: new Date(LOGIN_TIMESTAMP),
+      guild: Guild.create({
+        name: 'Warbringers',
+        realm: 'Grobbulus',
+        rank: 3,
+        memberCount: 120,
+      }),
+      achievements: [
+        Achievement.create({
+          id: 1234,
+          name: 'Level 60',
+          points: 10,
+          completedAt: new Date(LOGIN_TIMESTAMP),
+        }),
+      ],
+    });
+  }
+
+  it('returns a stable CharacterDto for a valid request', async () => {
+    seedCharacter();
+
+    const response = await request(app.getHttpServer())
+      .get('/characters/grobbulus/billiemoi')
+      .expect(200);
+
+    expect(response.body).toEqual({
+      name: 'Billiemoi',
+      realmSlug: 'grobbulus',
+      level: 60,
+      class: 'Warrior',
+      race: 'Orc',
+      spec: 'Arms',
+      itemLevel: 245,
+      achievementPoints: 12345,
+      lastLogin: new Date(LOGIN_TIMESTAMP).toISOString(),
+      guild: {
+        name: 'Warbringers',
+        realm: 'Grobbulus',
+        rank: 3,
+        memberCount: 120,
+      },
+      achievements: [
+        {
+          id: 1234,
+          name: 'Level 60',
+          points: 10,
+          completedAt: new Date(LOGIN_TIMESTAMP).toISOString(),
+        },
+      ],
+    });
+    expect(repository.calls).toEqual([
+      { realm: 'grobbulus', name: 'billiemoi' },
+    ]);
+  });
+
+  it('rejects invalid path parameters with 400 without calling the repository', async () => {
+    await request(app.getHttpServer())
+      .get('/characters/Grobbulus/billiemoi')
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .get('/characters/bad%2Frealm/billiemoi')
+      .expect(400);
+
+    expect(repository.calls).toHaveLength(0);
+  });
+
+  it('returns 404 when the character does not exist', async () => {
+    repository.result = null;
+
+    await request(app.getHttpServer())
+      .get('/characters/grobbulus/missing')
+      .expect(404);
+  });
+
+  it('returns 429 and propagates Retry-After when Blizzard rate limits', async () => {
+    repository.result = new BlizzardRateLimited(42);
+
+    const response = await request(app.getHttpServer())
+      .get('/characters/grobbulus/billiemoi')
+      .expect(429);
+
+    expect(response.headers['retry-after']).toBe('42');
+  });
+
+  it('returns a generic 502 when Blizzard is unavailable', async () => {
+    repository.result = new BlizzardUnavailable();
+
+    const response = await request(app.getHttpServer())
+      .get('/characters/grobbulus/billiemoi')
+      .expect(502);
+
+    expect(response.body).toMatchObject({ statusCode: 502 });
+  });
+
+  it('removes the legacy character route', async () => {
     await request(app.getHttpServer())
       .get('/auth/character/grobbulus/billiemoi')
-      .expect(401);
+      .expect(404);
   });
 });
