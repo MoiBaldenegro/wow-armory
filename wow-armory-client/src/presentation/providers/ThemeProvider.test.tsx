@@ -38,6 +38,7 @@ describe('ThemeProvider', () => {
 
     expect(result.current.isDark).toBe(true);
     expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(window.localStorage.getItem('wow-armory-theme')).toBeNull();
   });
 
   it('toggles the theme, updates the class and persists the choice', () => {

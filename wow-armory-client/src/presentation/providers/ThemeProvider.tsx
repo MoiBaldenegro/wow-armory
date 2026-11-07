@@ -45,17 +45,21 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
-
-    try {
-      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch {
-      // Storage can be unavailable in private mode; the theme still applies.
-    }
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
-  }, []);
+    const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
+
+    // Only an explicit choice is persisted, so the OS preference keeps
+    // applying until the user toggles the theme.
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch {
+      // Storage can be unavailable in private mode; the theme still applies.
+    }
+
+    setTheme(nextTheme);
+  }, [theme]);
 
   const value = useMemo(
     () => ({ theme, isDark: theme === 'dark', toggleTheme }),
