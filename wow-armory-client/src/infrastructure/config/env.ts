@@ -5,12 +5,14 @@ export interface EnvInput {
   isProduction: boolean;
 }
 
-function isHttpUrl(value: string): boolean {
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1']);
+
+function parseHttpUrl(value: string): URL | null {
   try {
     const url = new URL(value);
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -21,7 +23,8 @@ function stripTrailingSlashes(value: string): string {
 /**
  * Resolves the API base URL from the environment.
  *
- * - Production (`import.meta.env.PROD`) requires a valid http(s) URL.
+ * - Production (`import.meta.env.PROD`) requires a valid https URL; plain
+ *   http is only accepted for loopback hosts (`localhost`, `127.0.0.1`).
  * - Development and tests fall back to the local server.
  */
 export function resolveServerUri({ serverUri, isProduction }: EnvInput): string {
@@ -37,7 +40,9 @@ export function resolveServerUri({ serverUri, isProduction }: EnvInput): string 
     return DEFAULT_SERVER_URI;
   }
 
-  if (!isHttpUrl(value)) {
+  const url = parseHttpUrl(value);
+
+  if (!url) {
     if (isProduction) {
       throw new Error(
         `VITE_SERVER_URI must be a valid http(s) URL. Received "${value}".`,
@@ -45,6 +50,16 @@ export function resolveServerUri({ serverUri, isProduction }: EnvInput): string 
     }
 
     return DEFAULT_SERVER_URI;
+  }
+
+  if (
+    isProduction &&
+    url.protocol === 'http:' &&
+    !LOOPBACK_HOSTS.has(url.hostname)
+  ) {
+    throw new Error(
+      `VITE_SERVER_URI must use https:// in production (http:// is only allowed for localhost or 127.0.0.1). Received "${value}".`,
+    );
   }
 
   return stripTrailingSlashes(value);
