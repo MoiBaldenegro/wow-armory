@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +8,36 @@
   body {
     @apply antialiased;
   }
+}
+
+.fantasy {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.02em;
+}
+
+.wc-card {
+  border: 24px solid transparent;
+  border-image-source: url('https://warcraftcn.com/warcraftcn/card-bg.webp');
+  border-image-slice: 24 fill;
+  border-image-repeat: stretch;
+  border-radius: 0.75rem;
+  color: #f5ead0;
+  background: #17120d;
+}
+
+.wc-card-sm {
+  border-width: 16px;
+  border-image-slice: 16 fill;
+}
+
+.wc-card-header {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1.25rem 1rem 0.5rem;
+}
+
+.wc-card-content {
+  padding: 0.5rem 1rem 1rem;
 }
 
 .dark {

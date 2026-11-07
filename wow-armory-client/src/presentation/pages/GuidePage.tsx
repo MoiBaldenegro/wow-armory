@@ -4,6 +4,11 @@ import { Link } from 'react-router-dom';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header/Header';
 import { ThemeToggle } from '../components/ThemeToggle';
+import {
+  WarcraftCard,
+  WarcraftCardContent,
+  WarcraftCardHeader,
+} from '../components/warcraftcn/WarcraftCard';
 
 const regions = [
   ['us', 'Américas'],
@@ -93,14 +98,16 @@ function GuideCard({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border-2 border-slate-300 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-      <div className="flex items-center gap-3 text-amber-500">
-        {icon}
-        <h2 className="text-xl font-black text-gray-900 dark:text-white">
-          {title}
-        </h2>
-      </div>
-      <div className="mt-4 text-slate-700 dark:text-slate-300">{children}</div>
-    </section>
+    <WarcraftCard size="sm">
+      <WarcraftCardHeader>
+        <div className="flex items-center gap-3 text-amber-400">
+          {icon}
+          <h2 className="text-xl font-black">{title}</h2>
+        </div>
+      </WarcraftCardHeader>
+      <WarcraftCardContent>
+        <div className="text-amber-50/80">{children}</div>
+      </WarcraftCardContent>
+    </WarcraftCard>
   );
 }

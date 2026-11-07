@@ -5,6 +5,7 @@ import { Header } from '../components/Header/Header';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router-dom';
+import { WarcraftCard } from '../components/warcraftcn/WarcraftCard';
 
 export function HomePage() {
   const { isAuthenticated, user } = useAuth();
@@ -41,19 +42,19 @@ export function HomePage() {
             </div>
           </section>
         )}
-        <section
+        <WarcraftCard
           aria-labelledby="home-title"
-          className="mx-auto max-w-3xl rounded-xl border-4 border-black bg-white p-6 text-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0)] sm:p-8 dark:border-white dark:bg-gray-800 dark:text-white dark:shadow-[8px_8px_0px_0px_rgba(255,255,255)]"
+          className="mx-auto max-w-3xl p-2 text-amber-50 sm:p-4"
         >
-          <h1 id="home-title" className="text-3xl font-black">
+          <h1 id="home-title" className="text-3xl font-black text-amber-100">
             Busca un personaje
           </h1>
-          <p className="mt-3 mb-6 text-lg text-gray-600 dark:text-gray-300">
+          <p className="mt-3 mb-6 text-lg text-amber-50/75">
             Escribe el reino y el nombre para ver su nivel, hermandad y logros
             recientes.
           </p>
           <CharacterSearchForm />
-        </section>
+        </WarcraftCard>
       </main>
       <Footer />
     </div>
