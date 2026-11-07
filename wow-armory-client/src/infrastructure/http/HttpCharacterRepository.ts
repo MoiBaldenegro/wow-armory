@@ -16,10 +16,12 @@ export class HttpCharacterRepository implements CharacterRepository {
   async findByRealmAndName(
     realmSlug: string,
     characterName: string,
+    mode: 'retail' | 'classic' = 'classic',
   ): Promise<Character | null> {
+    const modeQuery = mode === 'retail' ? '?mode=retail' : '';
     const path = `/characters/${encodeURIComponent(
       realmSlug,
-    )}/${encodeURIComponent(characterName)}`;
+    )}/${encodeURIComponent(characterName)}${modeQuery}`;
 
     try {
       const dto = await this.http.get<CharacterDto>(path);

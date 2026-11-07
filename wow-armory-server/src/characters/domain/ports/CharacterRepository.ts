@@ -11,5 +11,6 @@ export interface CharacterRepository {
   findByRealmAndName(
     realm: RealmSlug,
     name: CharacterName,
+    mode?: 'retail' | 'classic',
   ): Promise<Character | null>;
 }

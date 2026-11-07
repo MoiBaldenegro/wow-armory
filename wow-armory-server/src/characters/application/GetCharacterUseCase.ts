@@ -7,13 +7,18 @@ import { RealmSlug } from '../domain/RealmSlug';
 export class GetCharacterUseCase {
   constructor(private readonly repository: CharacterRepository) {}
 
-  async execute(realm: string, name: string): Promise<Character> {
+  async execute(
+    realm: string,
+    name: string,
+    mode: 'retail' | 'classic' = 'classic',
+  ): Promise<Character> {
     const realmSlug = RealmSlug.create(realm);
     const characterName = CharacterName.create(name);
 
     const character = await this.repository.findByRealmAndName(
       realmSlug,
       characterName,
+      mode,
     );
 
     if (!character) {

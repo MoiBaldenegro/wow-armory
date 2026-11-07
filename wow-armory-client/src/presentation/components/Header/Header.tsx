@@ -99,6 +99,12 @@ export function Header() {
               Mi perfil
             </Link>
           )}
+          <Link
+            to="/guide"
+            className="hidden text-sm font-semibold text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 lg:inline-flex"
+          >
+            Guía
+          </Link>
         </div>
       </div>
     </motion.header>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { CharacterBanner } from '../components/CharacterBanner';
 import { CharacterCard } from '../components/CharacterCard';
 import { CharacterSearchForm } from '../components/CharacterSearchForm';
@@ -138,7 +138,9 @@ export function CharacterProfilePage() {
     realmSlug: string;
     characterName: string;
   }>();
-  const { state, retry } = useCharacter(realmSlug, characterName);
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode') === 'retail' ? 'retail' : 'classic';
+  const { state, retry } = useCharacter(realmSlug, characterName, mode);
 
   return (
     <div className="min-h-screen bg-gray-100 transition-colors duration-300 dark:bg-gray-900">
@@ -146,7 +148,7 @@ export function CharacterProfilePage() {
       <ThemeToggle />
       <main className="container mx-auto px-4 py-8 pt-24">
         <CharacterContent
-          key={`${realmSlug}/${characterName}`}
+          key={`${realmSlug}/${characterName}/${mode}`}
           state={state}
           realmSlug={realmSlug}
           characterName={characterName}

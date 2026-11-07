@@ -16,6 +16,7 @@ const REQUEST_TIMEOUT_MS = 10_000;
 export interface BlizzardApiConfig {
   region: string;
   namespace: string;
+  namespaces?: Partial<Record<'retail' | 'classic', string>>;
   locale?: string;
 }
 
@@ -34,6 +35,7 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
   async findByRealmAndName(
     realm: RealmSlug,
     name: CharacterName,
+    mode: 'retail' | 'classic' = 'classic',
   ): Promise<Character | null> {
     const token = await this.tokenProvider.getAccessToken();
 
@@ -47,7 +49,7 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          namespace: this.config.namespace,
+          namespace: this.config.namespaces?.[mode] ?? this.config.namespace,
           locale: this.config.locale ?? 'en_US',
         },
         timeout: REQUEST_TIMEOUT_MS,

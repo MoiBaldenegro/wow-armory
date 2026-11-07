@@ -18,6 +18,9 @@ BLIZZARD_REDIRECT_URI=https://api.example.com/auth/callback
 CLIENT_URL=https://app.example.com
 CORS_ORIGINS=https://app.example.com
 VITE_SERVER_URI=https://api.example.com
+# Namespaces usados por el selector de juego
+BLIZZARD_NAMESPACE_CLASSIC=profile-classic-us
+BLIZZARD_NAMESPACE_RETAIL=profile-us
 ```
 
 3. Construye y arranca:
@@ -45,6 +48,11 @@ En producción son obligatorias `SESSION_SECRET`, las credenciales de Blizzard,
 `CLIENT_URL` HTTPS, `BLIZZARD_REDIRECT_URI` HTTPS y `REDIS_URL` cuando se usa
 `SESSION_STORE=redis`. `CORS_ORIGINS` debe contener el origin exacto del
 cliente. El endpoint de health es `GET /health`.
+
+El buscador acepta `mode=classic` (por defecto) o `mode=retail`. Ajusta
+`BLIZZARD_NAMESPACE_CLASSIC` y `BLIZZARD_NAMESPACE_RETAIL` según la región y
+los productos disponibles en tu cuenta de Blizzard; no uses un namespace de
+TBC como supuesto global, porque su disponibilidad puede variar.
 
 No uses valores ficticios de `.env.example` en producción ni publiques
 `SESSION_SECRET`, `BLIZZARD_CLIENT_SECRET` o `REDIS_URL`.

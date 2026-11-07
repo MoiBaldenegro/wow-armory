@@ -11,7 +11,11 @@ export const CHARACTER_NAME_PATTERN = /^[A-Za-z0-9'-]{1,64}$/;
 export class GetCharacter {
   constructor(private readonly repository: CharacterRepository) {}
 
-  async execute(realmSlug: string, characterName: string): Promise<Character> {
+  async execute(
+    realmSlug: string,
+    characterName: string,
+    mode: 'retail' | 'classic' = 'classic',
+  ): Promise<Character> {
     if (!REALM_SLUG_PATTERN.test(realmSlug)) {
       throw new CharacterValidation('Invalid realm slug.');
     }
@@ -23,6 +27,7 @@ export class GetCharacter {
     const character = await this.repository.findByRealmAndName(
       realmSlug,
       characterName,
+      mode,
     );
 
     if (character === null) {

@@ -52,6 +52,7 @@ interface ResolvedState {
 export function useCharacter(
   realmSlug: string,
   characterName: string,
+  mode: 'retail' | 'classic' = 'classic',
 ): UseCharacterResult {
   const { getCharacter } = useUseCases();
   const [attempt, setAttempt] = useState(0);
@@ -61,12 +62,17 @@ export function useCharacter(
   // them, so `/character/grobbulus/Billiemoi` must query `billiemoi`.
   const normalizedRealm = realmSlug.toLowerCase();
   const normalizedName = characterName.toLowerCase();
-  const requestKey = JSON.stringify([normalizedRealm, normalizedName, attempt]);
+  const requestKey = JSON.stringify([
+    normalizedRealm,
+    normalizedName,
+    mode,
+    attempt,
+  ]);
 
   useEffect(() => {
     let isCurrent = true;
 
-    getCharacter.execute(normalizedRealm, normalizedName).then(
+    getCharacter.execute(normalizedRealm, normalizedName, mode).then(
       (character) => {
         if (isCurrent) {
           setResolved({
@@ -86,7 +92,7 @@ export function useCharacter(
     return () => {
       isCurrent = false;
     };
-  }, [getCharacter, normalizedRealm, normalizedName, requestKey]);
+  }, [getCharacter, normalizedRealm, normalizedName, mode, requestKey]);
 
   const retry = useCallback(() => {
     setAttempt((current) => current + 1);

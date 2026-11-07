@@ -4,6 +4,7 @@ import { ErrorPage } from '../pages/ErrorPage';
 import { HomePage } from '../pages/HomePage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { ProfilePage } from '../pages/ProfilePage';
+import { GuidePage } from '../pages/GuidePage';
 
 export function AppRoutes() {
   return (
@@ -14,6 +15,7 @@ export function AppRoutes() {
         element={<CharacterProfilePage />}
       />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/guide" element={<GuidePage />} />
       <Route path="/error" element={<ErrorPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

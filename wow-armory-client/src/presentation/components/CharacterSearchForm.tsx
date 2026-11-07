@@ -10,6 +10,7 @@ import { searchErrorMessage } from '../utils/searchErrorMessages';
 interface CharacterSearchFormProps {
   initialRealm?: string;
   initialName?: string;
+  initialMode?: 'retail' | 'classic';
 }
 
 interface FieldErrors {
@@ -37,17 +38,20 @@ const inputClassName =
 export function CharacterSearchForm({
   initialRealm = '',
   initialName = '',
+  initialMode = 'classic',
 }: CharacterSearchFormProps) {
   const navigate = useNavigate();
   const id = useId();
   const realmId = `${id}-realm`;
   const nameId = `${id}-name`;
+  const modeId = `${id}-mode`;
   const realmErrorId = `${id}-realm-error`;
   const nameErrorId = `${id}-name-error`;
   const realmRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const [realm, setRealm] = useState(initialRealm);
   const [name, setName] = useState(initialName);
+  const [mode, setMode] = useState<'retail' | 'classic'>(initialMode);
   const [errors, setErrors] = useState<FieldErrors>({});
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -66,7 +70,7 @@ export function CharacterSearchForm({
     navigate(
       `/character/${encodeURIComponent(realmResult.value)}/${encodeURIComponent(
         nameResult.value,
-      )}`,
+      )}?mode=${mode}`,
     );
   };
 
@@ -76,7 +80,7 @@ export function CharacterSearchForm({
       aria-label="Buscar personaje"
       noValidate
       onSubmit={handleSubmit}
-      className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-start"
+      className="grid gap-4 sm:grid-cols-[1fr_1fr_0.8fr_auto] sm:items-start"
     >
       <div>
         <label
@@ -143,6 +147,25 @@ export function CharacterSearchForm({
             {errors.name}
           </p>
         )}
+      </div>
+      <div>
+        <label
+          htmlFor={modeId}
+          className="mb-1 block text-sm font-bold text-gray-900 dark:text-white"
+        >
+          Juego
+        </label>
+        <select
+          id={modeId}
+          value={mode}
+          onChange={(event) =>
+            setMode(event.target.value as 'retail' | 'classic')
+          }
+          className={inputClassName}
+        >
+          <option value="classic">Classic</option>
+          <option value="retail">Retail</option>
+        </select>
       </div>
       <button
         type="submit"

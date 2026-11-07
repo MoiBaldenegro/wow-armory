@@ -33,6 +33,16 @@ import { ClientCredentialsTokenProvider } from './ClientCredentialsTokenProvider
             'BLIZZARD_NAMESPACE',
             'profile-classic-us',
           ),
+          namespaces: {
+            classic: config.get<string>(
+              'BLIZZARD_NAMESPACE_CLASSIC',
+              config.get<string>('BLIZZARD_NAMESPACE', 'profile-classic-us'),
+            ),
+            retail: config.get<string>(
+              'BLIZZARD_NAMESPACE_RETAIL',
+              'profile-us',
+            ),
+          },
         }),
       inject: [CHARACTER_TOKEN_PROVIDER, ConfigService],
     },

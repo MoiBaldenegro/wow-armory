@@ -7,6 +7,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  Query,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -30,12 +31,15 @@ export class CharactersController {
   async findOne(
     @Param('realmSlug') realmSlug: string,
     @Param('characterName') characterName: string,
+    @Query('mode') mode: string | undefined,
     @Res({ passthrough: true }) response: Response,
   ): Promise<CharacterDto> {
     try {
+      const selectedMode = mode === 'retail' ? 'retail' : 'classic';
       const character = await this.getCharacter.execute(
         realmSlug,
         characterName,
+        selectedMode,
       );
 
       return toCharacterDto(character);
