@@ -34,4 +34,46 @@ describe('resolveServerUri', () => {
       resolveServerUri({ serverUri: 'ftp://example.com', isProduction: true }),
     ).toThrow(/valid http\(s\) URL/);
   });
+
+  it('rejects plain http URLs in production for non-loopback hosts', () => {
+    expect(() =>
+      resolveServerUri({
+        serverUri: 'http://api.example.com',
+        isProduction: true,
+      }),
+    ).toThrow(/must use https:\/\/ in production/);
+  });
+
+  it('does not treat hosts that merely start with localhost as loopback', () => {
+    expect(() =>
+      resolveServerUri({
+        serverUri: 'http://localhost.example.com',
+        isProduction: true,
+      }),
+    ).toThrow(/must use https:\/\/ in production/);
+  });
+
+  it('allows http for localhost and 127.0.0.1 in production', () => {
+    expect(
+      resolveServerUri({
+        serverUri: 'http://localhost:3000/',
+        isProduction: true,
+      }),
+    ).toBe('http://localhost:3000');
+    expect(
+      resolveServerUri({
+        serverUri: 'http://127.0.0.1:3000',
+        isProduction: true,
+      }),
+    ).toBe('http://127.0.0.1:3000');
+  });
+
+  it('keeps accepting http URLs outside production', () => {
+    expect(
+      resolveServerUri({
+        serverUri: 'http://api.example.com',
+        isProduction: false,
+      }),
+    ).toBe('http://api.example.com');
+  });
 });

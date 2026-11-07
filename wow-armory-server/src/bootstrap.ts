@@ -2,30 +2,37 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
+import { parseOrigins, TrustProxy } from './config/env.validation';
+import { AppLogger } from './shared/infrastructure/logging/app-logger';
+import {
+  createRequestLoggingMiddleware,
+  REQUEST_ID_HEADER,
+} from './shared/infrastructure/logging/request-logging.middleware';
 import { SESSION_COOKIE_NAME } from './shared/infrastructure/session.constants';
+import { buildSessionCookieOptions } from './shared/infrastructure/session/session-cookie';
+import {
+  SESSION_STORE,
+  SessionStoreHandle,
+} from './shared/infrastructure/session/session-store.factory';
 
-const DEFAULT_CORS_ORIGINS = 'http://localhost:5173';
-const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24;
-
-export function parseOrigins(value: string): string[] {
-  return value
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter((origin) => origin.length > 0);
-}
+export { parseOrigins };
 
 /**
  * Shared HTTP bootstrap used by `main.ts` and the e2e tests so both paths
- * configure sessions, cookies, proxy trust and CORS identically.
+ * configure logging, sessions, cookies, proxy trust and CORS identically.
  */
 export function configureApp(app: INestApplication): void {
   const config = app.get(ConfigService);
   const isProduction = config.get<string>('NODE_ENV') === 'production';
+  const express = app.getHttpAdapter().getInstance();
 
-  if (isProduction) {
-    app.getHttpAdapter().getInstance().set('trust proxy', 1);
-  }
+  express.set(
+    'trust proxy',
+    config.get<TrustProxy>('TRUST_PROXY', isProduction ? 1 : false),
+  );
+  express.disable('x-powered-by');
 
+  app.use(createRequestLoggingMiddleware(app.get(AppLogger)));
   app.use(cookieParser());
   app.use(
     session({
@@ -33,27 +40,21 @@ export function configureApp(app: INestApplication): void {
       resave: false,
       saveUninitialized: false,
       name: SESSION_COOKIE_NAME,
-      cookie: {
-        httpOnly: true,
-        secure: config.get<boolean>('COOKIE_SECURE', isProduction),
-        sameSite: config.get<'lax' | 'strict' | 'none'>(
-          'COOKIE_SAME_SITE',
-          'lax',
-        ),
-        domain: config.get<string>('COOKIE_DOMAIN') || undefined,
-        maxAge: SESSION_MAX_AGE_MS,
-        path: '/',
-      },
+      store: app.get<SessionStoreHandle>(SESSION_STORE).store,
+      cookie: buildSessionCookieOptions(config),
     }),
   );
 
   app.enableCors({
-    origin: parseOrigins(
-      config.get<string>('CORS_ORIGINS', DEFAULT_CORS_ORIGINS),
-    ),
+    origin: parseOrigins(config.get<string>('CORS_ORIGINS', '')),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    exposedHeaders: ['Retry-After'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Cookie',
+      REQUEST_ID_HEADER,
+    ],
+    exposedHeaders: ['Retry-After', REQUEST_ID_HEADER],
   });
 }

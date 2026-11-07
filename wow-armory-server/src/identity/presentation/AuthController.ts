@@ -1,11 +1,22 @@
-import { Controller, Get, HttpCode, Post, Query, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CookieOptions, Response } from 'express';
+import { Response } from 'express';
 import { CheckSession } from '../application/CheckSession';
 import { CompleteLogin, LoginErrorCode } from '../application/CompleteLogin';
 import { Logout } from '../application/Logout';
 import { StartLogin } from '../application/StartLogin';
+import { AllowedOriginGuard } from '../../shared/infrastructure/http/allowed-origin.guard';
+import { RateLimit } from '../../shared/infrastructure/rate-limit/rate-limit';
 import { SESSION_COOKIE_NAME } from '../../shared/infrastructure/session.constants';
+import { buildClearSessionCookieOptions } from '../../shared/infrastructure/session/session-cookie';
 import {
   CallbackQueryDto,
   LoginResponseDto,
@@ -25,11 +36,13 @@ export class AuthController {
   ) {}
 
   @Get('login')
+  @RateLimit('auth')
   async login(): Promise<LoginResponseDto> {
     return this.startLogin.execute();
   }
 
   @Get('callback')
+  @RateLimit('auth')
   async callback(
     @Query() query: CallbackQueryDto,
     @Res() response: Response,
@@ -45,31 +58,22 @@ export class AuthController {
   }
 
   @Get('session')
+  @RateLimit('public')
   async session(): Promise<SessionResponseDto> {
     return this.checkSession.execute();
   }
 
   @Post('logout')
+  @RateLimit('auth')
+  @UseGuards(AllowedOriginGuard)
   @HttpCode(204)
   async logout(@Res({ passthrough: true }) response: Response): Promise<void> {
     await this.logoutUseCase.execute();
 
-    const cookieOptions: CookieOptions = {
-      path: '/',
-      secure: this.config.get<boolean>('COOKIE_SECURE', false),
-      sameSite: this.config.get<'lax' | 'strict' | 'none'>(
-        'COOKIE_SAME_SITE',
-        'lax',
-      ),
-    };
-
-    const domain = this.config.get<string>('COOKIE_DOMAIN');
-
-    if (domain) {
-      cookieOptions.domain = domain;
-    }
-
-    response.clearCookie(SESSION_COOKIE_NAME, cookieOptions);
+    response.clearCookie(
+      SESSION_COOKIE_NAME,
+      buildClearSessionCookieOptions(this.config),
+    );
   }
 
   private buildClientUrl(authError?: LoginErrorCode): string {

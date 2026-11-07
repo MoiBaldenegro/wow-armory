@@ -18,6 +18,7 @@ import {
   InvalidCharacterName,
   InvalidRealmSlug,
 } from '../domain/errors/CharacterError';
+import { RateLimit } from '../../shared/infrastructure/rate-limit/rate-limit';
 import { CharacterDto, toCharacterDto } from './dto/character.dto';
 
 @Controller('characters')
@@ -25,6 +26,7 @@ export class CharactersController {
   constructor(private readonly getCharacter: GetCharacterUseCase) {}
 
   @Get(':realmSlug/:characterName')
+  @RateLimit('public')
   async findOne(
     @Param('realmSlug') realmSlug: string,
     @Param('characterName') characterName: string,

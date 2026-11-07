@@ -183,6 +183,79 @@ describe('Identity authentication (e2e)', () => {
       .expect({ authenticated: false });
   });
 
+  async function loggedInAgent() {
+    const agent = request.agent(app.getHttpServer());
+    const login = await agent.get('/auth/login').expect(200);
+    const state = stateFromLogin(login);
+
+    await agent
+      .get(`/auth/callback?code=good-code&state=${state}`)
+      .expect(302)
+      .expect('Location', CLIENT_URL);
+
+    return agent;
+  }
+
+  it('rejects POST /auth/logout from a disallowed Origin with 403 and keeps the session', async () => {
+    const agent = await loggedInAgent();
+
+    const response = await agent
+      .post('/auth/logout')
+      .set('Origin', 'https://evil.example.com')
+      .expect(403);
+
+    expect(response.headers['set-cookie']).toBeUndefined();
+
+    await agent
+      .get('/auth/session')
+      .expect(200)
+      .expect({
+        authenticated: true,
+        user: { battletag: 'Player#1234' },
+      });
+  });
+
+  it('logs out with 204 when the Origin is allow-listed', async () => {
+    const agent = await loggedInAgent();
+
+    const response = await agent
+      .post('/auth/logout')
+      .set('Origin', CLIENT_URL)
+      .expect(204);
+
+    expect(response.headers['access-control-allow-origin']).toBe(CLIENT_URL);
+    expect(response.headers['set-cookie']?.[0] ?? '').toContain('wow_session=');
+
+    await agent
+      .get('/auth/session')
+      .expect(200)
+      .expect({ authenticated: false });
+  });
+
+  it('logs out with 204 when no Origin header is sent', async () => {
+    const agent = await loggedInAgent();
+
+    await agent.post('/auth/logout').expect(204);
+
+    await agent
+      .get('/auth/session')
+      .expect(200)
+      .expect({ authenticated: false });
+  });
+
+  it('emits the session cookie as HttpOnly with the configured attributes', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/auth/login')
+      .expect(200);
+    const cookie = response.headers['set-cookie']?.[0] ?? '';
+
+    expect(cookie).toContain('wow_session=');
+    expect(cookie).toContain('HttpOnly');
+    expect(cookie).toContain('SameSite=Lax');
+    expect(cookie).toContain('Path=/');
+    expect(cookie).toMatch(/Expires=/);
+  });
+
   it('removes /auth/session-check and GET /auth/logout', async () => {
     await request(app.getHttpServer()).get('/auth/session-check').expect(404);
     await request(app.getHttpServer()).get('/auth/logout').expect(404);
