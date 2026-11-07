@@ -38,8 +38,7 @@ export class BlizzardCharacterDetailsAdapter {
     mode: 'retail' | 'classic',
   ): Promise<CharacterDetails> {
     const token = await this.tokenProvider.getAccessToken();
-    const namespace =
-      this.config.namespaces?.[mode] ?? this.config.namespace;
+    const namespace = this.config.namespaces?.[mode] ?? this.config.namespace;
     const baseUrl = `https://${this.config.region}.api.blizzard.com/profile/wow/character/${encodeURIComponent(realmSlug)}/${encodeURIComponent(characterName)}`;
     const params = { namespace, locale: this.config.locale };
     const [media, equipment] = await Promise.all([
@@ -49,7 +48,7 @@ export class BlizzardCharacterDetailsAdapter {
 
     return {
       media: this.mapMedia(media),
-      equipment: this.mapEquipment(equipment),
+      equipment: await this.mapEquipment(equipment, token),
     };
   }
 
@@ -81,37 +80,74 @@ export class BlizzardCharacterDetailsAdapter {
     });
   }
 
-  private mapEquipment(payload: unknown): CharacterEquipmentItem[] {
-    const items = Array.isArray((payload as RawRecord)?. equipped_items)
+  private async mapEquipment(
+    payload: unknown,
+    token: string,
+  ): Promise<CharacterEquipmentItem[]> {
+    const items = Array.isArray((payload as RawRecord)?.equipped_items)
       ? ((payload as RawRecord).equipped_items as unknown[])
       : [];
 
-    return items.flatMap((value) => {
-      const item = value as RawRecord;
-      const slot = (item.slot as RawRecord | undefined)?.name;
-      const name = (item.name as string | undefined) ?? undefined;
+    return (
+      await Promise.all(
+        items.map(async (value) => {
+          const item = value as RawRecord;
+          const slot = (item.slot as RawRecord | undefined)?.name;
+          const name = (item.name as string | undefined) ?? undefined;
 
-      if (typeof slot !== 'string' || typeof name !== 'string') {
-        return [];
-      }
+          if (typeof slot !== 'string' || typeof name !== 'string') {
+            return undefined;
+          }
 
-      const media = item.media as RawRecord | undefined;
-      const mediaKey = media?.key as RawRecord | undefined;
+          const media = item.media as RawRecord | undefined;
+          const mediaKey = media?.key as RawRecord | undefined;
+          let iconUrl: string | undefined;
 
-      return [
-        {
-          slot,
-          name,
-          level:
-            typeof (item.level as RawRecord | undefined)?.value === 'number'
-              ? ((item.level as RawRecord).value as number)
-              : undefined,
-          quality: (item.quality as RawRecord | undefined)?.name as
-            | string
-            | undefined,
-          iconUrl: mediaKey?.href as string | undefined,
-        },
-      ];
+          if (typeof mediaKey?.href === 'string') {
+            try {
+              iconUrl = await this.getMediaAsset(mediaKey.href, token);
+            } catch (error) {
+              if (!axios.isAxiosError(error)) {
+                throw error;
+              }
+            }
+          }
+
+          return {
+            slot,
+            name,
+            level:
+              typeof (item.level as RawRecord | undefined)?.value === 'number'
+                ? ((item.level as RawRecord).value as number)
+                : undefined,
+            quality: (item.quality as RawRecord | undefined)?.name as
+              | string
+              | undefined,
+            iconUrl,
+          };
+        }),
+      )
+    ).filter((item): item is CharacterEquipmentItem => item !== undefined);
+  }
+
+  private async getMediaAsset(
+    href: string,
+    token: string,
+  ): Promise<string | undefined> {
+    const response = await axios.get<unknown>(href, {
+      headers: { Authorization: `Bearer ${token}` },
+      timeout: 10_000,
     });
+    const assets = (response.data as RawRecord)?.assets;
+
+    if (!Array.isArray(assets)) {
+      return undefined;
+    }
+
+    const asset = assets.find(
+      (value) => typeof (value as RawRecord)?.value === 'string',
+    ) as RawRecord | undefined;
+
+    return typeof asset?.value === 'string' ? asset.value : undefined;
   }
 }

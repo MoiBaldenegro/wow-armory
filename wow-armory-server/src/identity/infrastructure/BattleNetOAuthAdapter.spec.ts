@@ -33,9 +33,7 @@ describe('BattleNetOAuthAdapter', () => {
       'https://api.example.com/auth/callback',
     );
     expect(url.searchParams.get('response_type')).toBe('code');
-    expect(url.searchParams.get('scope')).toBe(
-      'openid battletag wow.profile',
-    );
+    expect(url.searchParams.get('scope')).toBe('openid battletag wow.profile');
     expect(url.searchParams.get('state')).toBe('random-state');
     expect(url.toString()).not.toContain('super-secret');
   });

@@ -17,9 +17,7 @@ export interface WowProfile {
 }
 
 function record(value: unknown): RawRecord | undefined {
-  return typeof value === 'object' &&
-    value !== null &&
-    !Array.isArray(value)
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
     ? (value as RawRecord)
     : undefined;
 }
@@ -29,7 +27,9 @@ function stringValue(value: unknown): string | undefined {
 }
 
 function numberValue(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+  return typeof value === 'number' && Number.isFinite(value)
+    ? value
+    : undefined;
 }
 
 export class BattleNetWowProfileAdapter {
@@ -63,9 +63,7 @@ export class BattleNetWowProfileAdapter {
 
   private mapProfile(payload: unknown): WowProfile {
     const root = record(payload);
-    const accounts = Array.isArray(root?.wow_accounts)
-      ? root.wow_accounts
-      : [];
+    const accounts = Array.isArray(root?.wow_accounts) ? root.wow_accounts : [];
     const characters: WowProfileCharacter[] = [];
 
     for (const account of accounts) {

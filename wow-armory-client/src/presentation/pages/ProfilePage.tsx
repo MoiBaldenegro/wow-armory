@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -14,6 +15,13 @@ import {
 export function ProfilePage() {
   const { isAuthenticated, isLoading, error, user, login, logout } = useAuth();
   const profileState = useWowProfile(isAuthenticated);
+  const [hasCheckedSession, setHasCheckedSession] = useState(!isLoading);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setHasCheckedSession(true);
+    }
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-white">
@@ -48,7 +56,7 @@ export function ProfilePage() {
             </div>
           )}
 
-          {isLoading && !isAuthenticated ? (
+          {!hasCheckedSession ? (
             <p role="status" className="p-6 text-amber-50/75">
               Cargando perfil…
             </p>
