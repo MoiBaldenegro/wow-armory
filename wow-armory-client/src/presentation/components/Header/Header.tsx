@@ -6,7 +6,11 @@ import { Logo } from './Logo';
 import { SearchBar } from './SearchBar';
 import { useAuth } from '../../hooks/useAuth';
 
-export function Header() {
+interface HeaderProps {
+  showAuthAction?: boolean;
+}
+
+export function Header({ showAuthAction = true }: HeaderProps) {
   const [isCompact, setIsCompact] = useState(false);
   const [isActionPending, setIsActionPending] = useState(false);
   const { scrollY } = useScroll();
@@ -76,7 +80,8 @@ export function Header() {
           <div className="min-w-0 flex-1">
             <SearchBar isCompact={isCompact} />
           </div>
-          <button
+          {showAuthAction && (
+            <button
             type="button"
             onClick={handleAuthAction}
             disabled={isBusy}
@@ -90,7 +95,8 @@ export function Header() {
               aria-hidden="true"
             />
             <span className="hidden sm:inline">{authLabel}</span>
-          </button>
+            </button>
+          )}
           {isAuthenticated && (
             <Link
               to="/profile"

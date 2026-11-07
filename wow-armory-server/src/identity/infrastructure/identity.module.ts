@@ -15,7 +15,9 @@ import {
   TOKEN_PROVIDER,
 } from '../identity.tokens';
 import { AuthController } from '../presentation/AuthController';
+import { WowProfileController } from '../presentation/WowProfileController';
 import { BattleNetOAuthAdapter } from './BattleNetOAuthAdapter';
+import { BattleNetWowProfileAdapter } from './BattleNetWowProfileAdapter';
 import { ExpressSessionRepository } from './ExpressSessionRepository';
 import { SessionTokenProvider } from './SessionTokenProvider';
 
@@ -23,7 +25,7 @@ const DEFAULT_REFRESH_MARGIN_MS = 60_000;
 
 @Module({
   imports: [ConfigModule],
-  controllers: [AuthController],
+  controllers: [AuthController, WowProfileController],
   providers: [
     {
       provide: OAUTH_PROVIDER,
@@ -109,6 +111,20 @@ const DEFAULT_REFRESH_MARGIN_MS = 60_000;
           ),
         ),
       inject: [SESSION_REPOSITORY, RefreshToken, ConfigService],
+      scope: Scope.REQUEST,
+    },
+    {
+      provide: BattleNetWowProfileAdapter,
+      useFactory: (
+        tokenProvider: import('../domain/ports/TokenProvider').TokenProvider,
+        config: ConfigService,
+      ) =>
+        new BattleNetWowProfileAdapter(
+          tokenProvider,
+          config.get<string>('BLIZZARD_REGION', 'us'),
+          config.get<string>('BLIZZARD_LOCALE', 'en_US'),
+        ),
+      inject: [TOKEN_PROVIDER, ConfigService],
       scope: Scope.REQUEST,
     },
   ],

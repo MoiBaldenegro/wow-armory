@@ -11,13 +11,13 @@ export function HomePage() {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <div className="min-h-screen transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-gray-100 transition-colors duration-300 dark:bg-gray-900">
       <Header />
       <ThemeToggle />
-      <main className="container mx-auto px-4 py-8 pt-24">
+      <main className="container mx-auto w-full max-w-7xl flex-1 px-4 py-8 pt-24">
         <AuthErrorBanner />
         {isAuthenticated && (
-          <section className="mb-6 rounded-xl border-2 border-amber-400/60 bg-gray-900 p-5 text-white shadow-[6px_6px_0px_0px_rgba(245,158,11,0.35)]">
+          <section className="mx-auto mb-6 w-full max-w-5xl rounded-xl border-2 border-amber-400/60 bg-gray-900 p-5 text-white shadow-[6px_6px_0px_0px_rgba(245,158,11,0.35)]">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">
               Cuenta conectada
             </p>
@@ -44,7 +44,7 @@ export function HomePage() {
         )}
         <WarcraftCard
           aria-labelledby="home-title"
-          className="mx-auto max-w-3xl p-2 text-amber-50 sm:p-4"
+          className="mx-auto w-full max-w-4xl p-2 text-amber-50 sm:p-4"
         >
           <h1 id="home-title" className="text-3xl font-black text-amber-100">
             Busca un personaje

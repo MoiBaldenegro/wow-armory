@@ -6,23 +6,33 @@ import { getServerUri } from './config/env';
 import { AxiosHttpClient } from './http/AxiosHttpClient';
 import { HttpAuthRepository } from './http/HttpAuthRepository';
 import { HttpCharacterRepository } from './http/HttpCharacterRepository';
+import { HttpCharacterDetailsRepository } from './http/HttpCharacterDetailsRepository';
+import { HttpWowProfileRepository } from './http/HttpWowProfileRepository';
+import { GetWowProfile } from '../application/profile/GetWowProfile';
+import { GetCharacterDetails } from '../application/character/GetCharacterDetails';
 
 export interface UseCases {
   getCharacter: GetCharacter;
   checkSession: CheckSession;
   startLogin: StartLogin;
   logout: Logout;
+  getWowProfile?: GetWowProfile;
+  getCharacterDetails?: GetCharacterDetails;
 }
 
 export function createUseCases(): UseCases {
   const httpClient = new AxiosHttpClient(getServerUri());
   const characterRepository = new HttpCharacterRepository(httpClient);
+  const characterDetailsRepository = new HttpCharacterDetailsRepository(httpClient);
   const authRepository = new HttpAuthRepository(httpClient);
+  const wowProfileRepository = new HttpWowProfileRepository(httpClient);
 
   return {
     getCharacter: new GetCharacter(characterRepository),
     checkSession: new CheckSession(authRepository),
     startLogin: new StartLogin(authRepository),
     logout: new Logout(authRepository),
+    getWowProfile: new GetWowProfile(wowProfileRepository),
+    getCharacterDetails: new GetCharacterDetails(characterDetailsRepository),
   };
 }

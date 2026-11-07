@@ -21,10 +21,28 @@ import {
 } from '../domain/errors/CharacterError';
 import { RateLimit } from '../../shared/infrastructure/rate-limit/rate-limit';
 import { CharacterDto, toCharacterDto } from './dto/character.dto';
+import { BlizzardCharacterDetailsAdapter } from '../infrastructure/BlizzardCharacterDetailsAdapter';
 
 @Controller('characters')
 export class CharactersController {
-  constructor(private readonly getCharacter: GetCharacterUseCase) {}
+  constructor(
+    private readonly getCharacter: GetCharacterUseCase,
+    private readonly details: BlizzardCharacterDetailsAdapter,
+  ) {}
+
+  @Get(':realmSlug/:characterName/details')
+  @RateLimit('public')
+  async detailsForCharacter(
+    @Param('realmSlug') realmSlug: string,
+    @Param('characterName') characterName: string,
+    @Query('mode') mode: string | undefined,
+  ) {
+    return this.details.getDetails(
+      realmSlug,
+      characterName,
+      mode === 'retail' ? 'retail' : 'classic',
+    );
+  }
 
   @Get(':realmSlug/:characterName')
   @RateLimit('public')

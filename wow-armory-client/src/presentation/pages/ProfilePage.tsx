@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useWowProfile } from '../hooks/useWowProfile';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header/Header';
 import { ThemeToggle } from '../components/ThemeToggle';
@@ -12,10 +13,11 @@ import {
 
 export function ProfilePage() {
   const { isAuthenticated, isLoading, error, user, login, logout } = useAuth();
+  const profileState = useWowProfile(isAuthenticated);
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-white">
-      <Header />
+      <Header showAuthAction={false} />
       <ThemeToggle />
       <main className="container mx-auto max-w-5xl px-4 py-8 pt-24">
         <WarcraftCard className="p-2 sm:p-4">
@@ -78,6 +80,53 @@ export function ProfilePage() {
               >
                 {isLoading ? 'Cerrando sesión…' : 'Cerrar sesión'}
               </button>
+              <section className="mt-8 border-t border-amber-300/20 pt-6">
+                <h2 className="text-2xl font-black text-amber-100">
+                  Mis personajes
+                </h2>
+                {profileState.status === 'loading' && (
+                  <p className="mt-3 text-amber-50/70">
+                    Cargando personajes de Battle.net…
+                  </p>
+                )}
+                {profileState.status === 'error' && (
+                  <p role="alert" className="mt-3 text-red-200">
+                    No se pudo cargar la lista de personajes.
+                  </p>
+                )}
+                {profileState.status === 'success' &&
+                  (profileState.profile.characters.length > 0 ? (
+                    <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                      {profileState.profile.characters.map((character) => (
+                        <li
+                          key={`${character.realmSlug}-${character.name}`}
+                          className="rounded-lg border border-amber-300/30 bg-black/25 p-4"
+                        >
+                          <Link
+                            to={`/character/${encodeURIComponent(
+                              character.realmSlug,
+                            )}/${encodeURIComponent(
+                              character.name.toLowerCase(),
+                            )}`}
+                            className="font-bold text-amber-100 hover:text-amber-300"
+                          >
+                            {character.name}
+                          </Link>
+                          <p className="mt-1 text-sm text-amber-50/65">
+                            {character.realmName ?? character.realmSlug}
+                            {character.level !== undefined
+                              ? ` · Nivel ${character.level}`
+                              : ''}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-3 text-amber-50/70">
+                      Battle.net no devolvió personajes para esta cuenta.
+                    </p>
+                  ))}
+              </section>
             </WarcraftCardContent>
           ) : (
             <WarcraftCardContent>
