@@ -59,6 +59,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     void checkSession();
   }, [checkSession]);
 
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      // Coming back from the Battle.net redirect through the bfcache can
+      // restore a component that was left in its loading state.
+      if (event.persisted) {
+        setIsLoading(false);
+        void checkSession();
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [checkSession]);
+
   const login = useCallback(async () => {
     setIsLoading(true);
     setError(null);

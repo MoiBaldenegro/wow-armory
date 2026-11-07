@@ -39,18 +39,15 @@ export class BattleNetOAuthAdapter implements OAuthProvider {
 
   async exchangeCode(code: string): Promise<OAuthTokenSet> {
     try {
-      const response = await axios.post<RawTokenResponse>(TOKEN_URL, null, {
-        params: {
-          client_id: this.config.clientId,
-          client_secret: this.config.clientSecret,
-          code,
-          redirect_uri: this.config.redirectUri,
-          grant_type: 'authorization_code',
-        },
-        timeout: 10_000,
+      const data = await this.requestToken({
+        client_id: this.config.clientId,
+        client_secret: this.config.clientSecret,
+        code,
+        redirect_uri: this.config.redirectUri,
+        grant_type: 'authorization_code',
       });
 
-      return this.toTokenSet(response.data, TokenExchangeError);
+      return this.toTokenSet(data, TokenExchangeError);
     } catch (error) {
       if (error instanceof TokenExchangeError) {
         throw error;
@@ -61,23 +58,39 @@ export class BattleNetOAuthAdapter implements OAuthProvider {
 
   async refresh(refreshToken: RefreshToken): Promise<OAuthTokenSet> {
     try {
-      const response = await axios.post<RawTokenResponse>(TOKEN_URL, null, {
-        params: {
-          client_id: this.config.clientId,
-          client_secret: this.config.clientSecret,
-          refresh_token: refreshToken.value,
-          grant_type: 'refresh_token',
-        },
-        timeout: 10_000,
+      const data = await this.requestToken({
+        client_id: this.config.clientId,
+        client_secret: this.config.clientSecret,
+        refresh_token: refreshToken.value,
+        grant_type: 'refresh_token',
       });
 
-      return this.toTokenSet(response.data, TokenRefreshError);
+      return this.toTokenSet(data, TokenRefreshError);
     } catch (error) {
       if (error instanceof TokenRefreshError) {
         throw error;
       }
       throw new TokenRefreshError();
     }
+  }
+
+  private async requestToken(
+    values: Record<string, string>,
+  ): Promise<RawTokenResponse> {
+    // Credentials and codes must stay out of the URL so they never leak into
+    // proxy, CDN or APM access logs.
+    const response = await axios.post<RawTokenResponse>(
+      TOKEN_URL,
+      new URLSearchParams(values),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        timeout: 10_000,
+      },
+    );
+
+    return response.data;
   }
 
   private toTokenSet(

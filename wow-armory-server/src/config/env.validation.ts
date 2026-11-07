@@ -10,6 +10,8 @@ const PRODUCTION_REQUIRED = [
   'BLIZZARD_REDIRECT_URI',
 ] as const;
 
+const MIN_SESSION_SECRET_LENGTH = 32;
+
 function asString(value: unknown): string | undefined {
   if (value === undefined || value === null) {
     return undefined;
@@ -75,13 +77,28 @@ export function validateEnv(config: RawConfig): RawConfig {
 
   let sessionSecret = asString(config.SESSION_SECRET);
 
-  if (!sessionSecret) {
+  if (!sessionSecret && !isProduction) {
     sessionSecret = randomBytes(32).toString('hex');
-    if (!isProduction) {
-      console.warn(
-        '[config] SESSION_SECRET is not set; generated an ephemeral development secret. Sessions will be invalidated on restart.',
-      );
-    }
+    console.warn(
+      '[config] SESSION_SECRET is not set; generated an ephemeral development secret. Sessions will be invalidated on restart.',
+    );
+  }
+
+  if (
+    isProduction &&
+    sessionSecret &&
+    sessionSecret.length < MIN_SESSION_SECRET_LENGTH
+  ) {
+    errors.push(
+      `SESSION_SECRET must be at least ${MIN_SESSION_SECRET_LENGTH} characters when NODE_ENV=production`,
+    );
+  }
+
+  const cookieSecure = asBoolean(config.COOKIE_SECURE, isProduction);
+  const cookieSameSite = asSameSite(config.COOKIE_SAME_SITE);
+
+  if (cookieSameSite === 'none' && !cookieSecure) {
+    errors.push('COOKIE_SAME_SITE=none requires COOKIE_SECURE=true');
   }
 
   if (errors.length > 0) {
@@ -100,8 +117,8 @@ export function validateEnv(config: RawConfig): RawConfig {
       asString(config.BLIZZARD_NAMESPACE) ?? 'profile-classic-us',
     CLIENT_URL: asString(config.CLIENT_URL) ?? 'http://localhost:5173',
     CORS_ORIGINS: asString(config.CORS_ORIGINS) ?? 'http://localhost:5173',
-    COOKIE_SECURE: asBoolean(config.COOKIE_SECURE, isProduction),
-    COOKIE_SAME_SITE: asSameSite(config.COOKIE_SAME_SITE),
+    COOKIE_SECURE: cookieSecure,
+    COOKIE_SAME_SITE: cookieSameSite,
     COOKIE_DOMAIN: asString(config.COOKIE_DOMAIN),
     PORT: asPositiveNumber(config.PORT, 3000),
     TOKEN_REFRESH_MARGIN_MS: asPositiveNumber(

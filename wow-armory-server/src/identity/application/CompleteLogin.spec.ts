@@ -69,6 +69,21 @@ describe('CompleteLogin', () => {
     expect(sessionRepository.peekOAuthState()).toBeUndefined();
   });
 
+  it('maps non access_denied OAuth errors to auth_failed', async () => {
+    const { oauthProvider, sessionRepository, useCase } = setup();
+    await sessionRepository.saveOAuthState('state');
+
+    const result = await useCase.execute({
+      error: 'server_error',
+      state: 'state',
+    });
+
+    expect(result).toEqual({ ok: false, error: 'auth_failed' });
+    expect(oauthProvider.exchangedCodes).toHaveLength(0);
+    expect(sessionRepository.saveCalls).toBe(0);
+    expect(sessionRepository.peekOAuthState()).toBeUndefined();
+  });
+
   it('clears the session when the code exchange fails', async () => {
     const { oauthProvider, sessionRepository, useCase } = setup();
     await sessionRepository.saveOAuthState('state');

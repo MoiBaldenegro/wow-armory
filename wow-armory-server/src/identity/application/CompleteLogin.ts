@@ -1,6 +1,6 @@
 import { AuthSession } from '../domain/AuthSession';
 import { OAuthState } from '../domain/OAuthState';
-import { OAuthProvider } from '../domain/ports/OAuthProvider';
+import { OAuthProvider, OAuthTokenSet } from '../domain/ports/OAuthProvider';
 import { SessionRepository } from '../domain/ports/SessionRepository';
 
 export type LoginErrorCode = 'invalid_state' | 'access_denied' | 'auth_failed';
@@ -28,7 +28,11 @@ export class CompleteLogin {
     const expectedState = await this.sessionRepository.consumeOAuthState();
 
     if (input.error) {
-      return { ok: false, error: 'access_denied' };
+      return {
+        ok: false,
+        error:
+          input.error === 'access_denied' ? 'access_denied' : 'auth_failed',
+      };
     }
 
     if (
@@ -43,7 +47,7 @@ export class CompleteLogin {
       return { ok: false, error: 'auth_failed' };
     }
 
-    let tokenSet;
+    let tokenSet: OAuthTokenSet;
     try {
       tokenSet = await this.oauthProvider.exchangeCode(input.code);
     } catch {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
   access_denied:
@@ -33,15 +34,18 @@ function readAuthError(): string | null {
 }
 
 export function AuthErrorBanner() {
-  const [message, setMessage] = useState<string | null>(null);
+  const { error } = useAuth();
+  const [urlError, setUrlError] = useState<string | null>(null);
 
   useEffect(() => {
     const authError = readAuthError();
 
     if (authError) {
-      setMessage(authError);
+      setUrlError(authError);
     }
   }, []);
+
+  const message = urlError ?? error;
 
   if (!message) {
     return null;

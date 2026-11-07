@@ -112,5 +112,6 @@ const DEFAULT_REFRESH_MARGIN_MS = 60_000;
       scope: Scope.REQUEST,
     },
   ],
+  exports: [TOKEN_PROVIDER],
 })
 export class IdentityModule {}

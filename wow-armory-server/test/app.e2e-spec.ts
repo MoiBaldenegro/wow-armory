@@ -143,7 +143,10 @@ describe('Identity authentication (e2e)', () => {
       });
 
     const logout = await agent.post('/auth/logout').expect(204);
-    expect(logout.headers['set-cookie']?.[0]).toContain('wow_session=');
+    const logoutCookie = logout.headers['set-cookie']?.[0] ?? '';
+
+    expect(logoutCookie).toContain('wow_session=');
+    expect(logoutCookie).toMatch(/Expires=Thu, 01 Jan 1970|Max-Age=0/i);
 
     await agent
       .get('/auth/session')
