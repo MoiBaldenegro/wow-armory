@@ -306,6 +306,20 @@ describe('Characters (e2e)', () => {
     expect(response.headers['retry-after']).toBe('42');
   });
 
+  it('exposes Retry-After to allow-listed cross-origin clients on 429', async () => {
+    repository.result = new BlizzardRateLimited(42);
+
+    const response = await request(app.getHttpServer())
+      .get('/characters/grobbulus/billiemoi')
+      .set('Origin', CLIENT_URL)
+      .expect(429);
+
+    expect(response.headers['access-control-allow-origin']).toBe(CLIENT_URL);
+    expect(response.headers['access-control-expose-headers']).toContain(
+      'Retry-After',
+    );
+  });
+
   it('returns a generic 502 when Blizzard is unavailable', async () => {
     repository.result = new BlizzardUnavailable();
 
