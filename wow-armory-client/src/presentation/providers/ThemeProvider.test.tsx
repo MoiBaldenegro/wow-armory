@@ -1,7 +1,7 @@
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { ThemeToggle } from '../components/ThemeToggle';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import { useTheme } from '../hooks/useTheme';
 import { ThemeProvider } from './ThemeProvider';
 

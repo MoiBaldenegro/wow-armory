@@ -1,62 +1,85 @@
-import { AuthErrorBanner } from '../components/AuthErrorBanner';
-import { CharacterSearchForm } from '../components/CharacterSearchForm';
-import { Footer } from '../components/Footer';
-import { Header } from '../components/Header/Header';
-import { ThemeToggle } from '../components/ThemeToggle';
-import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router-dom';
-import { WarcraftCard } from '../components/warcraftcn/WarcraftCard';
+import { AuthErrorAlert } from '../components/feedback/AuthErrorAlert';
+import { PageShell } from '../components/layout/PageShell';
+import { CharacterSearchForm } from '../components/search/CharacterSearchForm';
+import { Icon } from '../components/ui/Icon';
+import { useAuth } from '../hooks/useAuth';
+
+const features = [
+  {
+    icon: 'shield' as const,
+    title: 'Ficha completa',
+    description:
+      'Nivel, raza, clase, especialización, nivel de objeto y última conexión.',
+  },
+  {
+    icon: 'users' as const,
+    title: 'Hermandad y equipo',
+    description:
+      'Consulta la hermandad, el rango y el equipamiento del personaje.',
+  },
+  {
+    icon: 'trophy' as const,
+    title: 'Logros recientes',
+    description:
+      'Revisa los logros más recientes y los puntos de logro acumulados.',
+  },
+];
 
 export function HomePage() {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-gray-100 transition-colors duration-300 dark:bg-gray-900">
-      <Header />
-      <ThemeToggle />
-      <main className="container mx-auto w-full max-w-7xl flex-1 px-4 py-8 pt-24">
-        <AuthErrorBanner />
-        {isAuthenticated && (
-          <section className="mx-auto mb-6 w-full max-w-5xl rounded-xl border-2 border-amber-400/60 bg-gray-900 p-5 text-white shadow-[6px_6px_0px_0px_rgba(245,158,11,0.35)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">
-              Cuenta conectada
-            </p>
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-black">
-                  {user?.battletag ??
-                    (user?.accountId
-                      ? `Cuenta ${user.accountId}`
-                      : 'Jugador de Battle.net')}
-                </h2>
-                <p className="mt-1 text-sm text-gray-300">
-                  Busca personajes y consulta su ficha de armory.
-                </p>
-              </div>
-              <Link
-                to="/profile"
-                className="rounded-lg bg-amber-400 px-4 py-2 font-bold text-gray-950 transition-colors hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200"
-              >
-                Ver mi perfil
-              </Link>
-            </div>
-          </section>
-        )}
-        <WarcraftCard
-          aria-labelledby="home-title"
-          className="mx-auto w-full max-w-4xl p-2 text-amber-50 sm:p-4"
-        >
-          <h1 id="home-title" className="text-3xl font-black text-amber-100">
+    <PageShell>
+      <AuthErrorAlert />
+
+      <section className="hero">
+        <div className="hero-copy">
+          <p className="eyebrow">Armory de Azeroth</p>
+          <h1 id="home-title" className="page-title">
             Busca un personaje
           </h1>
-          <p className="mt-3 mb-6 text-lg text-amber-50/75">
-            Escribe el reino y el nombre para ver su nivel, hermandad y logros
-            recientes.
+          <p className="lead">
+            Escribe el reino y el nombre para ver su nivel, hermandad,
+            equipamiento y logros recientes.
           </p>
+        </div>
+        <div className="card hero-panel">
           <CharacterSearchForm />
-        </WarcraftCard>
-      </main>
-      <Footer />
-    </div>
+        </div>
+      </section>
+
+      {isAuthenticated && (
+        <section className="card account-strip">
+          <div>
+            <p className="eyebrow">Cuenta conectada</p>
+            <h2>
+              {user?.battletag ??
+                (user?.accountId
+                  ? `Cuenta ${user.accountId}`
+                  : 'Jugador de Battle.net')}
+            </h2>
+            <p>
+              Busca personajes o revisa los personajes vinculados a tu cuenta.
+            </p>
+          </div>
+          <Link to="/profile" className="btn btn-primary">
+            Ver mi perfil
+          </Link>
+        </section>
+      )}
+
+      <div className="feature-grid">
+        {features.map((feature) => (
+          <section className="card feature" key={feature.title}>
+            <span className="feature-icon" aria-hidden="true">
+              <Icon name={feature.icon} size={20} />
+            </span>
+            <h2>{feature.title}</h2>
+            <p>{feature.description}</p>
+          </section>
+        ))}
+      </div>
+    </PageShell>
   );
 }

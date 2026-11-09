@@ -2,17 +2,17 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { SearchBar } from './SearchBar';
+import { QuickSearch } from './QuickSearch';
 
 function LocationDisplay() {
   const location = useLocation();
   return <p data-testid="location">{location.pathname}</p>;
 }
 
-function renderSearchBar() {
+function renderQuickSearch() {
   return render(
     <MemoryRouter initialEntries={['/']}>
-      <SearchBar isCompact={false} />
+      <QuickSearch isCompact={false} />
       <Routes>
         <Route path="/" element={null} />
         <Route path="*" element={<LocationDisplay />} />
@@ -21,9 +21,9 @@ function renderSearchBar() {
   );
 }
 
-describe('SearchBar', () => {
+describe('QuickSearch', () => {
   it('is a search form with a Spanish realm/name placeholder', () => {
-    renderSearchBar();
+    renderQuickSearch();
 
     expect(screen.getByRole('search')).toBeInTheDocument();
     expect(
@@ -33,7 +33,7 @@ describe('SearchBar', () => {
 
   it('navigates to the character route on Enter', async () => {
     const user = userEvent.setup();
-    renderSearchBar();
+    renderQuickSearch();
 
     await user.type(
       screen.getByRole('textbox', { name: 'Buscar personaje' }),
@@ -47,7 +47,7 @@ describe('SearchBar', () => {
 
   it('shows an accessible error and does not navigate on invalid input', async () => {
     const user = userEvent.setup();
-    renderSearchBar();
+    renderQuickSearch();
 
     const input = screen.getByRole('textbox', { name: 'Buscar personaje' });
     await user.type(input, 'billiemoi{Enter}');
@@ -62,7 +62,7 @@ describe('SearchBar', () => {
 
   it('reports invalid field formats inside the query', async () => {
     const user = userEvent.setup();
-    renderSearchBar();
+    renderQuickSearch();
 
     await user.type(
       screen.getByRole('textbox', { name: 'Buscar personaje' }),

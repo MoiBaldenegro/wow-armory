@@ -4,8 +4,9 @@ import {
   InvalidSearchInput,
   normalizeCharacterName,
   normalizeRealmSlug,
-} from '../../application/character/SearchCharacter';
-import { searchErrorMessage } from '../utils/searchErrorMessages';
+} from '../../../application/character/SearchCharacter';
+import { searchErrorMessage } from '../../utils/searchErrorMessages';
+import { FormField } from '../ui/FormField';
 
 interface CharacterSearchFormProps {
   initialRealm?: string;
@@ -31,9 +32,6 @@ function validate<T>(
     throw error;
   }
 }
-
-const inputClassName =
-  'w-full rounded-lg border-2 border-black bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:border-white dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 dark:focus-visible:ring-white aria-[invalid=true]:border-red-600 dark:aria-[invalid=true]:border-red-400';
 
 export function CharacterSearchForm({
   initialRealm = '',
@@ -80,15 +78,14 @@ export function CharacterSearchForm({
       aria-label="Buscar personaje"
       noValidate
       onSubmit={handleSubmit}
-      className="grid gap-4 sm:grid-cols-[1fr_1fr_0.8fr_auto] sm:items-start"
+      className="search-form"
     >
-      <div>
-        <label
-          htmlFor={realmId}
-          className="mb-1 block text-sm font-bold text-gray-900 dark:text-white"
-        >
-          Reino
-        </label>
+      <FormField
+        label="Reino"
+        htmlFor={realmId}
+        error={errors.realm}
+        errorId={realmErrorId}
+      >
         <input
           ref={realmRef}
           id={realmId}
@@ -104,24 +101,16 @@ export function CharacterSearchForm({
           }}
           aria-invalid={errors.realm !== undefined}
           aria-describedby={errors.realm !== undefined ? realmErrorId : undefined}
-          className={inputClassName}
+          className="input"
         />
-        {errors.realm !== undefined && (
-          <p
-            id={realmErrorId}
-            className="mt-1 text-sm font-medium text-red-700 dark:text-red-300"
-          >
-            {errors.realm}
-          </p>
-        )}
-      </div>
-      <div>
-        <label
-          htmlFor={nameId}
-          className="mb-1 block text-sm font-bold text-gray-900 dark:text-white"
-        >
-          Nombre
-        </label>
+      </FormField>
+
+      <FormField
+        label="Nombre"
+        htmlFor={nameId}
+        error={errors.name}
+        errorId={nameErrorId}
+      >
         <input
           ref={nameRef}
           id={nameId}
@@ -137,40 +126,25 @@ export function CharacterSearchForm({
           }}
           aria-invalid={errors.name !== undefined}
           aria-describedby={errors.name !== undefined ? nameErrorId : undefined}
-          className={inputClassName}
+          className="input"
         />
-        {errors.name !== undefined && (
-          <p
-            id={nameErrorId}
-            className="mt-1 text-sm font-medium text-red-700 dark:text-red-300"
-          >
-            {errors.name}
-          </p>
-        )}
-      </div>
-      <div>
-        <label
-          htmlFor={modeId}
-          className="mb-1 block text-sm font-bold text-gray-900 dark:text-white"
-        >
-          Juego
-        </label>
+      </FormField>
+
+      <FormField label="Juego" htmlFor={modeId}>
         <select
           id={modeId}
           value={mode}
           onChange={(event) =>
             setMode(event.target.value as 'retail' | 'classic')
           }
-          className={inputClassName}
+          className="select"
         >
           <option value="classic">Classic</option>
           <option value="retail">Retail</option>
         </select>
-      </div>
-      <button
-        type="submit"
-        className="rounded-lg border-2 border-black bg-gray-900 px-4 py-2 font-bold text-white shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black sm:mt-6 dark:border-white dark:bg-white dark:text-gray-900 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255)] dark:hover:bg-gray-200 dark:focus-visible:ring-white"
-      >
+      </FormField>
+
+      <button type="submit" className="btn btn-primary search-submit">
         Buscar
       </button>
     </form>
