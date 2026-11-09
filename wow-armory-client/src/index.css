@@ -706,7 +706,8 @@ button:disabled {
   box-shadow: var(--shadow-sm);
 }
 
-.character-hero-body h1 {
+.character-hero-body h1,
+.character-hero-body h2 {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 780;
   letter-spacing: -0.03em;
@@ -716,6 +717,10 @@ button:disabled {
 
 .character-empty {
   margin-top: 18px;
+}
+
+.featured-profile {
+  margin-top: 40px;
 }
 
 .character-summary {

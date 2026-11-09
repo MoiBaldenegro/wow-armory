@@ -2,13 +2,18 @@ import type { Character } from '../../../domain/character/Character';
 
 interface CharacterHeroProps {
   character: Character;
+  headingLevel?: 1 | 2;
 }
 
 function initialsOf(name: string): string {
   return name.trim().slice(0, 2).toUpperCase() || '?';
 }
 
-export function CharacterHero({ character }: CharacterHeroProps) {
+export function CharacterHero({
+  character,
+  headingLevel = 1,
+}: CharacterHeroProps) {
+  const Heading = headingLevel === 2 ? 'h2' : 'h1';
   const summary = [
     character.race,
     character.specialization,
@@ -26,7 +31,7 @@ export function CharacterHero({ character }: CharacterHeroProps) {
         </div>
         <div>
           <p className="eyebrow">Ficha de personaje</p>
-          <h1 id="character-name">{character.name}</h1>
+          <Heading id="character-name">{character.name}</Heading>
           <p className="character-summary">{summary}</p>
         </div>
       </div>

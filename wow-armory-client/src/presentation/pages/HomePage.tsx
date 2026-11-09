@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FeaturedCharacter } from '../components/character/FeaturedCharacter';
 import { AuthErrorAlert } from '../components/feedback/AuthErrorAlert';
 import { PageShell } from '../components/layout/PageShell';
 import { CharacterSearchForm } from '../components/search/CharacterSearchForm';
@@ -48,6 +49,8 @@ export function HomePage() {
           <CharacterSearchForm />
         </div>
       </section>
+
+      <FeaturedCharacter />
 
       {isAuthenticated && (
         <section className="card account-strip">

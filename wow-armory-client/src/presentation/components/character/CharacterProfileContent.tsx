@@ -13,6 +13,7 @@ interface CharacterProfileContentProps {
   characterName: string;
   retry: () => void;
   details: CharacterDetails | null;
+  headingLevel?: 1 | 2;
 }
 
 function CharacterMedia({ media }: { media: CharacterDetails['media'] }) {
@@ -41,6 +42,7 @@ export function CharacterProfileContent({
   characterName,
   retry,
   details,
+  headingLevel = 1,
 }: CharacterProfileContentProps) {
   const retryButton = (
     <button type="button" onClick={retry} className="btn btn-primary">
@@ -60,7 +62,10 @@ export function CharacterProfileContent({
     case 'success':
       return (
         <article className="fade-in">
-          <CharacterHero character={state.character} />
+          <CharacterHero
+            character={state.character}
+            headingLevel={headingLevel}
+          />
           {details?.media.length ? (
             <CharacterMedia media={details.media} />
           ) : null}
