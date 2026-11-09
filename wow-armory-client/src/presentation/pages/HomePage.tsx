@@ -4,6 +4,7 @@ import { AuthErrorAlert } from '../components/feedback/AuthErrorAlert';
 import { PageShell } from '../components/layout/PageShell';
 import { CharacterSearchForm } from '../components/search/CharacterSearchForm';
 import { Icon } from '../components/ui/Icon';
+import { FEATURED_CHARACTER } from '../data/featuredCharacter';
 import { useAuth } from '../hooks/useAuth';
 
 const features = [
@@ -46,7 +47,11 @@ export function HomePage() {
           </p>
         </div>
         <div className="card hero-panel">
-          <CharacterSearchForm />
+          <CharacterSearchForm
+            initialRealm={FEATURED_CHARACTER.realmName}
+            initialName={FEATURED_CHARACTER.displayName}
+            initialMode={FEATURED_CHARACTER.mode}
+          />
         </div>
       </section>
 

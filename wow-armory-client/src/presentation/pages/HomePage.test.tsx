@@ -63,8 +63,9 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('search', { name: 'Buscar personaje' }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Reino')).toBeInTheDocument();
-    expect(screen.getByLabelText('Nombre')).toBeInTheDocument();
+    expect(screen.getByLabelText('Reino')).toHaveValue('Grobbulus');
+    expect(screen.getByLabelText('Nombre')).toHaveValue('Billiemoi');
+    expect(screen.getByLabelText('Juego')).toHaveValue('classic');
     expect(
       await screen.findByRole('heading', { name: 'Billiemoi', level: 2 }),
     ).toBeInTheDocument();
