@@ -8,11 +8,11 @@ export function ProfileHeader() {
           <Icon name="user" size={30} />
         </div>
         <div>
-          <p className="eyebrow">Battle.net conectado</p>
-          <h1 className="page-title">Mi perfil</h1>
+          <p className="mx-kicker">Battle.net conectado</p>
+          <h1 className="mx-heading mx-heading--display">Mi perfil</h1>
         </div>
       </div>
-      <p className="lead">
+      <p className="mx-text mx-text--lead">
         Tu identidad de Battle.net aparece aquí después del inicio de sesión.
         Tus personajes se consultan desde tu cuenta.
       </p>

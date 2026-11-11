@@ -93,7 +93,7 @@ export function CharacterSearchForm({
       aria-label="Buscar personaje"
       noValidate
       onSubmit={handleSubmit}
-      className="search-form"
+      className="mx-form-row search-form"
     >
       <FormField
         label="Reino"
@@ -116,7 +116,7 @@ export function CharacterSearchForm({
           }}
           aria-invalid={errors.realm !== undefined}
           aria-describedby={errors.realm !== undefined ? realmErrorId : undefined}
-          className="input"
+          className="mx-input"
           list={realmOptions.length ? realmListId : undefined}
         />
         {realmOptions.length > 0 && (
@@ -149,7 +149,7 @@ export function CharacterSearchForm({
           }}
           aria-invalid={errors.name !== undefined}
           aria-describedby={errors.name !== undefined ? nameErrorId : undefined}
-          className="input"
+          className="mx-input"
         />
       </FormField>
 
@@ -160,14 +160,14 @@ export function CharacterSearchForm({
           onChange={(event) =>
             setMode(event.target.value as 'retail' | 'classic')
           }
-          className="select"
+          className="mx-input mx-select"
         >
           <option value="classic">Classic</option>
           <option value="retail">Retail</option>
         </select>
       </FormField>
 
-      <button type="submit" className="btn btn-primary search-submit">
+      <button type="submit" className="mx-button mx-button--accent search-submit">
         Buscar
       </button>
     </form>

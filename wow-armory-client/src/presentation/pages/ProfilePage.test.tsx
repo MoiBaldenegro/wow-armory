@@ -4,20 +4,17 @@ import { describe, expect, it } from 'vitest';
 import type { UseCases } from '../../infrastructure/container';
 import { createTestDependencies } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
 import { UseCasesProvider } from '../providers/UseCasesProvider';
 import { ProfilePage } from './ProfilePage';
 
 function renderProfile(useCases: UseCases) {
   return render(
     <UseCasesProvider useCases={useCases}>
-      <ThemeProvider>
-        <AuthProvider>
-          <MemoryRouter>
-            <ProfilePage />
-          </MemoryRouter>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <MemoryRouter>
+          <ProfilePage />
+        </MemoryRouter>
+      </AuthProvider>
     </UseCasesProvider>,
   );
 }

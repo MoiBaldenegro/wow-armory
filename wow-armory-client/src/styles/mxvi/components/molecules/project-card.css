@@ -1,0 +1,41 @@
+/* MXVI — project card. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/cards. */
+
+.mx-project-card { position: relative; display: grid; align-content: start; gap: calc(var(--gap-card) * 0.75); }
+
+.mx-project-card__name {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--gap-card);
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.mx-project-card__link { color: var(--color-text); text-decoration: none; overflow-wrap: anywhere; }
+
+.mx-project-card__link::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-square); }
+
+.mx-project-card__arrow {
+  color: var(--color-accent-hover);
+  font-weight: 600;
+  transition: transform var(--transition-default);
+}
+
+.mx-project-card__description { margin: 0; color: var(--color-text-secondary); font-size: 0.95rem; line-height: 1.6; }
+
+.mx-project-card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.mx-project-card:hover .mx-project-card__link { color: var(--color-accent-hover); }
+
+.mx-project-card:hover .mx-project-card__arrow { transform: translate(2px, -2px); }
+
+.mx-project-card:focus-within { border-color: var(--color-border-strong); }
+
+.mx-project-card__link:focus-visible { outline: 2px solid var(--color-accent-hover); outline-offset: 4px; }

@@ -60,7 +60,7 @@ export function CharacterProfileContent({
   compact = false,
 }: CharacterProfileContentProps) {
   const retryButton = (
-    <button type="button" onClick={retry} className="btn btn-primary">
+    <button type="button" onClick={retry} className="mx-button mx-button--accent">
       Reintentar
     </button>
   );
@@ -68,8 +68,8 @@ export function CharacterProfileContent({
   switch (state.status) {
     case 'loading':
       return (
-        <div className="card card-pad">
-          <p role="status" className="status-text">
+        <div className="mx-card">
+          <p role="status" className="mx-status">
             Cargando personaje…
           </p>
         </div>

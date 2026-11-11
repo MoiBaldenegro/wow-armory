@@ -21,10 +21,10 @@ const sheetItems = [
 export function GuidePage() {
   return (
     <PageShell>
-      <section className="card guide-hero fade-in">
-        <p className="eyebrow">Guía de Armory</p>
-        <h1 className="page-title">Encuentra al héroe correcto</h1>
-        <p className="lead">
+      <section className="mx-card guide-hero fade-in">
+        <p className="mx-kicker">Guía de Armory</p>
+        <h1 className="mx-heading mx-heading--display">Encuentra al héroe correcto</h1>
+        <p className="mx-text mx-text--lead">
           Usa el slug del reino y el nombre exacto del personaje. Elige Classic
           o Retail para consultar el catálogo correspondiente.
         </p>
@@ -58,10 +58,10 @@ export function GuidePage() {
         </GuideCard>
       </div>
 
-      <section className="card card-pad page-section">
+      <section className="mx-card page-section">
         <div className="guide-card-header">
           <Icon name="book" size={20} />
-          <h2 className="section-title">Qué muestra la ficha</h2>
+          <h2 className="mx-card__title">Qué muestra la ficha</h2>
         </div>
         <ul className="checklist">
           {sheetItems.map((item) => (
@@ -69,7 +69,7 @@ export function GuidePage() {
           ))}
         </ul>
         <div className="guide-cta">
-          <Link to="/" className="btn btn-primary">
+          <Link to="/" className="mx-button mx-button--accent">
             Buscar un personaje
           </Link>
         </div>
@@ -88,7 +88,7 @@ function GuideCard({
   children: ReactNode;
 }) {
   return (
-    <section className="card guide-card">
+    <section className="mx-card guide-card">
       <div className="guide-card-header">
         <Icon name={icon} size={20} />
         <h2>{title}</h2>

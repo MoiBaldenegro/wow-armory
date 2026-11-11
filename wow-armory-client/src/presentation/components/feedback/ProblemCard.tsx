@@ -10,12 +10,12 @@ interface ProblemCardProps {
 
 export function ProblemCard({ title, message, children }: ProblemCardProps) {
   return (
-    <div className="card problem-card fade-in">
+    <div className="mx-card problem-card fade-in">
       <h1>{title}</h1>
       <ErrorAlert>{message}</ErrorAlert>
       <div>{children}</div>
       <div className="problem-actions">
-        <Link to="/" className="text-link">
+        <Link to="/" className="mx-link">
           Volver al inicio
         </Link>
       </div>

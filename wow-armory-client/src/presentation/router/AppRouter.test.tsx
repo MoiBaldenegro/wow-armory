@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import type { Character } from '../../domain/character/Character';
 import { createTestDependencies } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
 import { UseCasesProvider } from '../providers/UseCasesProvider';
 import { AppRouter } from './AppRouter';
 
@@ -14,11 +13,9 @@ function renderAt(path: string, character: Character | null = null) {
 
   return render(
     <UseCasesProvider useCases={useCases}>
-      <ThemeProvider>
-        <AuthProvider>
-          <AppRouter />
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
     </UseCasesProvider>,
   );
 }

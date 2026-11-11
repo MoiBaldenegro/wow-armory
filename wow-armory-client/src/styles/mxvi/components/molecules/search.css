@@ -1,0 +1,96 @@
+/* MXVI — search. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/search. */
+
+.mx-search { position: relative; }
+
+.mx-search__form { margin: 0; }
+
+.mx-search__input {
+  width: 240px;
+  padding: 10px 42px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.95rem;
+  transition: var(--transition-default);
+}
+
+.mx-search__input::placeholder { color: var(--color-text-secondary); }
+
+.mx-search__input::-webkit-search-cancel-button,
+.mx-search__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.mx-search--block .mx-search__input { width: 100%; }
+
+.mx-search__icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+  transform: translateY(-50%);
+  transform-origin: 40% 40%;
+  pointer-events: none;
+  transition: var(--transition-default);
+}
+
+.mx-search:focus-within .mx-search__icon { color: var(--color-accent); transform: translateY(-50%) scale(1.12); }
+
+.mx-search:focus-within .mx-search__input {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-glow);
+}
+
+.mx-search__form:has(.mx-search__input:not(:placeholder-shown)) .mx-search__icon { color: var(--color-accent); }
+
+.mx-search:focus-within .mx-search__form:has(.mx-search__input:not(:placeholder-shown)) .mx-search__icon {
+  animation: mx-search-scan 1.6s ease-in-out infinite;
+}
+
+.mx-search__clear {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-square);
+  background: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-default);
+}
+
+.mx-search.is-filled .mx-search__clear { visibility: visible; opacity: 1; pointer-events: auto; }
+
+.mx-search__clear:hover { color: var(--color-accent); }
+
+@keyframes mx-search-scan {
+  0%, 100% { transform: translate(0, -50%) rotate(0deg) scale(1.12); }
+  33% { transform: translate(3px, -50%) rotate(-10deg) scale(1.12); }
+  66% { transform: translate(-2px, -50%) rotate(10deg) scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mx-search__icon, .mx-search:focus-within .mx-search__form:has(.mx-search__input:not(:placeholder-shown)) .mx-search__icon {
+    animation: none;
+    transition: none;
+  }
+}

@@ -41,18 +41,18 @@ export function LeaderboardsPage() {
   return (
     <PageShell>
       <header className="page-section">
-        <p className="eyebrow">JcJ</p>
-        <h1 className="page-title">Clasificación de arena</h1>
-        <p className="lead">Top 100 de la temporada actual según Blizzard.</p>
+        <p className="mx-kicker">JcJ</p>
+        <h1 className="mx-heading mx-heading--display">Clasificación de arena</h1>
+        <p className="mx-text mx-text--lead">Top 100 de la temporada actual según Blizzard.</p>
       </header>
 
-      <div className="card card-pad leaderboard-controls">
-        <div className="segmented" role="group" aria-label="Modalidad">
+      <div className="mx-card leaderboard-controls">
+        <div className="mx-segmented" role="group" aria-label="Modalidad">
           {brackets.map((item) => (
             <button
               key={item}
               type="button"
-              className="segmented-option"
+              className="mx-segmented__option"
               aria-pressed={item === bracket}
               onClick={() => update({ bracket: item })}
             >
@@ -60,11 +60,11 @@ export function LeaderboardsPage() {
             </button>
           ))}
         </div>
-        <div className="field">
-          <label htmlFor={modeId}>Juego</label>
+        <div className="mx-field">
+          <label className="mx-field__label" htmlFor={modeId}>Juego</label>
           <select
             id={modeId}
-            className="select"
+            className="mx-input mx-select"
             value={mode}
             onChange={(event) =>
               update({ mode: event.target.value, bracket: undefined, region: undefined })
@@ -75,12 +75,12 @@ export function LeaderboardsPage() {
           </select>
         </div>
         {state.status === 'success' && state.data.pvpRegions.length > 1 && (
-          <div className="segmented" role="group" aria-label="Región JcJ">
+          <div className="mx-segmented" role="group" aria-label="Región JcJ">
             {state.data.pvpRegions.map((id) => (
               <button
                 key={id}
                 type="button"
-                className="segmented-option"
+                className="mx-segmented__option"
                 aria-pressed={id === state.data.pvpRegionId}
                 onClick={() => update({ region: String(id) })}
               >
@@ -91,18 +91,18 @@ export function LeaderboardsPage() {
         )}
       </div>
 
-      <section className="card card-pad" aria-labelledby="leaderboard-title">
-        <h2 id="leaderboard-title" className="section-title">
+      <section className="mx-card" aria-labelledby="leaderboard-title">
+        <h2 id="leaderboard-title" className="mx-card__title">
           {bracketLabel(bracket)}
           {state.status === 'success' ? ` · Temporada ${state.data.seasonId}` : ''}
         </h2>
         {state.status === 'loading' && (
-          <p role="status" className="status-text">
+          <p role="status" className="mx-status">
             Cargando clasificación…
           </p>
         )}
         {state.status === 'empty' && (
-          <p className="empty-state">No hay clasificación disponible para esta modalidad.</p>
+          <p className="mx-text mx-text--secondary">No hay clasificación disponible para esta modalidad.</p>
         )}
         {(state.status === 'error' || state.status === 'rate-limited') && (
           <div className="armory-error">
@@ -111,15 +111,15 @@ export function LeaderboardsPage() {
                 ? 'Demasiadas consultas a Blizzard. Inténtalo en unos segundos.'
                 : 'No se pudo cargar la clasificación.'}
             </ErrorAlert>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={state.retry}>
+            <button type="button" className="mx-button mx-button--sm" onClick={state.retry}>
               Reintentar
             </button>
           </div>
         )}
         {state.status === 'success' && (
-          <div className="table-wrap">
-            <table className="data-table">
-              <caption className="sr-only">Clasificación {bracketLabel(bracket)}</caption>
+          <div className="mx-table-wrap">
+            <table className="mx-table">
+              <caption className="mx-visually-hidden">Clasificación {bracketLabel(bracket)}</caption>
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -137,7 +137,7 @@ export function LeaderboardsPage() {
                     <th scope="row">
                       {entry.realmSlug ? (
                         <Link
-                          className="text-link"
+                          className="mx-link"
                           to={`/character/${encodeURIComponent(entry.realmSlug)}/${encodeURIComponent(
                             entry.name.toLowerCase(),
                           )}?mode=${mode}`}
@@ -147,7 +147,7 @@ export function LeaderboardsPage() {
                       ) : (
                         entry.name
                       )}
-                      {entry.realmSlug && <span className="muted"> · {entry.realmSlug}</span>}
+                      {entry.realmSlug && <span className="mx-text--secondary"> · {entry.realmSlug}</span>}
                     </th>
                     <td>{entry.rating ?? '—'}</td>
                     <td>

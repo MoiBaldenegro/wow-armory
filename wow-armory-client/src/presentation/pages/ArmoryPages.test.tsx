@@ -12,7 +12,6 @@ import {
   withArmory,
 } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
 import { UseCasesProvider } from '../providers/UseCasesProvider';
 import { AppRoutes } from '../router/AppRouter';
 
@@ -53,13 +52,11 @@ const details: CharacterDetails = {
 function renderAt(path: string, useCases: UseCases) {
   return render(
     <UseCasesProvider useCases={useCases}>
-      <ThemeProvider>
-        <AuthProvider>
-          <MemoryRouter initialEntries={[path]}>
-            <AppRoutes />
-          </MemoryRouter>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[path]}>
+          <AppRoutes />
+        </MemoryRouter>
+      </AuthProvider>
     </UseCasesProvider>,
   );
 }

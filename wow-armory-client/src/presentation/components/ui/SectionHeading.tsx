@@ -9,7 +9,7 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ id, icon, children }: SectionHeadingProps) {
   return (
-    <h2 id={id} className="section-title section-heading">
+    <h2 id={id} className="mx-card__title">
       {icon && <Icon name={icon} size={19} />}
       {children}
     </h2>

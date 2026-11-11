@@ -1,0 +1,94 @@
+/* MXVI — buttons. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/atoms/buttons. */
+
+.mx-button {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--gap-card) / 2);
+  padding: calc(var(--gap-card) / 2) var(--gap-card);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-square);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--transition-default), background var(--transition-default), box-shadow var(--transition-default), color var(--transition-default);
+}
+
+.mx-button:hover, .mx-button:focus-visible { border-color: var(--color-accent); background: var(--color-surface); }
+
+.mx-button__icon { width: 1.1em; height: 1.1em; fill: currentColor; flex: none; }
+
+.mx-button--accent {
+  padding: calc(var(--gap-card) * 0.75) calc(var(--gap-card) * 1.5);
+  border: 2px solid var(--color-accent);
+  background: var(--color-background);
+}
+
+.mx-button--accent:hover, .mx-button--accent:focus-visible {
+  border-color: var(--color-accent-hover);
+  background: var(--color-background);
+  box-shadow: 0 0 calc(var(--gap-card) * 1.5) var(--color-glow);
+}
+
+.mx-button--surface {
+  padding: var(--gap-card);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  font-weight: 400;
+}
+
+.mx-button--surface:hover, .mx-button--surface:focus-visible {
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+}
+
+.mx-button--surface[disabled] {
+  color: var(--color-text-secondary);
+  cursor: default;
+  border-color: var(--color-border);
+}
+
+.mx-button--quiet {
+  padding: 10px 18px;
+  border-color: var(--color-border);
+  color: var(--color-accent);
+  font-size: 0.8333rem;
+  font-weight: 400;
+}
+
+.mx-button--quiet:hover, .mx-button--quiet:focus-visible { border-color: var(--color-accent); background: transparent; }
+
+.mx-button--sm {
+  padding: calc(var(--gap-card) / 2) var(--gap-card);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.mx-button--sm:hover, .mx-button--sm:focus-visible { background: transparent; color: var(--color-accent-hover); }
+
+.mx-button--cta, .mx-button--cta-outline {
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 400;
+  transition: background var(--transition-default), color var(--transition-default);
+}
+
+.mx-button--cta { border-color: var(--color-promo-cta); background: var(--color-promo-cta); }
+
+.mx-button--cta:hover, .mx-button--cta:focus-visible {
+  border-color: var(--color-promo-cta-hover);
+  background: var(--color-promo-cta-hover);
+}
+
+.mx-button--cta-outline { border-color: var(--color-promo-link); color: var(--color-promo-link); }
+
+.mx-button--cta-outline:hover, .mx-button--cta-outline:focus-visible {
+  border-color: var(--color-promo-cta);
+  background: var(--color-promo-cta);
+  color: var(--color-text);
+}

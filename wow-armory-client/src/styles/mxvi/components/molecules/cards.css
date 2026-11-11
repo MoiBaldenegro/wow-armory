@@ -1,0 +1,54 @@
+/* MXVI — cards. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/cards. */
+
+.mx-card {
+  min-width: 0;
+  padding: calc(var(--gap-card) * 1.5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card-rest);
+  transition: border-color var(--transition-default), box-shadow var(--transition-default), transform var(--transition-default);
+}
+
+.mx-card--flat { box-shadow: none; }
+
+.mx-card--interactive:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-card-hover); }
+
+.mx-stat {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: calc(var(--gap-card) / 3);
+  padding: calc(var(--gap-card) * 1.5) var(--gap-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.mx-stat__value {
+  color: var(--color-accent);
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.mx-stat__label { color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.4; }
+
+.mx-group-card { display: grid; align-content: start; gap: var(--gap-card); }
+
+.mx-group-card__title { margin: 0; color: var(--color-text); font-size: 1.05rem; font-weight: 700; line-height: 1.35; }
+
+.mx-group-card__title--accent { color: var(--color-accent-hover); }
+
+.mx-entry-list { display: grid; gap: var(--gap-card); margin: 0; padding: 0; list-style: none; }
+
+.mx-entry-list li { display: grid; gap: calc(var(--gap-card) / 4); }
+
+.mx-entry-list li + li { padding-top: var(--gap-card); border-top: 1px solid var(--color-border); }
+
+.mx-entry-list__name { color: var(--color-text); font-weight: 600; line-height: 1.45; }
+
+.mx-entry-list__meta { color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.5; }

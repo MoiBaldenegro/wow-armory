@@ -1,0 +1,45 @@
+/* MXVI — brand tile link. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+.mx-brand-tile__body {
+  position: relative;
+  z-index: 5;
+  padding: calc(var(--gap-card) * 4) calc(var(--gap-card) * 1.5) var(--gap-card);
+}
+
+/* Rich tile: content instead of a logo; the logo stays as a faint backdrop. */
+.mx-brand-tile--rich .mx-brand-tile__title { color: var(--color-text); }
+.mx-brand-tile--rich .mx-brand-tile__icon { opacity: 0.16; pointer-events: none; }
+.mx-brand-tile__loading { margin: 0; color: var(--color-text-secondary); font-family: var(--font-mono); }
+
+.mx-brand-tile__link { position: absolute; inset: 0; z-index: 6; color: var(--color-text); }
+
+.mx-brand-tile__link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -4px; }
+
+.mx-brand-tile__arrow {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 1.25rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity var(--transition-default), transform var(--transition-default);
+}
+
+.mx-brand-tile:hover .mx-brand-tile__arrow, .mx-brand-tile__link:focus-visible .mx-brand-tile__arrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+/* The title leaves room for the arrow when the tile is a link. */
+.mx-brand-tile:has(> .mx-brand-tile__link) .mx-brand-tile__header { right: 46px; }
+
+@media (max-width: 1200px) {
+  .mx-brand-tile__arrow { top: 14px; right: 14px; font-size: 1.1rem; }
+  .mx-brand-tile:has(> .mx-brand-tile__link) .mx-brand-tile__header { right: 40px; }
+  .mx-brand-tile--rich .mx-brand-tile__body { padding: calc(var(--gap-card) * 4.5) calc(var(--gap-card) / 2) calc(var(--gap-card) / 2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mx-brand-tile__arrow, .mx-brand-tile:hover .mx-brand-tile__arrow, .mx-brand-tile__link:focus-visible .mx-brand-tile__arrow { transition: none; transform: none; }
+}

@@ -1,0 +1,41 @@
+/* MXVI — brand tile accents. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+.mx-brand-tile__corner, .mx-brand-tile__backdrop { position: absolute; line-height: 0; pointer-events: none; user-select: none; }
+
+.mx-brand-tile__corner { top: 16px; right: 16px; z-index: 3; }
+.mx-brand-tile__corner svg { display: block; width: 22px; height: 22px; }
+.mx-brand-tile:has(> .mx-brand-tile__corner) .mx-brand-tile__header { right: 46px; }
+.mx-brand-tile:has(> .mx-brand-tile__corner) .mx-brand-tile__arrow { right: 46px; }
+.mx-brand-tile:has(> .mx-brand-tile__corner):has(> .mx-brand-tile__link) .mx-brand-tile__header { right: 76px; }
+
+.mx-brand-tile__backdrop {
+  --backdrop-opacity: 0.06;
+  bottom: 0;
+  left: -16px;
+  right: auto;
+  z-index: 0;
+  width: calc(100% + 32px);
+  opacity: var(--backdrop-opacity);
+}
+.mx-brand-tile__backdrop svg { display: block; width: 100%; height: auto; aspect-ratio: 4 / 1; }
+.mx-brand-tile__backdrop[data-size="sm"] { left: 16px; width: 60%; }
+.mx-brand-tile__backdrop[data-size="lg"] { left: -56px; width: calc(100% + 112px); }
+
+/* Exact ratio of each wordmark so the glyph touches the bottom edge. */
+.mx-brand-tile__backdrop:has(use[href$="#anthropic-wordmark"]) svg { aspect-ratio: 182 / 24; margin-bottom: calc(-100% * 2 / 182); }
+.mx-brand-tile__backdrop:has(use[href$="#github-wordmark"]) svg { aspect-ratio: 249.1 / 67.5; }
+.mx-brand-tile__backdrop:has(use[href$="#cloudflare"]) svg { aspect-ratio: 512 / 76; }
+.mx-brand-tile__backdrop:has(use[href$="#htb-wordmark"]) svg { aspect-ratio: 300 / 58.8; margin-bottom: calc(-100% * 5.9 / 300); }
+.mx-brand-tile__backdrop[data-size="sm"]:has(use[href$="#anthropic-wordmark"]) svg { margin-left: calc(-100% * 2 / 182); }
+
+@media (max-width: 1200px) {
+  .mx-brand-tile__corner { top: 14px; right: 14px; }
+  .mx-brand-tile__corner svg { width: 18px; height: 18px; }
+  .mx-brand-tile:has(> .mx-brand-tile__corner) .mx-brand-tile__header { right: 40px; }
+  .mx-brand-tile:has(> .mx-brand-tile__corner) .mx-brand-tile__arrow { right: 40px; }
+  .mx-brand-tile:has(> .mx-brand-tile__corner):has(> .mx-brand-tile__link) .mx-brand-tile__header { right: 66px; }
+  .mx-brand-tile__backdrop { left: -10px; width: calc(100% + 20px); }
+  .mx-brand-tile__backdrop[data-size="sm"] { left: 10px; width: 60%; }
+  .mx-brand-tile__backdrop[data-size="lg"] { left: -36px; width: calc(100% + 72px); }
+}

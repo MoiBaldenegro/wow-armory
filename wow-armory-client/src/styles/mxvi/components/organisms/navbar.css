@@ -1,0 +1,89 @@
+/* MXVI — navbar. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/navbar. */
+
+.mx-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--color-border-strong);
+  background: var(--color-navbar);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.mx-navbar__inner {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  width: min(var(--container-max), 95%);
+  min-height: var(--header-height);
+  margin: auto;
+}
+
+.mx-navbar__menu { display: contents; }
+
+.mx-navbar__toggle { display: none; }
+
+.mx-navbar__toggle::before { content: '☰'; }
+
+.mx-navbar__toggle[aria-expanded='true']::before { content: '✕'; }
+
+.mx-navbar .mx-search { margin-left: auto; }
+
+@media (max-width: 969px) {
+  .mx-navbar__inner { flex-wrap: wrap; justify-content: center; gap: 24px; padding-block: var(--gap-card); }
+  .mx-navbar .mx-search { flex: 1 1 100%; margin-left: 0; }
+  .mx-navbar .mx-search__input { width: 100%; }
+}
+
+@media (max-width: 969px) and (scripting: enabled) {
+  .mx-navbar__inner { flex-wrap: nowrap; justify-content: space-between; padding-block: 0; }
+  .mx-navbar__toggle { display: inline-flex; }
+  .mx-navbar__menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: calc(100dvh - var(--header-height));
+    padding: var(--gap-card) 2.5%;
+    overflow-y: auto;
+    border-bottom: 1px solid var(--color-border-strong);
+    background: var(--color-background);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    pointer-events: none;
+    transition: opacity var(--transition-default), transform var(--transition-default), visibility var(--transition-default);
+  }
+  .mx-navbar[data-menu='open'] .mx-navbar__menu {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition: opacity var(--transition-default), transform var(--transition-default);
+  }
+  /* Links animate only their color: an inherited visibility transition would block focus at t=0. */
+  .mx-navbar__menu .mx-nav-link { display: flex; align-items: center; min-height: 2.75rem; font-size: 1rem; transition: color var(--transition-default); }
+  /* The filled search clear button declares visibility: visible; while closed it inherits the panel's. */
+  .mx-navbar:not([data-menu='open']) .mx-navbar__menu .mx-search.is-filled .mx-search__clear { visibility: inherit; }
+  .mx-navbar__menu .mx-search { flex: none; width: 100%; margin: var(--gap-card) 0 0; }
+  /* A grouped link list (nav.mx-nav-links) stacks like loose links. */
+  .mx-navbar__menu .mx-nav-links { flex-direction: column; align-items: stretch; gap: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mx-navbar__menu, .mx-navbar[data-menu='open'] .mx-navbar__menu { transition: none; }
+}
+
+/* Short viewports (landscape phones, zoom): the bar stops being sticky. */
+@media (max-height: 500px) { .mx-navbar { position: static; } }
+@media (max-width: 969px) and (max-height: 500px) and (scripting: enabled) { .mx-navbar { position: relative; } }
+
+/* Anchors clear the header: wrapped header without JS, single row with JS. */
+@media (max-width: 969px) { html { scroll-padding-top: var(--header-height-mobile); } }
+@media (max-width: 969px) and (scripting: enabled) { html { scroll-padding-top: var(--header-height); } }
+

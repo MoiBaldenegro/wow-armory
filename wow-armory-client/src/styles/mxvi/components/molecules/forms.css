@@ -1,0 +1,29 @@
+/* MXVI — forms: labelled field, select and validation. Values from tokens.css.
+   Spec and markup: catalog/atoms/inputs. */
+
+.mx-field { display: grid; gap: 7px; min-width: 0; }
+
+.mx-field__label {
+  color: var(--color-text-secondary);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.8rem;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mx-field__error { margin: 0; color: var(--color-danger); font-size: 0.85rem; line-height: 1.4; }
+
+.mx-input[aria-invalid="true"] { border-color: var(--color-danger); }
+
+/* Native select with the input look; color-scheme keeps the native arrow light on dark. */
+.mx-select { color-scheme: dark; cursor: pointer; }
+
+/* Fields align on top so an error under one field does not shift the others;
+   buttons drop by the label height (1rem + 7px) to line up with the controls. */
+.mx-form-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--gap-card); }
+
+.mx-form-row > .mx-field { flex: 1 1 160px; }
+
+.mx-form-row > .mx-button { margin-top: calc(1rem + 7px); padding-block: 10px; }

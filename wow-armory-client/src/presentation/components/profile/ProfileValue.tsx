@@ -5,9 +5,9 @@ interface ProfileValueProps {
 
 export function ProfileValue({ label, children }: ProfileValueProps) {
   return (
-    <div className="profile-value">
-      <p>{label}</p>
-      <p>{children}</p>
+    <div className="mx-fact">
+      <p className="mx-fact__label">{label}</p>
+      <p className="mx-fact__value">{children}</p>
     </div>
   );
 }

@@ -1,0 +1,24 @@
+/* MXVI — feedback: alerts and status text. Values from tokens.css.
+   Spec and markup: catalog/molecules/content. */
+
+.mx-alert {
+  margin: 0;
+  padding: calc(var(--gap-card) * 0.75) var(--gap-card);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.mx-alert--error { border-left-color: var(--color-danger); }
+
+.mx-alert--error strong { color: var(--color-danger); }
+
+.mx-alert--success { border-left-color: var(--color-success); }
+
+.mx-alert--success strong { color: var(--color-success); }
+
+/* Loading and live status: quiet mono text. */
+.mx-status { margin: 0; color: var(--color-text-secondary); font-family: var(--font-mono); font-size: 0.9rem; }

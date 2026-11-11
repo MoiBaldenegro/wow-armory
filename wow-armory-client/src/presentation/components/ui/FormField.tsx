@@ -18,11 +18,13 @@ export function FormField({
   className,
 }: FormFieldProps) {
   return (
-    <div className={`field${className ? ` ${className}` : ''}`}>
-      <label htmlFor={htmlFor}>{label}</label>
+    <div className={`mx-field${className ? ` ${className}` : ''}`}>
+      <label className="mx-field__label" htmlFor={htmlFor}>
+        {label}
+      </label>
       {children}
       {error !== undefined && (
-        <p id={errorId} className="form-error">
+        <p id={errorId} className="mx-field__error">
           {error}
         </p>
       )}

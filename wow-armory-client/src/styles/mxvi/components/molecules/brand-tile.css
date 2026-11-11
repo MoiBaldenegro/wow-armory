@@ -1,0 +1,81 @@
+/* MXVI — brand tile. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+.mx-brand-tile {
+  --tile-bg: var(--color-surface);
+  --icon-rotation: 12deg;
+  --icon-scale: 5;
+  --icon-width: 150px;
+  position: relative;
+  min-height: 190px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--tile-bg);
+  box-shadow: var(--shadow-card-rest);
+  transition: var(--transition-default);
+}
+
+.mx-brand-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); filter: contrast(1.4); }
+
+.mx-brand-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--color-border), transparent 45%);
+  pointer-events: none;
+}
+
+.mx-brand-tile::after {
+  content: "";
+  position: absolute;
+  right: -45px;
+  bottom: -45px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(var(--color-border), transparent 70%);
+}
+
+.mx-brand-tile__header { position: absolute; top: 18px; left: 22px; z-index: 4; }
+
+.mx-brand-tile__title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mx-brand-tile__icon { position: absolute; inset: 0; overflow: hidden; }
+
+.mx-brand-tile__icon svg {
+  position: absolute;
+  right: 4px;
+  bottom: 32px;
+  width: var(--icon-width);
+  height: 28px;
+  transform: rotate(var(--icon-rotation)) scale(var(--icon-scale));
+  transform-origin: center;
+  pointer-events: none;
+  user-select: none;
+  transition: var(--transition-default);
+}
+
+.mx-brand-tile:hover .mx-brand-tile__icon svg { transform: rotate(2deg) scale(calc(var(--icon-scale) * 1.12)); }
+
+@media (max-width: 1200px) {
+  .mx-brand-tile__header { left: 14px; right: 14px; }
+  .mx-brand-tile__title { font-size: 0.8rem; letter-spacing: 0.04em; }
+}
+
+@media (max-width: 768px) {
+  .mx-brand-tile__title { font-size: 0.82rem; }
+  .mx-brand-tile__icon svg { width: 110px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mx-brand-tile:hover, .mx-project-card:hover, .mx-project-card:hover .mx-project-card__arrow { transform: none; }
+}

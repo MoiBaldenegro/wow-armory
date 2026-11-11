@@ -19,24 +19,24 @@ export function CharacterPvp({ realmSlug, characterName, mode }: CharacterSectio
     <ArmorySection id="character-pvp-title" title="JcJ" icon="sword" state={state}>
       {(data) => (
         <div className="pvp">
-          <dl className="stat-grid">
+          <dl className="mx-facts">
             {data.honorableKills !== undefined && (
-              <div className="stat">
+              <div className="mx-fact">
                 <dt>Muertes con honor</dt>
                 <dd>{formatNumber(data.honorableKills)}</dd>
               </div>
             )}
             {data.honorLevel !== undefined && (
-              <div className="stat">
+              <div className="mx-fact">
                 <dt>Nivel de honor</dt>
                 <dd>{formatNumber(data.honorLevel)}</dd>
               </div>
             )}
           </dl>
           {data.brackets.length > 0 && (
-            <div className="table-wrap">
-              <table className="data-table">
-                <caption className="sr-only">Brackets JcJ</caption>
+            <div className="mx-table-wrap">
+              <table className="mx-table">
+                <caption className="mx-visually-hidden">Brackets JcJ</caption>
                 <thead>
                   <tr>
                     <th scope="col">Modalidad</th>

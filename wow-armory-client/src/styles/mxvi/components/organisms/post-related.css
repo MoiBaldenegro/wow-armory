@@ -1,0 +1,29 @@
+/* MXVI — post footer: next article and related posts. Values from tokens.css
+   (moisesbaldenegro.com). Spec and markup: catalog/organisms/article. */
+
+.mx-post-next { display: flex; justify-content: flex-end; margin-top: var(--gap-card); }
+
+.mx-post-related { margin-top: var(--gap-card); }
+
+.mx-post-related__title {
+  margin: 0 0 var(--gap-card);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: 1.35rem;
+}
+
+.mx-post-related .mx-result-list { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-card); }
+
+.mx-post-related .mx-result-row { padding: var(--gap-card) 12px; }
+
+.mx-post-related .mx-result-row__link { font-family: var(--font-display); font-synthesis: none; line-height: normal; }
+
+@media (max-width: 768px) {
+  .mx-post-next { justify-content: stretch; }
+  .mx-post-next .mx-button { width: 100%; justify-content: center; }
+  .mx-post-related .mx-result-list { grid-template-columns: 1fr; }
+  .mx-post-related .mx-result-row { padding: 12px 6px; }
+  .mx-post-related .mx-result-row__link { display: block; width: 100%; }
+}

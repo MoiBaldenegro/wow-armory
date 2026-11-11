@@ -1,0 +1,44 @@
+/* ==========================================================================
+   MXVI Design System — fonts.css
+   Geist, Geist Mono and Geist Pixel (Circle), self-hosted.
+   License: SIL Open Font License 1.1 (fonts/LICENSE.txt).
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./fonts/Geist-Italic-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Single 400 face: never synthesize bold or italic over the dots. */
+@font-face {
+  font-family: 'Geist Pixel';
+  src: url('./fonts/GeistPixel-Circle.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-geist-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-geist-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-geist-pixel: 'Geist Pixel', ui-monospace, monospace;
+}

@@ -1,0 +1,58 @@
+/* MXVI — table and segmented control. Values from tokens.css.
+   Spec and markup: catalog/molecules/navigation (segmented) and content (table). */
+
+.mx-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); background: var(--color-surface); }
+
+.mx-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+
+.mx-table thead th {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border-strong);
+  color: var(--color-text-secondary);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mx-table td, .mx-table tbody th {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-weight: 600;
+  text-align: left;
+}
+
+.mx-table td { font-weight: 400; }
+
+.mx-table tbody tr:last-child > * { border-bottom: none; }
+
+.mx-table tbody tr:hover > * { background: color-mix(in srgb, var(--color-text) 3%, transparent); }
+
+.mx-table .mx-table__num { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
+
+/* Segmented control: a group of toggle buttons (aria-pressed). */
+.mx-segmented { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-strong); }
+
+.mx-segmented__option {
+  padding: 8px 16px;
+  border: 0;
+  border-right: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-square);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+.mx-segmented__option:last-child { border-right: 0; }
+
+.mx-segmented__option:hover { color: var(--color-text); }
+
+.mx-segmented__option[aria-pressed="true"] { background: var(--color-accent); color: var(--color-background); font-weight: 600; }

@@ -10,7 +10,6 @@ import {
 import type { UseCases } from '../../infrastructure/container';
 import { createTestDependencies } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
 import { UseCasesProvider } from '../providers/UseCasesProvider';
 import { AppRoutes } from '../router/AppRouter';
 
@@ -54,13 +53,11 @@ const minimalCharacter: Character = {
 function renderProfileAt(path: string, useCases: UseCases) {
   return render(
     <UseCasesProvider useCases={useCases}>
-      <ThemeProvider>
-        <AuthProvider>
-          <MemoryRouter initialEntries={[path]}>
-            <AppRoutes />
-          </MemoryRouter>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[path]}>
+          <AppRoutes />
+        </MemoryRouter>
+      </AuthProvider>
     </UseCasesProvider>,
   );
 }
@@ -71,7 +68,7 @@ function detailValue(label: string): string | null {
 }
 
 describe('CharacterProfilePage', () => {
-  it('mounts the header, theme toggle and footer', async () => {
+  it('mounts the header, main navigation and footer', async () => {
     const { useCases, characterRepository } = createTestDependencies();
     characterRepository.result = fullCharacter;
 
@@ -79,7 +76,7 @@ describe('CharacterProfilePage', () => {
 
     expect(screen.getByRole('banner')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Cambiar a tema oscuro' }),
+      screen.getByRole('navigation', { name: 'Navegación principal' }),
     ).toBeInTheDocument();
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
     await screen.findByRole('heading', { name: 'Billiemoi', level: 1 });

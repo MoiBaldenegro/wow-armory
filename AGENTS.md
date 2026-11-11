@@ -10,7 +10,8 @@ Tiene dos proyectos independientes:
 - `wow-armory-server/`: API REST con NestJS 10 + TypeScript. Consume la API de
   Blizzard (Profile API con token `client_credentials` y Battle.net OAuth
   para el perfil del usuario).
-- `wow-armory-client/`: SPA con React 18 + Vite 5 + Tailwind CSS + TypeScript.
+- `wow-armory-client/`: SPA con React 18 + Vite 5 + TypeScript, con la interfaz
+  del design system MXVI (`MoiBaldenegro/mxvi-design-system`).
 
 Ambos proyectos se prueban y despliegan con Node 20 (ver los `Dockerfile`).
 
@@ -45,9 +46,18 @@ Ambos proyectos se prueban y despliegan con Node 20 (ver los `Dockerfile`).
   `src/presentation/components/`, páginas en `src/presentation/pages/`, hooks en
   `src/presentation/hooks/`, providers en `src/presentation/providers/`. El
   dominio no importa React ni Axios. Tests junto al código (`*.test.ts` /
-  `*.test.tsx`) con Vitest + Testing Library y `jsdom`. Estilos con clases de
-  Tailwind; sigue el estilo visual y el modo oscuro existentes
-  (`darkMode: 'class'`).
+  `*.test.tsx`) con Vitest + Testing Library y `jsdom`.
+- Estilos: design system MXVI (tema oscuro único). Usa sus clases `.mx-*`
+  (navbar, footer, `mx-card`, `mx-button`, `mx-field`, `mx-input`,
+  `mx-alert`, `mx-table`, `mx-facts`, `mx-segmented`…; catálogo en
+  https://moibaldenegro.github.io/mxvi-design-system/). Lo propio de WoW
+  (equipo, talentos, colores de calidad y de clase) vive en
+  `src/styles/armory.css` y usa los tokens de MXVI; no añadas colores sueltos
+  fuera de la paleta del juego.
+- `src/styles/mxvi/` es una copia sincronizada del design system: no se edita a
+  mano (un test compara cada archivo con `manifest.json`). Para actualizarla:
+  `node scripts/sync-mxvi.mjs`. Si falta un componente genérico, se agrega al
+  design system y se vuelve a sincronizar.
 - Prettier: comillas simples y comas finales. Lint debe pasar antes de un PR.
 - Commits: estilo Conventional Commits con emoji, por ejemplo
   `feat: :sparkles: add rate limiting`. Trabaja en una rama y abre un PR; no

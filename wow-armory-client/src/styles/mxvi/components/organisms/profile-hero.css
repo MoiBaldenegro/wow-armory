@@ -1,0 +1,75 @@
+/* MXVI — profile hero. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/profile. */
+
+.mx-profile-hero {
+  display: grid;
+  justify-items: center;
+  gap: calc(var(--gap-card) * 2);
+  padding: calc(var(--gap-card) * 2.5) calc(var(--gap-card) * 1.5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: linear-gradient(160deg, var(--color-hero-top), var(--color-hero-mid) 70%);
+  text-align: center;
+}
+
+.mx-profile-hero__media { width: min(60vw, 220px); box-shadow: 0 0 calc(var(--gap-card) * 5) var(--color-glow); }
+
+.mx-profile-hero__body { display: grid; justify-items: center; gap: calc(var(--gap-card) * 0.75); min-width: 0; }
+
+.mx-profile-hero__body p { margin: 0; }
+
+.mx-profile-hero__handle {
+  padding: calc(var(--gap-card) / 3) var(--gap-card);
+  border: 1px solid var(--color-username-border);
+  border-radius: var(--radius-square);
+  background: var(--color-username-bg);
+  color: var(--color-username-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.mx-profile-hero__name {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.mx-profile-hero__headline { color: var(--color-text); font-size: 1.15rem; font-weight: 600; line-height: 1.45; }
+
+.mx-profile-hero__location { color: var(--color-text-secondary); font-size: 0.95rem; }
+
+.mx-profile-hero__summary { max-width: 68ch; color: var(--color-text); font-size: 1.05rem; line-height: 1.7; }
+
+.mx-profile-hero__focus {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+.mx-profile-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap-card);
+  margin-top: calc(var(--gap-card) / 2);
+}
+
+.mx-profile-hero .mx-social-list--inline { justify-content: center; }
+
+@media (min-width: 900px) {
+  .mx-profile-hero {
+    grid-template-columns: min(100%, 280px) minmax(0, 1fr);
+    align-items: center;
+    justify-items: stretch;
+    gap: calc(var(--gap-card) * 3.5);
+    padding: calc(var(--gap-card) * 3.5);
+    text-align: left;
+  }
+  .mx-profile-hero__media { width: 100%; }
+  .mx-profile-hero__body, .mx-profile-hero__body > * { justify-items: start; justify-self: start; }
+  .mx-profile-hero__actions, .mx-profile-hero .mx-social-list--inline { justify-content: flex-start; }
+}

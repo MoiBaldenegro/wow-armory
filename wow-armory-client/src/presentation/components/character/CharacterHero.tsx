@@ -30,7 +30,7 @@ export function CharacterHero({
           {initialsOf(character.name)}
         </div>
         <div>
-          <p className="eyebrow">Ficha de personaje</p>
+          <p className="mx-kicker">Ficha de personaje</p>
           <Heading id="character-name">{character.name}</Heading>
           <p className="character-summary">{summary}</p>
         </div>

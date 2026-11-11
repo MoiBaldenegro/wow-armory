@@ -1,0 +1,68 @@
+/* MXVI — profile card. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+.mx-profile-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.mx-profile-card__image { position: absolute; inset: 0 0 auto; overflow: hidden; }
+
+.mx-profile-card__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  -webkit-mask-image: linear-gradient(to bottom, var(--color-surface) 50%, transparent 92%);
+  mask-image: linear-gradient(to bottom, var(--color-surface) 50%, transparent 92%);
+}
+
+.mx-profile-card__content {
+  position: relative;
+  container-type: inline-size;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px 28px 18px;
+  text-align: center;
+}
+
+.mx-profile-card__content .mx-handle { align-self: center; margin-bottom: 10px; }
+
+.mx-profile-card__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: min(2.4rem, 6.8cqi);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.mx-profile-card__description {
+  margin: 14px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* Tablet: the photo becomes a 16:9 band above the text. */
+@media (max-width: 1200px) {
+  .mx-profile-card__image { position: relative; aspect-ratio: 16 / 9; }
+  .mx-profile-card__image img { height: 100%; }
+}
+
+@media (max-width: 768px) {
+  .mx-profile-card__image { aspect-ratio: 1; }
+  .mx-profile-card__description { line-height: 1.6; }
+  .mx-profile-card__content { padding: 24px; }
+  .mx-profile-card__name { font-size: 2rem; }
+}

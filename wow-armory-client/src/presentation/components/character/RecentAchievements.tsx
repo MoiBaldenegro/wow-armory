@@ -11,12 +11,12 @@ export function RecentAchievements({ achievements }: RecentAchievementsProps) {
   const items = achievements ?? [];
 
   return (
-    <section className="card card-pad" aria-labelledby="recent-achievements-title">
+    <section className="mx-card" aria-labelledby="recent-achievements-title">
       <SectionHeading id="recent-achievements-title" icon="trophy">
         Logros recientes
       </SectionHeading>
       {items.length === 0 ? (
-        <p className="empty-state achievements-empty">
+        <p className="mx-text mx-text--secondary achievements-empty">
           Sin logros recientes
         </p>
       ) : (
@@ -39,7 +39,7 @@ export function RecentAchievements({ achievements }: RecentAchievementsProps) {
                   ) : achievement.points !== undefined ? (
                     <span>
                       {formatNumber(achievement.points)}
-                      <span className="sr-only"> puntos</span>
+                      <span className="mx-visually-hidden"> puntos</span>
                     </span>
                   ) : (
                     <Icon name="trophy" size={20} />
@@ -50,7 +50,7 @@ export function RecentAchievements({ achievements }: RecentAchievementsProps) {
                 </div>
                 {completedAt !== undefined && (
                   <p className="achievement-date">
-                    <span className="sr-only">Completado el </span>
+                    <span className="mx-visually-hidden">Completado el </span>
                     {completedAt}
                   </p>
                 )}

@@ -1,0 +1,54 @@
+/* MXVI — logo band. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/promo. */
+
+.mx-logo-band {
+  padding-block: var(--space-mxvi-band);
+  border-block: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 60% 120% at center, var(--color-glow), transparent 70%),
+    linear-gradient(90deg, var(--color-hero-mid), var(--color-hero-top), var(--color-hero-mid));
+}
+
+/* Full bleed: spans the whole viewport even inside a centered container. */
+.mx-logo-band--bleed { width: 100vw; margin-inline: calc(50% - 50vw); }
+
+.mx-logo-band__track {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(18px, 5vw, 72px);
+  width: min(var(--container-max), 95%);
+  margin: 0 auto;
+}
+
+.mx-logo-band__link { display: block; }
+
+.mx-logo-band__link:focus-visible { outline: 2px solid var(--color-text); outline-offset: 6px; }
+
+.mx-logo-band__logo {
+  display: block;
+  width: 100%;
+  height: clamp(72px, 10vw, 150px);
+  color: var(--color-text);
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: var(--opacity-logo-band);
+  transition: opacity var(--transition-default), transform var(--transition-default), filter var(--transition-default);
+}
+
+.mx-logo-band__link:hover .mx-logo-band__logo, .mx-logo-band__link:focus-visible .mx-logo-band__logo {
+  opacity: var(--opacity-logo-band-hover);
+  transform: translateY(-4px) scale(1.04);
+  filter: grayscale(1) brightness(0) invert(1) drop-shadow(0 0 calc(var(--gap-card) / 2) var(--color-accent));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mx-logo-band__logo, .mx-logo-band__link:hover .mx-logo-band__logo, .mx-logo-band__link:focus-visible .mx-logo-band__logo {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .mx-logo-band__track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+  .mx-logo-band__logo { height: 64px; }
+}

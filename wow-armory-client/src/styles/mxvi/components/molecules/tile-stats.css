@@ -1,0 +1,24 @@
+/* MXVI — tile stats. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+.mx-tile-stats { width: 100%; color: var(--color-text); }
+.mx-tile-stats__list { display: grid; gap: calc(var(--gap-card) / 2); margin: 0; padding: 0; list-style: none; }
+.mx-tile-stats__item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--gap-card); }
+.mx-tile-stats__item:not(:last-child) { padding-bottom: calc(var(--gap-card) / 2); border-bottom: 1px solid var(--color-border); }
+.mx-tile-stats__label { color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Values in the brand accent of the tile (--tile-accent), plum by default. */
+.mx-tile-stats__value { color: var(--tile-accent, var(--color-accent)); font-family: var(--font-mono); font-weight: 600; text-align: right; }
+[data-brand="htb"] { --tile-accent: var(--color-marca-htb-accent); }
+
+.mx-tile-stats__empty {
+  margin: 0;
+  padding: calc(var(--gap-card) / 2) var(--gap-card);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 1200px) {
+  .mx-tile-stats__empty { padding: calc(var(--gap-card) / 2); font-size: 0.75rem; overflow-wrap: normal; }
+}
