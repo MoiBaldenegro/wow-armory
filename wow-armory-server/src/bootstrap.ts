@@ -1,7 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
+// These packages export a single function (`export =`). `import x = require()`
+// yields that function with or without `esModuleInterop`; `import * as` does
+// not (Vercel's builder enables interop and the server crashed with
+// "cookieParser is not a function").
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import cookieParser = require('cookie-parser');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import session = require('express-session');
 import { parseOrigins, TrustProxy } from './config/env.validation';
 import { AppLogger } from './shared/infrastructure/logging/app-logger';
 import {
