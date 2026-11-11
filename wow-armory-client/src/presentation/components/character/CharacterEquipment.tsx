@@ -157,9 +157,9 @@ export function CharacterEquipment({ equipment, realmSlug, mode, faction }: Char
   );
 
   return (
-    <section className="card card-pad equipment-section" aria-labelledby="character-equipment-title">
+    <section className="mx-card equipment-section" aria-labelledby="character-equipment-title">
       <SectionHeading id="character-equipment-title">Equipamiento</SectionHeading>
-      <p className="muted equipment-hint">Toca un objeto para ver sus detalles.</p>
+      <p className="mx-text--secondary equipment-hint">Toca un objeto para ver sus detalles.</p>
       <ul className="equipment-grid">
         {equipment.map((item) => (
           <EquipmentItem

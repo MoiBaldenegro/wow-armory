@@ -30,12 +30,12 @@ function TalentsView({ data }: { data: Talents }) {
   return (
     <div className="talents">
       {data.groups.length > 1 && (
-        <div className="segmented" role="group" aria-label="Grupo de talentos">
+        <div className="mx-segmented" role="group" aria-label="Grupo de talentos">
           {data.groups.map((item, index) => (
             <button
               key={index}
               type="button"
-              className="segmented-option"
+              className="mx-segmented__option"
               aria-pressed={index === selected}
               onClick={() => setSelected(index)}
             >
@@ -66,7 +66,7 @@ function TalentsView({ data }: { data: Talents }) {
                 ))}
               </ul>
             ) : (
-              <p className="muted">Sin talentos en este árbol.</p>
+              <p className="mx-text--secondary">Sin talentos en este árbol.</p>
             )}
           </div>
         ))}

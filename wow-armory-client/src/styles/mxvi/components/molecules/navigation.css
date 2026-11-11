@@ -1,0 +1,67 @@
+/* MXVI — navigation. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/navigation. */
+
+.mx-nav-links { display: flex; align-items: center; gap: 42px; margin: 0; padding: 0; list-style: none; }
+
+.mx-nav-link {
+  position: relative;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.95rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: var(--transition-default);
+}
+
+.mx-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  border-radius: var(--radius-square);
+  background: var(--color-accent);
+  transition: var(--transition-default);
+}
+
+.mx-nav-link:hover { color: var(--color-accent-hover); }
+
+.mx-nav-link:hover::after, .mx-nav-link[aria-current="page"]::after { width: 100%; }
+
+.mx-nav-link[aria-current="page"] { color: var(--color-accent); }
+
+.mx-link-list { display: grid; gap: calc(var(--gap-card) * 0.75); margin: 0; padding: 0; list-style: none; }
+
+.mx-link-list li { display: grid; gap: calc(var(--gap-card) / 4); }
+
+.mx-link-list .mx-link--subtle { justify-self: start; }
+
+.mx-social-link { display: inline-flex; align-items: center; gap: calc(var(--gap-card) * 0.6); }
+
+.mx-social-link__icon { width: 1.1em; height: 1.1em; fill: currentColor; flex: none; }
+
+.mx-social-list--inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--gap-card) * 0.75);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mx-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+.mx-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--gap-card) / 2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 969px) {
+  .mx-nav-link { font-size: 0.85rem; }
+}

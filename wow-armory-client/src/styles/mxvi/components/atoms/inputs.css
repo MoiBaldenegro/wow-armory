@@ -1,0 +1,39 @@
+/* MXVI — inputs. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/atoms/inputs. */
+
+.mx-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: none;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+.mx-icon-button:hover { border-color: var(--color-border-strong); }
+
+.mx-icon-button--sm { width: 30px; height: 30px; font-size: 0.9rem; color: var(--color-text-secondary); }
+
+.mx-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  transition: var(--transition-default);
+}
+
+.mx-input::placeholder { color: var(--color-text-secondary); }
+
+.mx-input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 4px var(--color-glow); }

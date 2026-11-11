@@ -1,0 +1,42 @@
+/* MXVI — brand colors. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+[data-brand="react"] { --tile-bg: var(--color-marca-react); }
+
+[data-brand="html"] { --tile-bg: var(--color-marca-html); }
+
+[data-brand="node"] { --tile-bg: var(--color-marca-node); }
+
+[data-brand="github"] { --tile-bg: var(--color-marca-github); }
+
+[data-brand="youtube"] { --tile-bg: var(--color-marca-youtube); }
+
+[data-brand="rust"] { --tile-bg: var(--color-marca-rust); }
+
+[data-brand="typescript"] { --tile-bg: var(--color-marca-typescript); }
+
+[data-brand="css"] { --tile-bg: var(--color-marca-css); }
+
+[data-brand="aws"] { --tile-bg: var(--color-marca-aws); }
+
+[data-brand="claude-code"] { --tile-bg: var(--color-marca-claude-code); }
+
+[data-brand="nestjs"] { --tile-bg: var(--color-marca-nestjs); }
+
+[data-brand="cloudflare"] { --tile-bg: var(--color-marca-cloudflare); }
+
+[data-brand="claude"] { --tile-bg: var(--color-marca-claude); }
+
+[data-brand="bun"] { --tile-bg: var(--color-marca-bun); }
+
+[data-brand="htb"] { --tile-bg: var(--color-marca-htb); }
+
+[data-brand="bash"] { --tile-bg: var(--color-marca-bash); }
+
+[data-brand="webassembly"] { --tile-bg: var(--color-marca-webassembly); }
+
+[data-brand="astro"] { --tile-bg: var(--color-marca-astro); }
+
+[data-brand="opencode"] { --tile-bg: var(--color-marca-opencode); }
+
+[data-brand="tauri"] { --tile-bg: var(--color-marca-tauri); }

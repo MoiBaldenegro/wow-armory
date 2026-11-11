@@ -15,7 +15,7 @@ export function ProfileAccount({
 }: ProfileAccountProps) {
   return (
     <div>
-      <div className="profile-grid">
+      <div className="mx-facts profile-grid">
         <ProfileValue label="BattleTag">
           {user?.battletag ?? 'Battle.net conectado'}
         </ProfileValue>
@@ -35,7 +35,7 @@ export function ProfileAccount({
           onClick={() => void onLogout()}
           disabled={isLoading}
           aria-busy={isLoading}
-          className="btn btn-ghost"
+          className="mx-button"
         >
           {isLoading ? 'Cerrando sesión…' : 'Cerrar sesión'}
         </button>

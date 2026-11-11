@@ -19,17 +19,17 @@ export function ProfilePage() {
 
   return (
     <PageShell showAuthAction={false}>
-      <section className="card fade-in">
+      <section className="mx-card fade-in">
         <ProfileHeader />
 
         {error && <ErrorAlert className="profile-alert">{error}</ErrorAlert>}
 
         {!hasCheckedSession ? (
-          <p role="status" className="status-text profile-status">
+          <p role="status" className="mx-status profile-status">
             Cargando perfil…
           </p>
         ) : isAuthenticated ? (
-          <div className="card-pad profile-body">
+          <div className="profile-body">
             <ProfileAccount
               user={user}
               isLoading={isLoading}
@@ -38,7 +38,7 @@ export function ProfilePage() {
             <ProfileCharacters enabled />
           </div>
         ) : (
-          <div className="card-pad profile-body">
+          <div className="profile-body">
             <ProfileGuest isLoading={isLoading} onLogin={login} />
           </div>
         )}

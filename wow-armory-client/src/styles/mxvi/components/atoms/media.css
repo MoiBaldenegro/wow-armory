@@ -1,0 +1,41 @@
+/* MXVI — media. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/atoms/media. */
+
+.mx-media {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+}
+
+.mx-media--4x3 { aspect-ratio: 4 / 3; }
+
+.mx-thumb {
+  flex-shrink: 0;
+  width: 112px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+}
+
+.mx-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: var(--radius-square);
+  outline: 2px solid var(--color-accent);
+  outline-offset: calc(var(--gap-card) / 2);
+  box-shadow: var(--shadow-card);
+}
+
+.mx-divider { margin: var(--gap-card) 0; border: 0; border-top: 1px solid var(--color-border); }
+
+.mx-divider--strong { border-top-color: var(--color-border-strong); }

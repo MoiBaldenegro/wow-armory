@@ -1,0 +1,39 @@
+/* MXVI — brand geometry. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/brand-tile. */
+
+[data-brand="html"] { --icon-width: 115px; --icon-rotation: -7deg; }
+[data-brand="node"] { --icon-width: 240px; --icon-rotation: -10deg; --icon-scale: 7; }
+[data-brand="react"] { --icon-width: 115px; --icon-rotation: -8deg; }
+[data-brand="rust"] { --icon-width: 115px; --icon-rotation: -8deg; }
+[data-brand="typescript"] { --icon-width: 220px; --icon-rotation: -10deg; --icon-scale: 7; }
+[data-brand="css"] { --icon-width: 105px; --icon-rotation: -8deg; }
+[data-brand="aws"] { --icon-width: 120px; --icon-rotation: -6deg; }
+[data-brand="claude-code"] { --icon-width: 115px; --icon-rotation: 0deg; }
+[data-brand="nestjs"] { --icon-width: 230px; --icon-rotation: -5deg; --icon-scale: 7; }
+[data-brand="cloudflare"] { --icon-width: 270px; --icon-rotation: 0deg; --icon-scale: 1.25; }
+[data-brand="claude"] { --icon-width: 110px; --icon-rotation: -8deg; }
+[data-brand="bun"] { --icon-width: 115px; --icon-rotation: -8deg; }
+[data-brand="youtube"] { --icon-width: 115px; --icon-rotation: -8deg; }
+[data-brand="github"] { --icon-width: 115px; --icon-rotation: -8deg; }
+[data-brand="bash"] { --icon-width: 115px; --icon-rotation: -8deg; --icon-scale: 5; }
+[data-brand="webassembly"] { --icon-width: 110px; --icon-rotation: -8deg; --icon-scale: 5; }
+[data-brand="astro"] { --icon-width: 200px; --icon-rotation: -8deg; --icon-scale: 6; }
+[data-brand="opencode"] { --icon-width: 110px; --icon-rotation: 0deg; --icon-scale: 5; }
+[data-brand="tauri"] { --icon-width: 115px; --icon-rotation: -8deg; --icon-scale: 5; }
+[data-brand="htb"] { --icon-width: 150px; --icon-rotation: -8deg; --icon-scale: 6; }
+
+@media (max-width: 1200px) {
+  [data-brand="github"] { --icon-width: 110px; --icon-scale: 2; --icon-rotation: 0deg; }
+  [data-brand="rust"], [data-brand="aws"], [data-brand="claude"], [data-brand="react"] { --icon-scale: 3; }
+  [data-brand="claude-code"], [data-brand="youtube"] { --icon-scale: 2; }
+  [data-brand="cloudflare"] { --icon-width: 100px; --icon-rotation: 0deg; }
+  [data-brand="bun"] { --icon-scale: 3; --icon-rotation: 0deg; }
+  [data-brand="node"] { --icon-width: 165px; --icon-scale: 3; }
+  [data-brand="nestjs"] { --icon-width: 160px; --icon-scale: 3; }
+  [data-brand="typescript"] { --icon-width: 150px; --icon-scale: 2; }
+  [data-brand="css"] { --icon-width: 105px; --icon-scale: 3; }
+  [data-brand="html"] { --icon-width: 115px; --icon-scale: 3; }
+  [data-brand="bash"], [data-brand="webassembly"], [data-brand="opencode"], [data-brand="tauri"] { --icon-scale: 3; }
+  [data-brand="astro"] { --icon-width: 150px; --icon-scale: 3; }
+  [data-brand="htb"] { --icon-scale: 3; }
+}

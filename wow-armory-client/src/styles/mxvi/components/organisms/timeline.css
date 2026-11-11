@@ -1,0 +1,26 @@
+/* MXVI — timeline. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/profile. */
+
+.mx-timeline { display: grid; gap: calc(var(--gap-card) * 1.5); margin: 0; padding: 0; list-style: none; }
+
+@media (min-width: 769px) {
+  .mx-timeline {
+    margin-left: calc(var(--gap-card) / 2);
+    padding-left: calc(var(--gap-card) * 2);
+    border-left: 2px solid var(--color-border-strong);
+  }
+  .mx-timeline .mx-timeline-item::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--gap-card) * 1.5 + 6px);
+    left: calc(var(--gap-card) * -2 - 7px);
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-square);
+    background: var(--color-accent);
+    box-shadow: 0 0 0 calc(var(--gap-card) / 3) var(--color-background);
+  }
+  .mx-timeline .mx-timeline-item:first-child::before {
+    box-shadow: 0 0 0 calc(var(--gap-card) / 3) var(--color-background), 0 0 var(--gap-card) var(--color-glow);
+  }
+}

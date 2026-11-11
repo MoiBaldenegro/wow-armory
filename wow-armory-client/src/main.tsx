@@ -2,21 +2,23 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createUseCases } from './infrastructure/container';
 import { AuthProvider } from './presentation/providers/AuthProvider';
-import { ThemeProvider } from './presentation/providers/ThemeProvider';
 import { UseCasesProvider } from './presentation/providers/UseCasesProvider';
 import { AppRouter } from './presentation/router/AppRouter';
-import './index.css';
+// Design system MXVI (copia sincronizada, scripts/sync-mxvi.mjs) y estilos propios de la app.
+import './styles/mxvi/tokens.css';
+import './styles/mxvi/fonts.css';
+import './styles/mxvi/base.css';
+import './styles/mxvi/components.css';
+import './styles/armory.css';
 
 const useCases = createUseCases();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <UseCasesProvider useCases={useCases}>
-      <ThemeProvider>
-        <AuthProvider>
-          <AppRouter />
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
     </UseCasesProvider>
   </StrictMode>,
 );

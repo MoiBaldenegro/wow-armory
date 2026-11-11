@@ -17,9 +17,10 @@ repositorio:
   login OAuth 2.0 con Battle.net (Blizzard), el callback, la verificación de
   sesión, el logout y un endpoint para obtener un personaje desde la API de
   Blizzard.
-- **`wow-armory-client/`**: SPA con React 18, Vite 5, TypeScript y Tailwind
-  CSS. Muestra una ficha de personaje con banner, estadísticas, logros,
-  guild y un selector de tema claro/oscuro.
+- **`wow-armory-client/`**: SPA con React 18, Vite 5 y TypeScript, con la
+  interfaz del design system MXVI (tema oscuro único). Muestra la ficha del
+  personaje, su equipamiento, talentos, JcJ, hermandades, clasificación de
+  arena y el perfil de Battle.net.
 
 El estado actual es de **prototipo**: la UI funciona con datos mock, el flujo
 de autenticación está a medio conectar y la llamada real a Blizzard no llega a
@@ -76,7 +77,7 @@ ejecuta por separado.
 | Capa | Tecnología |
 | --- | --- |
 | Servidor | NestJS 10, TypeScript 5, Express, `express-session`, `cookie-parser`, `axios`, `dotenv`, `passport`/`passport-oauth2` (instalados pero no usados) |
-| Cliente | React 18, Vite 5, TypeScript 5, Tailwind CSS 3, `framer-motion`, `lucide-react`, `axios` |
+| Cliente | React 18, Vite 5, TypeScript 5, `react-router-dom`, `axios`; estilos del design system MXVI (copia sincronizada en `src/styles/mxvi/`) |
 | Autenticación | OAuth 2.0 Authorization Code contra Battle.net |
 | API externa | Blizzard Profile API (`https://us.api.blizzard.com`) |
 | Despliegue previsto | Cliente en Cloudflare Pages (`wow-armory.pages.dev`), servidor en Render (`wow-armory.onrender.com`) |

@@ -1,0 +1,37 @@
+/* MXVI — timeline item. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/content. */
+
+.mx-timeline-item { position: relative; min-width: 0; }
+
+.mx-timeline-item__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--gap-card) / 2) var(--gap-card);
+}
+
+.mx-timeline-item__role {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.mx-timeline-item__org {
+  margin: calc(var(--gap-card) / 3) 0 var(--gap-card);
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.mx-timeline-item__highlights {
+  display: grid;
+  gap: calc(var(--gap-card) / 2);
+  margin: 0;
+  padding: 0 0 0 calc(var(--gap-card) * 1.25);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.mx-timeline-item__highlights li::marker { color: var(--color-accent); }

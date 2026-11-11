@@ -45,10 +45,12 @@ export function QuickSearch({ isCompact }: QuickSearchProps) {
       aria-label="Búsqueda rápida"
       noValidate
       onSubmit={handleSubmit}
-      className={`quick-search${isCompact ? ' is-compact' : ''}`}
+      className={`mx-search quick-search${isCompact ? ' is-compact' : ''}`}
     >
-      <Icon className="quick-search-icon" name="search" size={17} />
+      <div className="mx-search__form">
+      <Icon className="mx-search__icon" name="search" size={16} />
       <input
+        className="mx-search__input"
         type="text"
         name="q"
         autoComplete="off"
@@ -63,8 +65,9 @@ export function QuickSearch({ isCompact }: QuickSearchProps) {
           setError(null);
         }}
       />
+      </div>
       {error !== null && (
-        <p id={errorId} role="alert" className="form-error quick-search-error">
+        <p id={errorId} role="alert" className="mx-field__error quick-search-error">
           {error}
         </p>
       )}

@@ -43,15 +43,15 @@ function Roster({ guild, mode }: { guild: GuildProfile; mode: string }) {
   }, [filter, guild.members]);
 
   return (
-    <section className="card card-pad" aria-labelledby="guild-roster-title">
+    <section className="mx-card" aria-labelledby="guild-roster-title">
       <SectionHeading id="guild-roster-title" icon="users">
         Miembros ({formatNumber(guild.members.length)})
       </SectionHeading>
-      <div className="field roster-filter">
-        <label htmlFor={filterId}>Filtrar por nombre o clase</label>
+      <div className="mx-field roster-filter">
+        <label className="mx-field__label" htmlFor={filterId}>Filtrar por nombre o clase</label>
         <input
           id={filterId}
-          className="input"
+          className="mx-input"
           type="search"
           value={filter}
           onChange={(event) => {
@@ -61,12 +61,12 @@ function Roster({ guild, mode }: { guild: GuildProfile; mode: string }) {
         />
       </div>
       {members.length === 0 ? (
-        <p className="empty-state">Ningún miembro coincide.</p>
+        <p className="mx-text mx-text--secondary">Ningún miembro coincide.</p>
       ) : (
         <>
-          <div className="table-wrap">
-            <table className="data-table">
-              <caption className="sr-only">Miembros de la hermandad</caption>
+          <div className="mx-table-wrap">
+            <table className="mx-table">
+              <caption className="mx-visually-hidden">Miembros de la hermandad</caption>
               <thead>
                 <tr>
                   <th scope="col">Nombre</th>
@@ -80,7 +80,7 @@ function Roster({ guild, mode }: { guild: GuildProfile; mode: string }) {
                   <tr key={`${member.realmSlug ?? ''}-${member.name}`}>
                     <th scope="row">
                       <Link
-                        className={`text-link ${classColorClass(member.classId) ?? ''}`}
+                        className={`mx-link ${classColorClass(member.classId) ?? ''}`}
                         to={`/character/${encodeURIComponent(
                           member.realmSlug ?? guild.realmSlug,
                         )}/${encodeURIComponent(member.name.toLowerCase())}?mode=${mode}`}
@@ -99,7 +99,7 @@ function Roster({ guild, mode }: { guild: GuildProfile; mode: string }) {
           {members.length > limit && (
             <button
               type="button"
-              className="btn btn-ghost btn-sm roster-more"
+              className="mx-button mx-button--sm roster-more"
               onClick={() => setLimit((value) => value + ROSTER_PAGE_SIZE)}
             >
               Ver más ({formatNumber(members.length - limit)} restantes)
@@ -117,30 +117,30 @@ function GuildView({ guild, mode }: { guild: GuildProfile; mode: string }) {
 
   return (
     <article className="fade-in">
-      <header className="card card-pad guild-header">
+      <header className="mx-card guild-header">
         <GuildCrest crest={guild.crest} name={guild.name} />
         <div>
-          <p className="eyebrow">Hermandad</p>
-          <h1 className="page-title">{guild.name}</h1>
-          <p className="muted">
+          <p className="mx-kicker">Hermandad</p>
+          <h1 className="mx-heading mx-heading--display">{guild.name}</h1>
+          <p className="mx-text--secondary">
             {[guild.realmName ?? guild.realmSlug, faction].filter(Boolean).join(' · ')}
           </p>
         </div>
       </header>
 
-      <dl className="stat-grid card card-pad guild-stats">
-        <div className="stat">
+      <dl className="mx-facts guild-stats">
+        <div className="mx-fact">
           <dt>Miembros</dt>
           <dd>{formatNumber(guild.memberCount ?? guild.members.length)}</dd>
         </div>
         {guild.achievementPoints !== undefined && (
-          <div className="stat">
+          <div className="mx-fact">
             <dt>Puntos de logro</dt>
             <dd>{formatNumber(guild.achievementPoints)}</dd>
           </div>
         )}
         {created && (
-          <div className="stat">
+          <div className="mx-fact">
             <dt>Fundada</dt>
             <dd>{created}</dd>
           </div>
@@ -150,7 +150,7 @@ function GuildView({ guild, mode }: { guild: GuildProfile; mode: string }) {
       <Roster guild={guild} mode={mode} />
 
       <div className="character-grid">
-        <section className="card card-pad" aria-labelledby="guild-activity-title">
+        <section className="mx-card" aria-labelledby="guild-activity-title">
           <SectionHeading id="guild-activity-title" icon="globe">
             Actividad reciente
           </SectionHeading>
@@ -160,7 +160,7 @@ function GuildView({ guild, mode }: { guild: GuildProfile; mode: string }) {
                 <li key={`${entry.timestamp ?? ''}-${index}`}>
                   <span>{activityText(entry)}</span>
                   {entry.timestamp && (
-                    <time className="muted" dateTime={entry.timestamp}>
+                    <time className="mx-text--secondary" dateTime={entry.timestamp}>
                       {formatShortDate(entry.timestamp)}
                     </time>
                   )}
@@ -168,11 +168,11 @@ function GuildView({ guild, mode }: { guild: GuildProfile; mode: string }) {
               ))}
             </ul>
           ) : (
-            <p className="empty-state">Sin actividad reciente.</p>
+            <p className="mx-text mx-text--secondary">Sin actividad reciente.</p>
           )}
         </section>
 
-        <section className="card card-pad" aria-labelledby="guild-achievements-title">
+        <section className="mx-card" aria-labelledby="guild-achievements-title">
           <SectionHeading id="guild-achievements-title" icon="trophy">
             Logros de la hermandad
           </SectionHeading>
@@ -182,7 +182,7 @@ function GuildView({ guild, mode }: { guild: GuildProfile; mode: string }) {
                 <li key={`${achievement.name}-${achievement.completedAt ?? ''}`}>
                   <span>{achievement.name}</span>
                   {achievement.completedAt && (
-                    <time className="muted" dateTime={achievement.completedAt}>
+                    <time className="mx-text--secondary" dateTime={achievement.completedAt}>
                       {formatShortDate(achievement.completedAt)}
                     </time>
                   )}
@@ -190,7 +190,7 @@ function GuildView({ guild, mode }: { guild: GuildProfile; mode: string }) {
               ))}
             </ul>
           ) : (
-            <p className="empty-state">Sin logros recientes.</p>
+            <p className="mx-text mx-text--secondary">Sin logros recientes.</p>
           )}
         </section>
       </div>
@@ -214,8 +214,8 @@ export function GuildPage() {
   return (
     <PageShell>
       {(state.status === 'loading' || state.status === 'disabled') && (
-        <div className="card card-pad">
-          <p role="status" className="status-text">
+        <div className="mx-card">
+          <p role="status" className="mx-status">
             Cargando hermandad…
           </p>
         </div>
@@ -237,7 +237,7 @@ export function GuildPage() {
           }
         >
           <div className="problem-actions">
-            <button type="button" className="btn btn-primary" onClick={state.retry}>
+            <button type="button" className="mx-button mx-button--accent" onClick={state.retry}>
               Reintentar
             </button>
           </div>

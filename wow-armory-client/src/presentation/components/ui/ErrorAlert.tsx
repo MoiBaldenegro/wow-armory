@@ -11,7 +11,7 @@ export function ErrorAlert({ children, className, id }: ErrorAlertProps) {
     <p
       id={id}
       role="alert"
-      className={`alert alert-error${className ? ` ${className}` : ''}`}
+      className={`mx-alert mx-alert--error${className ? ` ${className}` : ''}`}
     >
       {children}
     </p>

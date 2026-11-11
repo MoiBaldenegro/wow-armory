@@ -1,0 +1,66 @@
+/* MXVI — post. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/article. */
+
+.mx-post-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 32px;
+  margin: 0 0 32px;
+  padding: 32px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-square);
+  background:
+    linear-gradient(160deg, var(--color-hero-top) 0%, var(--color-hero-mid) 45%, var(--color-hero-bottom) 100%),
+    radial-gradient(circle at 78% 0%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 55%);
+  box-shadow: var(--shadow-card);
+}
+
+.mx-post-hero::before {
+  content: "";
+  position: absolute;
+  top: -260px;
+  right: -160px;
+  width: 640px;
+  height: 640px;
+  background: radial-gradient(circle, var(--color-glow), transparent 70%);
+  pointer-events: none;
+}
+
+.mx-post-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), transparent 70%);
+  pointer-events: none;
+}
+
+.mx-post-hero .mx-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-color: var(--color-border-strong);
+  box-shadow: 0 0 48px var(--color-glow);
+}
+
+.mx-post-hero__copy { position: relative; }
+
+.mx-post-hero__copy .mx-kicker { margin-bottom: 14px; }
+
+.mx-post-hero__title {
+  margin: 0 0 18px;
+  color: var(--color-text);
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  line-height: 1.15;
+  text-wrap: balance;
+  text-shadow: 0 0 32px var(--color-glow);
+}
+
+@media (max-width: 768px) {
+  .mx-post-hero { grid-template-columns: 1fr; gap: var(--gap-card); padding: 20px; }
+  .mx-post-hero .mx-media { aspect-ratio: 16 / 9; }
+}

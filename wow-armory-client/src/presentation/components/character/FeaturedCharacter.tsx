@@ -21,13 +21,13 @@ export function FeaturedCharacter() {
   if (state.status === 'loading') {
     return (
       <section
-        className="card card-pad featured-profile"
+        className="mx-card featured-profile"
         aria-labelledby="featured-profile-title"
       >
-        <p className="eyebrow" id="featured-profile-title">
+        <p className="mx-kicker" id="featured-profile-title">
           Personaje destacado
         </p>
-        <p role="status" className="status-text">
+        <p role="status" className="mx-status">
           Cargando personaje destacado…
         </p>
       </section>
@@ -37,22 +37,22 @@ export function FeaturedCharacter() {
   if (state.status !== 'success') {
     return (
       <section
-        className="card card-pad featured-profile"
+        className="mx-card featured-profile"
         aria-labelledby="featured-profile-title"
       >
-        <p className="eyebrow" id="featured-profile-title">
+        <p className="mx-kicker" id="featured-profile-title">
           Personaje destacado
         </p>
         <h2>{FEATURED_CHARACTER.displayName}</h2>
-        <p className="lead">
+        <p className="mx-text mx-text--lead">
           No pudimos cargar la ficha de {FEATURED_CHARACTER.realmName} ahora
           mismo.
         </p>
         <div className="centered-actions">
-          <button type="button" className="btn btn-secondary" onClick={retry}>
+          <button type="button" className="mx-button" onClick={retry}>
             Reintentar
           </button>
-          <Link to={href} className="btn btn-primary">
+          <Link to={href} className="mx-button mx-button--accent">
             Abrir ficha
           </Link>
         </div>

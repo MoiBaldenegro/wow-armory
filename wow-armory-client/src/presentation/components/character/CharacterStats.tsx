@@ -25,7 +25,7 @@ interface StatProps {
 
 function Stat({ label, value }: StatProps) {
   return (
-    <div className="stat">
+    <div className="mx-fact">
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
@@ -40,11 +40,11 @@ export function CharacterStats({ character, mode = 'classic' }: CharacterStatsPr
 
   return (
     <div className="character-grid">
-      <section className="card card-pad" aria-labelledby="character-details-title">
+      <section className="mx-card" aria-labelledby="character-details-title">
         <SectionHeading id="character-details-title" icon="shield">
           Datos del personaje
         </SectionHeading>
-        <dl className="stat-grid">
+        <dl className="mx-facts">
           <Stat label="Nivel" value={formatNumber(character.level)} />
           <Stat label="Raza" value={character.race} />
           <Stat label="Clase" value={character.characterClass} />
@@ -69,7 +69,7 @@ export function CharacterStats({ character, mode = 'classic' }: CharacterStatsPr
         </dl>
       </section>
 
-      <section className="card card-pad" aria-labelledby="character-guild-title">
+      <section className="mx-card" aria-labelledby="character-guild-title">
         <SectionHeading id="character-guild-title" icon="users">
           Hermandad
         </SectionHeading>
@@ -77,7 +77,7 @@ export function CharacterStats({ character, mode = 'classic' }: CharacterStatsPr
           <div className="guild-card">
             <h3>
               <Link
-                className="text-link"
+                className="mx-link"
                 to={`/guild/${encodeURIComponent(guildRealm)}/${encodeURIComponent(
                   toGuildSlug(guild.name),
                 )}?mode=${mode}`}
@@ -94,7 +94,7 @@ export function CharacterStats({ character, mode = 'classic' }: CharacterStatsPr
             </ul>
           </div>
         ) : (
-          <p className="empty-state character-empty">Sin hermandad</p>
+          <p className="mx-text mx-text--secondary character-empty">Sin hermandad</p>
         )}
       </section>
     </div>

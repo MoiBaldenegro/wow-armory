@@ -1,0 +1,111 @@
+/* ==========================================================================
+   MXVI Design System — tokens.css
+   Source of truth: moisesbaldenegro.com (src/styles/tokens.css).
+   Names and values are kept identical to the website so both can be diffed
+   and synchronized 1:1. Pattern: --group-name (kebab-case).
+   ========================================================================== */
+
+:root {
+  /* Background and surfaces */
+  --color-background: #070716;
+  --color-surface: #101018;
+
+  /* Text */
+  --color-text: #ffffff;
+  --color-text-secondary: #b8b8c5;
+
+  /* Borders (hairlines over the dark background) */
+  --color-border: rgba(255, 255, 255, .08);
+  --color-border-strong: rgba(255, 255, 255, .15);
+
+  /* Accent (plum) */
+  --color-accent: #B37AC2;
+  --color-accent-hover: #C396CF;
+
+  /* Hero atmosphere: gradient, glow and glass navbar */
+  --color-hero-top: #3C1F44;
+  --color-hero-mid: #150A18;
+  --color-hero-bottom: #05050b;
+  --color-glow: rgba(108, 56, 122, 0.35);
+  --color-navbar: rgba(8, 8, 18, 0.75);
+
+  /* Logo colors (official MXVI logo) */
+  --color-logo-purple: #6C387A;
+  --color-logo-orange: #F7941D;
+
+  /* Brand tiles: background per technology/brand (WCAG: white title >= 4.5:1) */
+  --color-marca-react: #0E6C82;
+  --color-marca-html: #B74D05;
+  --color-marca-node: #08783A;
+  --color-marca-github: #091223;
+  --color-marca-youtube: #B61111;
+  --color-marca-rust: #A33A16;
+  --color-marca-typescript: #215BC7;
+  --color-marca-css: #6C387A;
+  --color-marca-aws: #232F3E;
+  --color-marca-claude-code: #5C2A1C;
+  --color-marca-nestjs: #3A0D18;
+  --color-marca-cloudflare: #A8470C;
+  --color-marca-claude: #B4532F;
+  --color-marca-bun: #3D2B1F;
+  --color-marca-htb: #1A2332;
+  --color-marca-htb-accent: #9FEF00;
+  --color-marca-bash: #252A31;
+  --color-marca-webassembly: #241A5C;
+  --color-marca-astro: #2E1039;
+  --color-marca-opencode: #101114;
+  --color-marca-tauri: #0F2C36;
+
+  /* Promo tiles: tone backgrounds and the blue call to action */
+  --color-promo-youtube: #0e0e10;
+  --color-promo-mfinance: #0d1a1d;
+  --color-promo-new-relic: #0e0b22;
+  --color-promo-tomatesoft: #0b0909;
+  --color-promo-cta: #0071e3;
+  --color-promo-cta-hover: #0077ed;
+  --color-promo-link: #2997ff;
+  --gap-promo: 10px;
+
+  /* Handle chip (@username), verified badge and scrollbar */
+  --color-username-bg: #081a28;
+  --color-username-border: rgba(0, 195, 255, .35);
+  --color-username-text: #5fd6ff;
+  --color-verified: #0a6f9e;
+  --color-scrollbar-thumb: #6C387A;
+  --color-scrollbar-track: #090912;
+
+  /* Status colors for product UIs (forms, alerts). Design system only. */
+  --color-danger: #F05B72;
+  --color-success: #39C98A;
+
+  /* Logo band */
+  --space-mxvi-band: clamp(32px, 5vw, 64px);
+  --opacity-logo-band: .62;
+  --opacity-logo-band-hover: 1;
+
+  /* Radius: every corner is square */
+  --radius-square: 0;
+
+  /* Spacing: one base unit; every gap and padding is a multiple of it */
+  --gap-card: 14px;
+
+  /* Layout */
+  --container-max: 1500px;
+  --video-max-width: 640px;
+  --header-height: 64px;
+  --header-height-mobile: 170px;
+
+  /* Shadows */
+  --shadow-card: 0 25px 80px rgba(0, 0, 0, .35);
+  --shadow-card-rest: inset 0 1px 0 rgba(255, 255, 255, .05), 0 18px 40px rgba(0, 0, 0, .28);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, .233), 0 25px 60px rgba(0, 0, 0, .38);
+  --shadow-username: 0 0 35px rgba(0, 170, 255, .15);
+
+  /* Motion: a single easing for every transition */
+  --transition-default: .28s cubic-bezier(.2, .8, .2, 1);
+
+  /* Typography: Geist family (fonts.css defines the --font-geist-* faces) */
+  --font-sans: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(--font-geist-mono, ui-monospace, monospace);
+  --font-display: var(--font-geist-pixel, ui-monospace, monospace);
+}

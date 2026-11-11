@@ -32,9 +32,9 @@ export function HunterPets({ realmSlug, characterName, mode, characterClass }: H
               <div>
                 <p className="pet-name">
                   {pet.name}
-                  {pet.active && <span className="badge">Activa</span>}
+                  {pet.active && <span className="mx-badge">Activa</span>}
                 </p>
-                <p className="muted">
+                <p className="mx-text--secondary">
                   {[pet.creature, pet.level !== undefined ? `Nivel ${pet.level}` : undefined]
                     .filter(Boolean)
                     .join(' · ')}

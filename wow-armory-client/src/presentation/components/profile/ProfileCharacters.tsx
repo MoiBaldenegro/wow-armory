@@ -49,8 +49,8 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
 
   return (
     <section className="profile-section">
-      <h2 className="section-title">Mis personajes</h2>
-      <p className="lead profile-section-copy">
+      <h2 className="mx-card__title">Mis personajes</h2>
+      <p className="mx-text mx-text--lead profile-section-copy">
         Battle.net separa los personajes por catálogo. Consultamos Retail y
         Classic por separado; por eso un reino solo aparece si Blizzard lo
         devuelve para tu cuenta y región.
@@ -66,7 +66,7 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
                 event.target.value as 'all' | 'retail' | 'classic',
               )
             }
-            className="select"
+            className="mx-input mx-select"
           >
             <option value="all">Todos los catálogos</option>
             <option value="retail">Retail</option>
@@ -82,7 +82,7 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
             id="profile-realm"
             value={selectedRealm}
             onChange={(event) => setSelectedRealm(event.target.value)}
-            className="select"
+            className="mx-input mx-select"
           >
             <option value="all">Todos los reinos</option>
             {availableRealms.map(([slug, name]) => (
@@ -95,7 +95,7 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
       </div>
 
       {profileState.status === 'loading' && (
-        <p className="status-text profile-feedback">
+        <p className="mx-status profile-feedback">
           Cargando personajes de Battle.net…
         </p>
       )}
@@ -125,7 +125,7 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
                   {character.name}
                 </Link>
                 <p className="character-meta">
-                  <span className="mode-badge">{character.mode}</span>
+                  <span className="mx-tag mx-tag--sm">{character.mode}</span>
                   <span>
                     {character.realmName ?? character.realmSlug}
                     {character.level !== undefined
@@ -137,7 +137,7 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
             ))}
           </ul>
         ) : (
-          <p className="empty-state profile-feedback">
+          <p className="mx-text mx-text--secondary profile-feedback">
             No hay personajes en el catálogo seleccionado. Battle.net solo
             muestra personajes vinculados a esta cuenta y región.
           </p>

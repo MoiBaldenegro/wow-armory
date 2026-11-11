@@ -1,0 +1,75 @@
+/* MXVI — prose. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/article. */
+
+.mx-prose {
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+}
+
+/* An h1 inside the Markdown is a small heading: the page title lives in the post hero. */
+.mx-prose h1 { margin-block: 1em; font-size: 1.17em; text-wrap: balance; }
+
+.mx-prose h2 {
+  margin-block: 1.5lh 0.5lh;
+  color: var(--color-text);
+  font-size: 1.75rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.mx-prose h3 {
+  margin-block: 1.25lh 0.375lh;
+  color: var(--color-text);
+  font-size: 1.4rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.mx-prose p { margin: 0 0 1lh; line-height: 1.7; letter-spacing: 0.01em; text-wrap: pretty; }
+
+.mx-prose ul, .mx-prose ol { margin: 0 0 16px; padding-left: 24px; line-height: 1.7; }
+
+.mx-prose li { margin: 0 0 4px; }
+
+.mx-prose a { color: var(--color-accent); transition: var(--transition-default); }
+
+.mx-prose a:hover { color: var(--color-accent-hover); }
+
+.mx-prose code { padding: 2px 6px; background: var(--color-surface); font-size: 0.9em; }
+
+.mx-prose pre code { padding: 0; background: transparent; }
+
+.mx-prose pre {
+  margin: 0 0 16px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+}
+
+/* A wrapped code block (.mx-code) carries the bottom margin itself. */
+.mx-prose .mx-code pre { margin: 0; }
+
+.mx-prose blockquote { margin: 1em 40px; }
+
+/* hr keeps the browser rule: a 2px inset line, 0.5em above and below. */
+
+.mx-prose img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: var(--gap-card) auto 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card-rest);
+}
+
+@media (max-width: 768px) {
+  .mx-prose h2 { font-size: 1.4rem; }
+  .mx-prose h3 { font-size: 1.2rem; }
+  .mx-prose img { margin-bottom: 24px; }
+}

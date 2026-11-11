@@ -1,0 +1,56 @@
+/* MXVI — code. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/content. */
+
+.mx-code { position: relative; margin: 0 0 16px; }
+
+.mx-code pre {
+  margin: 0;
+  padding: 16px 20px;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.mx-code__copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: var(--transition-default);
+}
+
+.mx-code__copy:hover, .mx-code__copy:focus-visible {
+  opacity: 1;
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.mx-code__copy.is-copied {
+  width: auto;
+  padding: 0 var(--gap-card);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  opacity: 1;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .mx-code__copy { opacity: 1; }
+}

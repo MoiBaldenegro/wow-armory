@@ -13,9 +13,12 @@ export function PageShell({
 }: PageShellProps) {
   return (
     <div className="app-shell">
+      <a className="mx-skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
       <AppHeader showAuthAction={showAuthAction} />
-      <main className="page">
-        <div className="container">{children}</div>
+      <main className="mx-page app-page" id="contenido" tabIndex={-1}>
+        {children}
       </main>
       <AppFooter />
     </div>

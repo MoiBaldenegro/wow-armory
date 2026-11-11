@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest';
 import type { Character } from '../../domain/character/Character';
 import { createTestDependencies } from '../../test/fakes';
 import { AuthProvider } from '../providers/AuthProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
 import { UseCasesProvider } from '../providers/UseCasesProvider';
 import { HomePage } from './HomePage';
 
@@ -40,13 +39,11 @@ function renderHome(result: Character | null = null) {
 
   render(
     <UseCasesProvider useCases={useCases}>
-      <ThemeProvider>
-        <AuthProvider>
-          <MemoryRouter>
-            <HomePage />
-          </MemoryRouter>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <MemoryRouter>
+          <HomePage />
+        </MemoryRouter>
+      </AuthProvider>
     </UseCasesProvider>,
   );
 
@@ -77,7 +74,7 @@ describe('HomePage', () => {
       { realmSlug: 'grobbulus', characterName: 'billiemoi' },
     ]);
     expect(
-      screen.getByRole('button', { name: 'Cambiar a tema oscuro' }),
+      screen.getByRole('navigation', { name: 'Navegación principal' }),
     ).toBeInTheDocument();
   });
 

@@ -1,0 +1,42 @@
+/* MXVI Design System — components.css
+   Index of every component, in cascade order. Each file stays under 100
+   lines. Levels: atoms → molecules → organisms. */
+
+@import './components/utilities.css';
+@import './components/atoms/typography.css';
+@import './components/atoms/buttons.css';
+@import './components/atoms/inputs.css';
+@import './components/atoms/tags.css';
+@import './components/atoms/media.css';
+@import './components/molecules/cards.css';
+@import './components/molecules/search.css';
+@import './components/molecules/navigation.css';
+@import './components/molecules/pagination.css';
+@import './components/molecules/article-card.css';
+@import './components/molecules/project-card.css';
+@import './components/molecules/content.css';
+@import './components/molecules/timeline-item.css';
+@import './components/molecules/code.css';
+@import './components/molecules/facts.css';
+@import './components/molecules/forms.css';
+@import './components/molecules/feedback.css';
+@import './components/molecules/table.css';
+@import './components/molecules/result-row.css';
+@import './components/molecules/brand-tile.css';
+@import './components/molecules/brand-tile-link.css';
+@import './components/molecules/brand-tile-accents.css';
+@import './components/molecules/brand-colors.css';
+@import './components/molecules/brand-geometry.css';
+@import './components/molecules/tile-stats.css';
+@import './components/molecules/profile-card.css';
+@import './components/organisms/layout.css';
+@import './components/organisms/navbar.css';
+@import './components/organisms/footer.css';
+@import './components/organisms/hero.css';
+@import './components/organisms/profile-hero.css';
+@import './components/organisms/timeline.css';
+@import './components/organisms/post.css';
+@import './components/organisms/prose.css';
+@import './components/organisms/post-related.css';
+@import './components/organisms/promo.css';
+@import './components/organisms/logo-band.css';

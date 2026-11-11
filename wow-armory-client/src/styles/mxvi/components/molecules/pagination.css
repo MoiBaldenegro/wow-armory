@@ -1,0 +1,14 @@
+/* MXVI — pagination. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/molecules/navigation. */
+
+.mx-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-card);
+  margin-top: var(--gap-card);
+}
+
+.mx-pagination .mx-button--surface { padding: 10px 18px; font-size: 0.8333rem; }
+
+.mx-pagination__label { color: var(--color-text-secondary); font-size: 0.9rem; }

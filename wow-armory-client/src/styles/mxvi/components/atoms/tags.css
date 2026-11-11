@@ -1,0 +1,88 @@
+/* MXVI — tags. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/atoms/tags. */
+
+.mx-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-square);
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.mx-tag--sm { padding: 3px 10px; font-size: 0.78rem; }
+
+a.mx-tag:hover { border-color: var(--color-accent); }
+
+.mx-chip {
+  display: inline-block;
+  padding: calc(var(--gap-card) / 4) calc(var(--gap-card) * 0.75);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-square);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.mx-kicker {
+  display: inline-flex;
+  margin: 0;
+  padding: 4px 14px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-square);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent-hover);
+  font-family: var(--font-display);
+  font-synthesis: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mx-badge {
+  display: inline-block;
+  padding: calc(var(--gap-card) / 4) calc(var(--gap-card) * 0.75);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-square);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.mx-badge--muted { border-color: var(--color-border-strong); }
+
+.mx-handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--color-username-border);
+  border-radius: var(--radius-square);
+  background: var(--color-username-bg);
+  box-shadow: var(--shadow-username);
+  color: var(--color-username-text);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.mx-verified {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-square);
+  background: var(--color-verified);
+  color: var(--color-text);
+  font-size: 0.6rem;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .mx-kicker { padding: 3px 10px; font-size: 0.75rem; }
+}

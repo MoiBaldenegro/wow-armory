@@ -11,7 +11,7 @@ export function ErrorPage() {
 
   return (
     <CenteredPage>
-      <div className="card centered-card fade-in">
+      <div className="mx-card centered-card fade-in">
         <span className="feature-icon" aria-hidden="true">
           <Icon name="alert" size={22} />
         </span>
@@ -23,7 +23,7 @@ export function ErrorPage() {
           </p>
         )}
         <div className="centered-actions">
-          <Link to="/" className="btn btn-primary">
+          <Link to="/" className="mx-button mx-button--accent">
             Volver al inicio
           </Link>
         </div>

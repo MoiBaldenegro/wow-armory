@@ -1,0 +1,65 @@
+/* MXVI — promo. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/promo. */
+
+.mx-promo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-promo); padding: var(--gap-promo); }
+
+.mx-promo-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  min-height: 580px;
+  padding-top: 52px;
+  overflow: hidden;
+  border-radius: var(--radius-square);
+  background: var(--color-promo-youtube);
+  text-align: center;
+}
+
+.mx-promo-tile[data-tone="mfinance"] { background: var(--color-promo-mfinance); }
+
+.mx-promo-tile[data-tone="new-relic"] { background: var(--color-promo-new-relic); }
+
+.mx-promo-tile[data-tone="tomatesoft"] { background: var(--color-promo-tomatesoft); }
+
+.mx-promo-tile__title {
+  margin: 0;
+  padding-inline: 20px;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 600;
+}
+
+.mx-promo-tile__subtitle {
+  max-width: 32ch;
+  margin: 6px 0 0;
+  padding-inline: 20px;
+  color: var(--color-text-secondary);
+  font-size: clamp(17px, 1.6vw, 21px);
+}
+
+.mx-promo-tile__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding-inline: 20px;
+}
+
+.mx-promo-tile__image {
+  width: min(100%, 440px);
+  height: auto;
+  margin-top: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 22%);
+  mask-image: linear-gradient(to bottom, transparent, black 22%);
+}
+
+@media (max-width: 768px) {
+  .mx-promo-grid { grid-template-columns: 1fr; }
+  .mx-promo-tile { min-height: 500px; padding-top: 40px; }
+  .mx-promo-tile__image { width: min(88%, 360px); }
+}

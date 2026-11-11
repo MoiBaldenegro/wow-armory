@@ -1,0 +1,44 @@
+/* MXVI — layout. Values from tokens.css (moisesbaldenegro.com).
+   Spec and markup: catalog/organisms/profile. */
+
+.mx-container { width: min(var(--container-max), 95%); margin-inline: auto; }
+
+.mx-page { width: min(var(--container-max), 95%); margin: auto; padding: 48px 0 64px; }
+
+.mx-section { display: grid; gap: calc(var(--gap-card) * 1.5); }
+
+.mx-section > .mx-heading { margin: 0; }
+
+.mx-stack { display: grid; gap: calc(var(--gap-card) * 2); }
+
+.mx-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--gap-card);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mx-card-grid--2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+
+.mx-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-card);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mx-article-list { display: grid; gap: var(--gap-card); }
+
+@media (min-width: 900px) {
+  .mx-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mx-card-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mx-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .mx-page { padding: 32px 0 48px; }
+}

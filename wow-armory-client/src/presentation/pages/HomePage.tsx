@@ -37,16 +37,16 @@ export function HomePage() {
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Armory de Azeroth</p>
-          <h1 id="home-title" className="page-title">
+          <p className="mx-kicker">Armory de Azeroth</p>
+          <h1 id="home-title" className="mx-heading mx-heading--display">
             Busca un personaje
           </h1>
-          <p className="lead">
+          <p className="mx-text mx-text--lead">
             Escribe el reino y el nombre para ver su nivel, hermandad,
             equipamiento y logros recientes.
           </p>
         </div>
-        <div className="card hero-panel">
+        <div className="mx-card hero-panel">
           <CharacterSearchForm
             initialRealm={FEATURED_CHARACTER.realmName}
             initialName={FEATURED_CHARACTER.displayName}
@@ -58,9 +58,9 @@ export function HomePage() {
       <FeaturedCharacter />
 
       {isAuthenticated && (
-        <section className="card account-strip">
+        <section className="mx-card account-strip">
           <div>
-            <p className="eyebrow">Cuenta conectada</p>
+            <p className="mx-kicker">Cuenta conectada</p>
             <h2>
               {user?.battletag ??
                 (user?.accountId
@@ -71,7 +71,7 @@ export function HomePage() {
               Busca personajes o revisa los personajes vinculados a tu cuenta.
             </p>
           </div>
-          <Link to="/profile" className="btn btn-primary">
+          <Link to="/profile" className="mx-button mx-button--accent">
             Ver mi perfil
           </Link>
         </section>
@@ -79,7 +79,7 @@ export function HomePage() {
 
       <div className="feature-grid">
         {features.map((feature) => (
-          <section className="card feature" key={feature.title}>
+          <section className="mx-card feature" key={feature.title}>
             <span className="feature-icon" aria-hidden="true">
               <Icon name={feature.icon} size={20} />
             </span>
