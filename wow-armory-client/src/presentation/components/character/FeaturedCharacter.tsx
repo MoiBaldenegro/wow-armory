@@ -70,6 +70,7 @@ export function FeaturedCharacter() {
         details={details}
         headingLevel={2}
         mode={FEATURED_CHARACTER.mode}
+        detailHref={href}
         compact
       />
     </section>

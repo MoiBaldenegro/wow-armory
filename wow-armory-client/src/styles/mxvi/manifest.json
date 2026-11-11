@@ -1,5 +1,5 @@
 {
-  "source": "github:MoiBaldenegro/mxvi-design-system@9ca3fc35af41d881c039d27f69a12cbdc754f6cd",
+  "source": "github:MoiBaldenegro/mxvi-design-system@62803420cdff1fe91a08658b8119d334e604e4bd",
   "files": {
     "base.css": "9e73f0b4f4833a8b1b5b2ce9fa076c40a46efb916bd64a4f324495e2a6fa14d3",
     "components.css": "b83c74041f3e88a02205bf31ee3a559865501aa26bf8b3529b56ac3e87176e9a",
@@ -47,6 +47,6 @@
     "fonts/GeistMono-Variable.woff2": "fba8f577f38a2bbcbe818efa6348dd58f36303a10b8737c42fefad275be563ab",
     "fonts/GeistPixel-Circle.woff2": "eb52582a433e572688338d51b894852bef0bd9f18a296616d779051a225f904d",
     "fonts/LICENSE.txt": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137",
-    "tokens.css": "e7694bf29a4a97e40993891e1e04ca455d491fc51cc9b035fc34794faa55c25a"
+    "tokens.css": "84dc405de0596c0edc47151a110e4dbb0e54268188f52cd37337fda6193b6305"
   }
 }

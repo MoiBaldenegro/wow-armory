@@ -67,6 +67,15 @@ describe('HomePage', () => {
       await screen.findByRole('heading', { name: 'Billiemoi', level: 2 }),
     ).toBeInTheDocument();
     expect(screen.getByText('Gnome · Frost · Mage')).toBeInTheDocument();
+    // The featured card links to the full character page, like the arena ranking.
+    const detailHref = '/character/grobbulus/billiemoi?mode=classic';
+    expect(screen.getByRole('link', { name: 'Billiemoi' })).toHaveAttribute(
+      'href',
+      detailHref,
+    );
+    expect(
+      screen.getByRole('link', { name: 'Ver ficha completa de Billiemoi' }),
+    ).toHaveAttribute('href', detailHref);
     expect(
       screen.getByRole('region', { name: 'Hermandad' }),
     ).toBeInTheDocument();

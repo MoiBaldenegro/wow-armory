@@ -23,6 +23,8 @@ interface CharacterProfileContentProps {
   mode?: WowMode;
   /** Featured cards on the home page only show the summary. */
   compact?: boolean;
+  /** Link to the full character page (used by summary cards). */
+  detailHref?: string;
 }
 
 function renderUrl(details: CharacterDetails | null): string | undefined {
@@ -58,6 +60,7 @@ export function CharacterProfileContent({
   headingLevel = 1,
   mode = 'classic',
   compact = false,
+  detailHref,
 }: CharacterProfileContentProps) {
   const retryButton = (
     <button type="button" onClick={retry} className="mx-button mx-button--accent">
@@ -83,6 +86,7 @@ export function CharacterProfileContent({
           <CharacterHero
             character={state.character}
             headingLevel={headingLevel}
+            detailHref={detailHref}
           />
           {render ? (
             <CharacterRender url={render} name={state.character.name} />
