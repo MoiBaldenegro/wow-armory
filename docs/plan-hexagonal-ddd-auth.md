@@ -438,4 +438,3 @@ decisiones por defecto; se pueden revisar antes de la fase correspondiente.
 - Contexto: `docs/contexto-aplicacion.md`
 - Casos de uso: `docs/casos-de-uso.md`
 - Convenciones: `AGENTS.md`
-- Cola: `backlog.md`
