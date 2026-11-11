@@ -20,6 +20,8 @@ export interface CharacterProps {
   lastLogin?: Date;
   guild?: Guild;
   achievements?: Achievement[];
+  /** `ALLIANCE`, `HORDE` or `NEUTRAL`. */
+  faction?: string;
 }
 
 export class Character {
@@ -63,6 +65,10 @@ export class Character {
 
   get lastLogin(): Date | undefined {
     return this.props.lastLogin;
+  }
+
+  get faction(): string | undefined {
+    return this.props.faction;
   }
 
   get guild(): Guild | undefined {

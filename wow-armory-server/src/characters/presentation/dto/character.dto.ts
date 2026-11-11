@@ -11,6 +11,7 @@ export interface AchievementDto {
 export interface GuildDto {
   name: string;
   realm?: string;
+  realmSlug?: string;
   rank?: number;
   memberCount?: number;
 }
@@ -25,6 +26,7 @@ export interface CharacterDto {
   itemLevel: number;
   achievementPoints: number;
   lastLogin?: string;
+  faction?: string;
   guild?: GuildDto;
   achievements?: AchievementDto[];
 }
@@ -48,10 +50,15 @@ export function toCharacterDto(character: Character): CharacterDto {
     dto.lastLogin = character.lastLogin.toISOString();
   }
 
+  if (character.faction) {
+    dto.faction = character.faction;
+  }
+
   if (character.guild) {
     dto.guild = {
       name: character.guild.name,
       realm: character.guild.realm,
+      realmSlug: character.guild.realmSlug,
       rank: character.guild.rank,
       memberCount: character.guild.memberCount,
     };

@@ -5,20 +5,13 @@ import {
   CharacterNotFound,
 } from '../domain/errors/CharacterError';
 import { BlizzardCharacterDetailsAdapter } from './BlizzardCharacterDetailsAdapter';
+import { createTestBlizzardClient } from '../../shared/infrastructure/blizzard/testing';
 
 const BASE =
   'https://eu.api.blizzard.com/profile/wow/character/grobbulus/billiemoi';
 
 function createAdapter() {
-  return new BlizzardCharacterDetailsAdapter(
-    { getAccessToken: jest.fn().mockResolvedValue('app-token') },
-    {
-      region: 'eu',
-      namespace: 'profile-classic-eu',
-      locale: 'en_US',
-      namespaces: { classic: 'profile-classic-eu', retail: 'profile-eu' },
-    },
-  );
+  return new BlizzardCharacterDetailsAdapter(createTestBlizzardClient('eu'));
 }
 
 function axiosError(status: number, headers: Record<string, unknown> = {}) {
@@ -65,7 +58,15 @@ describe('BlizzardCharacterDetailsAdapter', () => {
     );
     expect(details).toEqual({
       media: [{ key: 'avatar', url: 'a.jpg' }],
-      equipment: [{ slot: 'Head', name: 'Helm', level: 66, quality: 'Epic' }],
+      equipment: [
+        expect.objectContaining({
+          slot: 'Head',
+          name: 'Helm',
+          level: 66,
+          quality: 'Epic',
+        }),
+      ],
+      renderUrl: 'a.jpg',
     });
   });
 

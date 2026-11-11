@@ -3,6 +3,7 @@ import { CharacterError } from './errors/CharacterError';
 export interface GuildProps {
   name: string;
   realm?: string;
+  realmSlug?: string;
   rank?: number;
   memberCount?: number;
 }
@@ -18,6 +19,7 @@ export class Guild {
     return new Guild({
       name: props.name,
       realm: props.realm,
+      realmSlug: props.realmSlug,
       rank: props.rank,
       memberCount: props.memberCount,
     });
@@ -29,6 +31,10 @@ export class Guild {
 
   get realm(): string | undefined {
     return this.props.realm;
+  }
+
+  get realmSlug(): string | undefined {
+    return this.props.realmSlug;
   }
 
   get rank(): number | undefined {

@@ -16,6 +16,10 @@ describe('resolveBlizzardApiSettings', () => {
       locale: 'en_US',
       namespaces: { classic: 'profile-classic-eu', retail: 'profile-eu' },
       staticNamespaces: { classic: 'static-classic-eu', retail: 'static-eu' },
+      dynamicNamespaces: {
+        classic: 'dynamic-classic-eu',
+        retail: 'dynamic-eu',
+      },
     });
   });
 

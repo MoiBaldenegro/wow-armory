@@ -10,7 +10,9 @@ import { CharacterRepository } from '../domain/ports/CharacterRepository';
 import { CharactersController } from '../presentation/CharactersController';
 import { BlizzardCharacterAdapter } from './BlizzardCharacterAdapter';
 import { BlizzardCharacterDetailsAdapter } from './BlizzardCharacterDetailsAdapter';
-import { ClientCredentialsTokenProvider } from './ClientCredentialsTokenProvider';
+import { BlizzardCharacterExtrasAdapter } from './BlizzardCharacterExtrasAdapter';
+import { BlizzardApiClient } from '../../shared/infrastructure/blizzard/blizzard-api-client';
+import { BLIZZARD_APP_TOKEN_PROVIDER } from '../../shared/infrastructure/blizzard/blizzard.module';
 import { resolveBlizzardApiSettings } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 
 @Module({
@@ -19,9 +21,7 @@ import { resolveBlizzardApiSettings } from '../../shared/infrastructure/blizzard
   providers: [
     {
       provide: CHARACTER_TOKEN_PROVIDER,
-      useFactory: (config: ConfigService) =>
-        new ClientCredentialsTokenProvider(config),
-      inject: [ConfigService],
+      useExisting: BLIZZARD_APP_TOKEN_PROVIDER,
     },
     {
       provide: CHARACTER_REPOSITORY,
@@ -43,20 +43,15 @@ import { resolveBlizzardApiSettings } from '../../shared/infrastructure/blizzard
     },
     {
       provide: BlizzardCharacterDetailsAdapter,
-      useFactory: (
-        tokenProvider: ApplicationTokenProvider,
-        config: ConfigService,
-      ) => {
-        const settings = resolveBlizzardApiSettings(config);
-
-        return new BlizzardCharacterDetailsAdapter(tokenProvider, {
-          region: settings.region,
-          locale: settings.locale,
-          namespace: settings.namespaces.classic,
-          namespaces: settings.namespaces,
-        });
-      },
-      inject: [CHARACTER_TOKEN_PROVIDER, ConfigService],
+      useFactory: (client: BlizzardApiClient) =>
+        new BlizzardCharacterDetailsAdapter(client),
+      inject: [BlizzardApiClient],
+    },
+    {
+      provide: BlizzardCharacterExtrasAdapter,
+      useFactory: (client: BlizzardApiClient) =>
+        new BlizzardCharacterExtrasAdapter(client),
+      inject: [BlizzardApiClient],
     },
     {
       provide: GetCharacterUseCase,

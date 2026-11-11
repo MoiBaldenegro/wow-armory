@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { BlizzardModule } from './shared/infrastructure/blizzard/blizzard.module';
+import { GameDataModule } from './game-data/game-data.module';
+import { GuildsModule } from './guilds/guilds.module';
 import { CharactersModule } from './characters/infrastructure/characters.module';
 import { validateEnv } from './config/env.validation';
 import { HealthModule } from './health/health.module';
@@ -29,7 +32,10 @@ import { SessionModule } from './shared/infrastructure/session/session.module';
     LoggingModule,
     SessionModule,
     HealthModule,
+    BlizzardModule,
     CharactersModule,
+    GuildsModule,
+    GameDataModule,
     IdentityModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
