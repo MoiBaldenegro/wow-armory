@@ -45,6 +45,7 @@ export function AppHeader({ showAuthAction = true }: AppHeaderProps) {
         <nav className="header-nav" aria-label="Navegación principal">
           <Link to="/">Inicio</Link>
           <Link to="/guide">Guía</Link>
+          <Link to="/leaderboards">Arena</Link>
           {isAuthenticated && <Link to="/profile">Mi perfil</Link>}
         </nav>
         <div className="header-actions">

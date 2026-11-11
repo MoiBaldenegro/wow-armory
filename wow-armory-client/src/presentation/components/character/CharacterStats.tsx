@@ -7,10 +7,15 @@ import {
   formatNumber,
   NOT_AVAILABLE,
 } from '../../utils/characterFormat';
+import { Link } from 'react-router-dom';
+import { toGuildSlug } from '../../../application/armory/ArmoryQueries';
+import type { WowMode } from '../../../domain/armory/Armory';
+import { factionLabel } from '../../utils/armoryFormat';
 import { SectionHeading } from '../ui/SectionHeading';
 
 interface CharacterStatsProps {
   character: Character;
+  mode?: WowMode;
 }
 
 interface StatProps {
@@ -27,8 +32,10 @@ function Stat({ label, value }: StatProps) {
   );
 }
 
-export function CharacterStats({ character }: CharacterStatsProps) {
+export function CharacterStats({ character, mode = 'classic' }: CharacterStatsProps) {
   const { guild } = character;
+  const guildRealm = guild?.realmSlug ?? character.realmSlug;
+  const faction = factionLabel(character.faction);
   const guildMembers = guild ? formatGuildMembers(guild) : undefined;
 
   return (
@@ -46,6 +53,7 @@ export function CharacterStats({ character }: CharacterStatsProps) {
             value={character.specialization ?? NOT_AVAILABLE}
           />
           <Stat label="Reino" value={character.realmSlug} />
+          {faction && <Stat label="Facción" value={faction} />}
           <Stat
             label="Nivel de objeto"
             value={formatKnownNumber(character.itemLevel)}
@@ -67,7 +75,16 @@ export function CharacterStats({ character }: CharacterStatsProps) {
         </SectionHeading>
         {guild ? (
           <div className="guild-card">
-            <h3>{guild.name}</h3>
+            <h3>
+              <Link
+                className="text-link"
+                to={`/guild/${encodeURIComponent(guildRealm)}/${encodeURIComponent(
+                  toGuildSlug(guild.name),
+                )}?mode=${mode}`}
+              >
+                {guild.name}
+              </Link>
+            </h3>
             <ul className="guild-list">
               {guild.realm !== undefined && <li>Reino: {guild.realm}</li>}
               {guild.rank !== undefined && (

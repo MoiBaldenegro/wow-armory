@@ -23,6 +23,7 @@ export function CharacterProfilePage() {
         characterName={characterName}
         retry={retry}
         details={details}
+        mode={mode}
       />
     </PageShell>
   );

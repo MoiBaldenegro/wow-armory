@@ -20,6 +20,7 @@ export function AppFooter() {
             <nav className="footer-nav" aria-label="Navegación del pie">
               <Link to="/">Inicio</Link>
               <Link to="/guide">Guía de Armory</Link>
+              <Link to="/leaderboards">Clasificación de arena</Link>
               <Link to="/profile">Mi perfil</Link>
             </nav>
           </div>

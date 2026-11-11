@@ -9,6 +9,7 @@ export interface AchievementDto {
 export interface GuildDto {
   name: string;
   realm?: string;
+  realmSlug?: string;
   rank?: number;
   memberCount?: number;
 }
@@ -23,6 +24,7 @@ export interface CharacterDto {
   itemLevel: number;
   achievementPoints: number;
   lastLogin?: string;
+  faction?: string;
   guild?: GuildDto;
   achievements?: AchievementDto[];
 }

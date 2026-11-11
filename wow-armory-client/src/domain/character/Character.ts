@@ -13,4 +13,6 @@ export interface Character {
   lastLogin?: Date;
   guild?: Guild;
   achievements?: Achievement[];
+  /** `ALLIANCE`, `HORDE` or `NEUTRAL`. */
+  faction?: string;
 }
