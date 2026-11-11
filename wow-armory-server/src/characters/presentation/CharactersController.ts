@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { GetCharacterUseCase } from '../application/GetCharacterUseCase';
+import { CharacterName } from '../domain/CharacterName';
 import {
   BlizzardRateLimited,
   BlizzardUnavailable,
@@ -19,9 +20,14 @@ import {
   InvalidCharacterName,
   InvalidRealmSlug,
 } from '../domain/errors/CharacterError';
+import { RealmSlug } from '../domain/RealmSlug';
+import {
+  BlizzardCharacterDetailsAdapter,
+  CharacterDetails,
+} from '../infrastructure/BlizzardCharacterDetailsAdapter';
+import { parseWowMode } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 import { RateLimit } from '../../shared/infrastructure/rate-limit/rate-limit';
 import { CharacterDto, toCharacterDto } from './dto/character.dto';
-import { BlizzardCharacterDetailsAdapter } from '../infrastructure/BlizzardCharacterDetailsAdapter';
 
 @Controller('characters')
 export class CharactersController {
@@ -36,12 +42,20 @@ export class CharactersController {
     @Param('realmSlug') realmSlug: string,
     @Param('characterName') characterName: string,
     @Query('mode') mode: string | undefined,
-  ) {
-    return this.details.getDetails(
-      realmSlug,
-      characterName,
-      mode === 'retail' ? 'retail' : 'classic',
-    );
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CharacterDetails> {
+    try {
+      const realm = RealmSlug.create(realmSlug);
+      const name = CharacterName.create(characterName);
+
+      return await this.details.getDetails(
+        realm.value,
+        name.value,
+        parseWowMode(mode),
+      );
+    } catch (error) {
+      throw this.toHttpException(error, response);
+    }
   }
 
   @Get(':realmSlug/:characterName')
@@ -53,47 +67,50 @@ export class CharactersController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<CharacterDto> {
     try {
-      const selectedMode = mode === 'retail' ? 'retail' : 'classic';
       const character = await this.getCharacter.execute(
         realmSlug,
         characterName,
-        selectedMode,
+        parseWowMode(mode),
       );
 
       return toCharacterDto(character);
     } catch (error) {
-      if (
-        error instanceof InvalidRealmSlug ||
-        error instanceof InvalidCharacterName
-      ) {
-        throw new BadRequestException('Invalid realm or character name.');
-      }
-
-      if (error instanceof CharacterNotFound) {
-        throw new NotFoundException('Character not found.');
-      }
-
-      if (error instanceof BlizzardRateLimited) {
-        if (error.retryAfterSeconds !== undefined) {
-          response.setHeader('Retry-After', String(error.retryAfterSeconds));
-        }
-
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.TOO_MANY_REQUESTS,
-            message: 'Character lookup rate limit exceeded.',
-          },
-          HttpStatus.TOO_MANY_REQUESTS,
-        );
-      }
-
-      if (error instanceof BlizzardUnavailable) {
-        throw new BadGatewayException(
-          'Character data is temporarily unavailable.',
-        );
-      }
-
-      throw error;
+      throw this.toHttpException(error, response);
     }
+  }
+
+  private toHttpException(error: unknown, response: Response): unknown {
+    if (
+      error instanceof InvalidRealmSlug ||
+      error instanceof InvalidCharacterName
+    ) {
+      return new BadRequestException('Invalid realm or character name.');
+    }
+
+    if (error instanceof CharacterNotFound) {
+      return new NotFoundException('Character not found.');
+    }
+
+    if (error instanceof BlizzardRateLimited) {
+      if (error.retryAfterSeconds !== undefined) {
+        response.setHeader('Retry-After', String(error.retryAfterSeconds));
+      }
+
+      return new HttpException(
+        {
+          statusCode: HttpStatus.TOO_MANY_REQUESTS,
+          message: 'Character lookup rate limit exceeded.',
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    if (error instanceof BlizzardUnavailable) {
+      return new BadGatewayException(
+        'Character data is temporarily unavailable.',
+      );
+    }
+
+    return error;
   }
 }

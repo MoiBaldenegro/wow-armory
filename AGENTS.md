@@ -7,11 +7,12 @@ Contexto compartido por todos los agentes de este repositorio.
 `wow-armory` es una aplicación para consultar personajes de World of Warcraft.
 Tiene dos proyectos independientes:
 
-- `wow-armory-server/`: API REST con NestJS 10 + TypeScript.
+- `wow-armory-server/`: API REST con NestJS 10 + TypeScript. Consume la API de
+  Blizzard (Profile API con token `client_credentials` y Battle.net OAuth
+  para el perfil del usuario).
 - `wow-armory-client/`: SPA con React 18 + Vite 5 + Tailwind CSS + TypeScript.
 
-Además, el repositorio contiene una fábrica de software mínima basada en
-subagentes de Claude Code (ver "Fábrica de software" más abajo).
+Ambos proyectos se prueban y despliegan con Node 20 (ver los `Dockerfile`).
 
 ## Comandos
 
@@ -49,24 +50,17 @@ subagentes de Claude Code (ver "Fábrica de software" más abajo).
   (`darkMode: 'class'`).
 - Prettier: comillas simples y comas finales. Lint debe pasar antes de un PR.
 - Commits: estilo Conventional Commits con emoji, por ejemplo
-  `feat: :sparkles: add rate limiting`. El builder commitea en `factory/<job-id>`,
-  nunca directamente en `main`.
+  `feat: :sparkles: add rate limiting`. Trabaja en una rama y abre un PR; no
+  commitees directamente en `main`.
 - No añadas dependencias nuevas si una utilidad existente resuelve el problema.
 - No commitees secretos. Las credenciales viven en variables de entorno.
 
-## Fábrica de software
+## API de Blizzard
 
-- Orquestador: la sesión principal de Claude Code (los subagentes no pueden
-  lanzar subagentes). Es el único que escribe `factory/board.json`.
-- Subagentes: `.claude/agents/` (`spec-writer`, `builder`, `security`, `ux`,
-  `ui-design`, `code`, `approver`). Heredan el modelo de la sesión.
-- La skill `.claude/skills/factory-orchestrator/` describe el bucle completo.
-- Comando: `/factory` (procesa el siguiente ítem, o `aprobar <id>` /
-  `reelaborar <id>`).
-- Backlog: `backlog.md`.
-- Trabajos y artefactos: `jobs/<job-id>/`.
-- Dashboard: `factory/dashboard.html`, servido desde `factory/` con
-  `python3 -m http.server`.
-- Regla clave: una ronda de revisión termina solo cuando existen los 4 archivos
-  (`review-security.md`, `review-ux.md`, `review-ui.md`, `review-code.md`).
-- Límite: 2 rondas de revisión por trabajo antes de escalar a `needs-human`.
+- Las rutas de la Profile API (`/profile/wow/character/{realm}/{name}`)
+  exigen realm y nombre en minúsculas; usa `toBlizzardPathSegment`.
+- Los namespaces (`profile-*`, `static-*`) se derivan de `BLIZZARD_REGION` en
+  `src/shared/infrastructure/blizzard/blizzard-api-config.ts`; no los
+  hardcodees con `-us`.
+- El resumen del personaje no incluye la lista de logros: los recientes
+  vienen de `/achievements` (`recent_events`).

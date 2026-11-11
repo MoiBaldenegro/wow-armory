@@ -382,7 +382,8 @@ export function validateEnv(config: RawConfig): RawConfig {
     BLIZZARD_REDIRECT_URI: redirectUri ?? '',
     BLIZZARD_REGION: blizzardRegion,
     BLIZZARD_NAMESPACE:
-      asString(config.BLIZZARD_NAMESPACE) ?? 'profile-classic-us',
+      asString(config.BLIZZARD_NAMESPACE) ??
+      `profile-classic-${blizzardRegion}`,
     CLIENT_URL: clientUrl,
     CORS_ORIGINS: corsOrigins.join(','),
     COOKIE_SECURE: cookieSecure,

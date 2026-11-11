@@ -1,10 +1,10 @@
 import { InvalidCharacterName } from './errors/CharacterError';
 
-const CHARACTER_NAME_PATTERN = /^[A-Za-z0-9'-]{1,64}$/;
+const CHARACTER_NAME_PATTERN = /^[\p{L}\p{M}0-9'-]{1,64}$/u;
 
 /**
  * Character name as exposed by the public HTTP contract. The regex is
- * intentionally ASCII-only and rejects separators, percent escapes, spaces and
+ * restricted to Unicode letters, digits, apostrophes and hyphens; it rejects separators, percent escapes, spaces and
  * dot-dot sequences before any upstream request is made.
  */
 export class CharacterName {

@@ -1,6 +1,8 @@
 # Contexto de la aplicación — wow-armory
 
-> Documento de contexto para la fábrica de software.
+> Documento de contexto histórico (snapshot previo a la migración hexagonal).
+> La fábrica de software (`backlog.md`, `factory/`, `jobs/`, `.claude/`) se
+> retiró del repositorio el 2026-11-11.
 > Última actualización: 2026-11-06.
 > Fuente: inspección directa de `wow-armory-server/`, `wow-armory-client/`,
 > `AGENTS.md`, `backlog.md` y el historial de Git.
@@ -43,12 +45,7 @@ Cloudflare Pages y el servidor en Render.
 ```text
 wow-armory/
 ├── AGENTS.md                  # Contexto y convenciones para agentes
-├── backlog.md                 # Cola de features de la fábrica
-├── BUILD_PROMT.md             # Diseño de la fábrica de software
 ├── docs/                      # Documentación de contexto (este documento)
-├── factory/                   # board.json + dashboard.html de la fábrica
-├── jobs/                      # Artefactos por job de la fábrica
-├── .claude/                   # Subagentes, comando /factory y skill del orquestador
 ├── CLAUDE.md                  # Importa AGENTS.md para Claude Code
 ├── wow-armory-server/         # API NestJS
 │   ├── src/
@@ -419,4 +416,3 @@ npm run build            # typecheck + build
   `wow-armory-client/src/data/mockCharacter.ts`
 - Pantalla principal: `wow-armory-client/src/App.tsx`
 - Convenciones y comandos: `AGENTS.md`
-- Cola de trabajo: `backlog.md`
