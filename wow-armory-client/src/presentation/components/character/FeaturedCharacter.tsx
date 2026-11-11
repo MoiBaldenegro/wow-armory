@@ -69,6 +69,8 @@ export function FeaturedCharacter() {
         retry={retry}
         details={details}
         headingLevel={2}
+        mode={FEATURED_CHARACTER.mode}
+        compact
       />
     </section>
   );

@@ -49,14 +49,21 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
     let character: Character;
 
     try {
-      const [profile, achievements] = await Promise.all([
+      const [profile, achievements, valid] = await Promise.all([
         axios.get<unknown>(url, {
           headers: { Authorization: `Bearer ${token}` },
           params,
           timeout: REQUEST_TIMEOUT_MS,
         }),
         this.getRecentAchievements(`${url}/achievements`, token, params),
+        this.isValid(`${url}/status`, token, params),
       ]);
+
+      // A renamed, deleted or transferred character keeps answering for a
+      // while; `/status` reports it as invalid.
+      if (!valid) {
+        return null;
+      }
 
       character = this.mapper.toDomain(profile.data, realm);
 
@@ -112,6 +119,24 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
     }
   }
 
+  /** Best effort: only an explicit `is_valid: false` invalidates. */
+  private async isValid(
+    url: string,
+    token: string,
+    params: Record<string, string>,
+  ): Promise<boolean> {
+    try {
+      const response = await axios.get<unknown>(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+        timeout: REQUEST_TIMEOUT_MS,
+      });
+      return (response.data as { is_valid?: unknown })?.is_valid !== false;
+    } catch {
+      return true;
+    }
+  }
+
   private async enrichAchievementMedia(
     character: Character,
     mode: WowMode,
@@ -157,6 +182,7 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
       achievementPoints: character.achievementPoints,
       lastLogin: character.lastLogin,
       guild: character.guild,
+      faction: character.faction,
       achievements,
     });
   }

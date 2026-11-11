@@ -2,6 +2,12 @@ import { CharacterHero } from './CharacterHero';
 import { CharacterStats } from './CharacterStats';
 import { CharacterEquipment } from './CharacterEquipment';
 import { RecentAchievements } from './RecentAchievements';
+import { CharacterRender } from './CharacterRender';
+import { CharacterStatsSheet } from './CharacterStatsSheet';
+import { CharacterTalents } from './CharacterTalents';
+import { CharacterPvp } from './CharacterPvp';
+import { HunterPets } from './HunterPets';
+import type { WowMode } from '../../../domain/armory/Armory';
 import { CharacterSearchForm } from '../search/CharacterSearchForm';
 import { ProblemCard } from '../feedback/ProblemCard';
 import type { CharacterState } from '../../hooks/useCharacter';
@@ -14,16 +20,23 @@ interface CharacterProfileContentProps {
   retry: () => void;
   details: CharacterDetails | null;
   headingLevel?: 1 | 2;
+  mode?: WowMode;
+  /** Featured cards on the home page only show the summary. */
+  compact?: boolean;
 }
 
-function CharacterMedia({ media }: { media: CharacterDetails['media'] }) {
-  const preferred = media.find((asset) => asset.key === 'avatar') ?? media[0];
+function renderUrl(details: CharacterDetails | null): string | undefined {
+  if (!details) {
+    return undefined;
+  }
 
-  return preferred ? (
-    <div className="media-frame fade-in">
-      <img src={preferred.url} alt="Retrato del personaje" loading="eager" />
-    </div>
-  ) : null;
+  return (
+    details.renderUrl ??
+    ['main-raw', 'main', 'inset', 'avatar']
+      .map((key) => details.media.find((asset) => asset.key === key)?.url)
+      .find((url) => url !== undefined) ??
+    details.media[0]?.url
+  );
 }
 
 function rateLimitMessage(retryAfterSeconds?: number): string {
@@ -43,6 +56,8 @@ export function CharacterProfileContent({
   retry,
   details,
   headingLevel = 1,
+  mode = 'classic',
+  compact = false,
 }: CharacterProfileContentProps) {
   const retryButton = (
     <button type="button" onClick={retry} className="btn btn-primary">
@@ -59,23 +74,43 @@ export function CharacterProfileContent({
           </p>
         </div>
       );
-    case 'success':
+    case 'success': {
+      const render = renderUrl(details);
+      const sectionProps = { realmSlug, characterName, mode };
+
       return (
         <article className="fade-in">
           <CharacterHero
             character={state.character}
             headingLevel={headingLevel}
           />
-          {details?.media.length ? (
-            <CharacterMedia media={details.media} />
+          {render ? (
+            <CharacterRender url={render} name={state.character.name} />
           ) : null}
-          <CharacterStats character={state.character} />
+          <CharacterStats character={state.character} mode={mode} />
+          {!compact && <CharacterStatsSheet {...sectionProps} />}
           {details?.equipment.length ? (
-            <CharacterEquipment equipment={details.equipment} />
+            <CharacterEquipment
+              equipment={details.equipment}
+              realmSlug={compact ? undefined : realmSlug}
+              mode={mode}
+              faction={state.character.faction}
+            />
           ) : null}
+          {!compact && (
+            <>
+              <CharacterTalents {...sectionProps} />
+              <CharacterPvp {...sectionProps} />
+              <HunterPets
+                {...sectionProps}
+                characterClass={state.character.characterClass}
+              />
+            </>
+          )}
           <RecentAchievements achievements={state.character.achievements} />
         </article>
       );
+    }
     case 'not-found':
       return (
         <ProblemCard

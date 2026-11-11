@@ -10,6 +10,8 @@ import { HttpCharacterDetailsRepository } from './http/HttpCharacterDetailsRepos
 import { HttpWowProfileRepository } from './http/HttpWowProfileRepository';
 import { GetWowProfile } from '../application/profile/GetWowProfile';
 import { GetCharacterDetails } from '../application/character/GetCharacterDetails';
+import { ArmoryQueries } from '../application/armory/ArmoryQueries';
+import { HttpArmoryRepository } from './http/HttpArmoryRepository';
 
 export interface UseCases {
   getCharacter: GetCharacter;
@@ -18,6 +20,8 @@ export interface UseCases {
   logout: Logout;
   getWowProfile?: GetWowProfile;
   getCharacterDetails?: GetCharacterDetails;
+  /** Optional so tests can omit it; sections then stay hidden. */
+  armory?: ArmoryQueries;
 }
 
 export function createUseCases(): UseCases {
@@ -34,5 +38,6 @@ export function createUseCases(): UseCases {
     logout: new Logout(authRepository),
     getWowProfile: new GetWowProfile(wowProfileRepository),
     getCharacterDetails: new GetCharacterDetails(characterDetailsRepository),
+    armory: new ArmoryQueries(new HttpArmoryRepository(httpClient)),
   };
 }

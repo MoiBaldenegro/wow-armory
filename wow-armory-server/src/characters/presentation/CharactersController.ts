@@ -1,25 +1,7 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  NotFoundException,
-  Param,
-  Query,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { GetCharacterUseCase } from '../application/GetCharacterUseCase';
 import { CharacterName } from '../domain/CharacterName';
-import {
-  BlizzardRateLimited,
-  BlizzardUnavailable,
-  CharacterNotFound,
-  InvalidCharacterName,
-  InvalidRealmSlug,
-} from '../domain/errors/CharacterError';
 import { RealmSlug } from '../domain/RealmSlug';
 import {
   BlizzardCharacterDetailsAdapter,
@@ -27,6 +9,14 @@ import {
 } from '../infrastructure/BlizzardCharacterDetailsAdapter';
 import { parseWowMode } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 import { RateLimit } from '../../shared/infrastructure/rate-limit/rate-limit';
+import { toBlizzardHttpException } from '../../shared/infrastructure/http/blizzard-http-errors';
+import {
+  BlizzardCharacterExtrasAdapter,
+  CharacterPvp,
+  CharacterStatistics,
+  CharacterTalents,
+  HunterPet,
+} from '../infrastructure/BlizzardCharacterExtrasAdapter';
 import { CharacterDto, toCharacterDto } from './dto/character.dto';
 
 @Controller('characters')
@@ -34,7 +24,74 @@ export class CharactersController {
   constructor(
     private readonly getCharacter: GetCharacterUseCase,
     private readonly details: BlizzardCharacterDetailsAdapter,
+    private readonly extras: BlizzardCharacterExtrasAdapter,
   ) {}
+
+  @Get(':realmSlug/:characterName/statistics')
+  @RateLimit('public')
+  async statistics(
+    @Param('realmSlug') realmSlug: string,
+    @Param('characterName') characterName: string,
+    @Query('mode') mode: string | undefined,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CharacterStatistics> {
+    try {
+      const { realm, name } = this.validate(realmSlug, characterName);
+      return await this.extras.getStatistics(realm, name, parseWowMode(mode));
+    } catch (error) {
+      throw this.toHttpException(error, response);
+    }
+  }
+
+  @Get(':realmSlug/:characterName/talents')
+  @RateLimit('public')
+  async talents(
+    @Param('realmSlug') realmSlug: string,
+    @Param('characterName') characterName: string,
+    @Query('mode') mode: string | undefined,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CharacterTalents> {
+    try {
+      const { realm, name } = this.validate(realmSlug, characterName);
+      return await this.extras.getTalents(realm, name, parseWowMode(mode));
+    } catch (error) {
+      throw this.toHttpException(error, response);
+    }
+  }
+
+  @Get(':realmSlug/:characterName/pvp')
+  @RateLimit('public')
+  async pvp(
+    @Param('realmSlug') realmSlug: string,
+    @Param('characterName') characterName: string,
+    @Query('mode') mode: string | undefined,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CharacterPvp> {
+    try {
+      const { realm, name } = this.validate(realmSlug, characterName);
+      return await this.extras.getPvp(realm, name, parseWowMode(mode));
+    } catch (error) {
+      throw this.toHttpException(error, response);
+    }
+  }
+
+  @Get(':realmSlug/:characterName/hunter-pets')
+  @RateLimit('public')
+  async hunterPets(
+    @Param('realmSlug') realmSlug: string,
+    @Param('characterName') characterName: string,
+    @Query('mode') mode: string | undefined,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<{ pets: HunterPet[] }> {
+    try {
+      const { realm, name } = this.validate(realmSlug, characterName);
+      return {
+        pets: await this.extras.getHunterPets(realm, name, parseWowMode(mode)),
+      };
+    } catch (error) {
+      throw this.toHttpException(error, response);
+    }
+  }
 
   @Get(':realmSlug/:characterName/details')
   @RateLimit('public')
@@ -45,14 +102,8 @@ export class CharactersController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<CharacterDetails> {
     try {
-      const realm = RealmSlug.create(realmSlug);
-      const name = CharacterName.create(characterName);
-
-      return await this.details.getDetails(
-        realm.value,
-        name.value,
-        parseWowMode(mode),
-      );
+      const { realm, name } = this.validate(realmSlug, characterName);
+      return await this.details.getDetails(realm, name, parseWowMode(mode));
     } catch (error) {
       throw this.toHttpException(error, response);
     }
@@ -79,38 +130,14 @@ export class CharactersController {
     }
   }
 
+  private validate(realmSlug: string, characterName: string) {
+    return {
+      realm: RealmSlug.create(realmSlug).value,
+      name: CharacterName.create(characterName).value,
+    };
+  }
+
   private toHttpException(error: unknown, response: Response): unknown {
-    if (
-      error instanceof InvalidRealmSlug ||
-      error instanceof InvalidCharacterName
-    ) {
-      return new BadRequestException('Invalid realm or character name.');
-    }
-
-    if (error instanceof CharacterNotFound) {
-      return new NotFoundException('Character not found.');
-    }
-
-    if (error instanceof BlizzardRateLimited) {
-      if (error.retryAfterSeconds !== undefined) {
-        response.setHeader('Retry-After', String(error.retryAfterSeconds));
-      }
-
-      return new HttpException(
-        {
-          statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          message: 'Character lookup rate limit exceeded.',
-        },
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
-    }
-
-    if (error instanceof BlizzardUnavailable) {
-      return new BadGatewayException(
-        'Character data is temporarily unavailable.',
-      );
-    }
-
-    return error;
+    return toBlizzardHttpException(error, response);
   }
 }

@@ -34,3 +34,10 @@ export class BlizzardRateLimited extends CharacterError {
     super('The character service rate limit was exceeded.');
   }
 }
+
+/** A Blizzard resource other than a character (guild, realm...) is missing. */
+export class BlizzardResourceNotFound extends CharacterError {
+  constructor() {
+    super('The requested Blizzard resource was not found.');
+  }
+}

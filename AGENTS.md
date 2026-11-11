@@ -64,3 +64,7 @@ Ambos proyectos se prueban y despliegan con Node 20 (ver los `Dockerfile`).
   hardcodees con `-us`.
 - El resumen del personaje no incluye la lista de logros: los recientes
   vienen de `/achievements` (`recent_events`).
+- Las llamadas nuevas pasan por `BlizzardApiClient` (token, namespace por
+  modo, cache y mapeo de errores). En tests usa `createTestBlizzardClient` y
+  `mockBlizzardRoutes` de `src/shared/infrastructure/blizzard/testing.ts`.
+- Plan y estado de las integraciones: `docs/plan-integraciones-blizzard.md`.

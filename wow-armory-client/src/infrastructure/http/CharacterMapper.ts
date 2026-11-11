@@ -19,6 +19,10 @@ function toGuild(dto: GuildDto): Guild {
     guild.realm = dto.realm;
   }
 
+  if (dto.realmSlug !== undefined) {
+    guild.realmSlug = dto.realmSlug;
+  }
+
   if (dto.rank !== undefined) {
     guild.rank = dto.rank;
   }
@@ -74,6 +78,10 @@ export class CharacterMapper {
 
     if (lastLogin !== undefined) {
       character.lastLogin = lastLogin;
+    }
+
+    if (dto.faction !== undefined) {
+      character.faction = dto.faction;
     }
 
     if (dto.guild !== undefined) {

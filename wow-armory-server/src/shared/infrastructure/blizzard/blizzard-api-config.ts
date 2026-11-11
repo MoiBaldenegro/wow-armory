@@ -9,6 +9,8 @@ export interface BlizzardApiSettings {
   namespaces: Record<WowMode, string>;
   /** Static namespaces (`static-*`), used by game data media APIs. */
   staticNamespaces: Record<WowMode, string>;
+  /** Dynamic namespaces (`dynamic-*`): realms, auctions and leaderboards. */
+  dynamicNamespaces: Record<WowMode, string>;
 }
 
 /**
@@ -39,6 +41,13 @@ export function resolveBlizzardApiSettings(
         `static-classic-${region}`,
       ),
       retail: get('BLIZZARD_STATIC_NAMESPACE_RETAIL', `static-${region}`),
+    },
+    dynamicNamespaces: {
+      classic: get(
+        'BLIZZARD_DYNAMIC_NAMESPACE_CLASSIC',
+        `dynamic-classic-${region}`,
+      ),
+      retail: get('BLIZZARD_DYNAMIC_NAMESPACE_RETAIL', `dynamic-${region}`),
     },
   };
 }

@@ -5,6 +5,8 @@ import { HomePage } from '../pages/HomePage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { ProfilePage } from '../pages/ProfilePage';
 import { GuidePage } from '../pages/GuidePage';
+import { GuildPage } from '../pages/GuildPage';
+import { LeaderboardsPage } from '../pages/LeaderboardsPage';
 
 export function AppRoutes() {
   return (
@@ -14,6 +16,8 @@ export function AppRoutes() {
         path="/character/:realmSlug/:characterName"
         element={<CharacterProfilePage />}
       />
+      <Route path="/guild/:realmSlug/:guildSlug" element={<GuildPage />} />
+      <Route path="/leaderboards" element={<LeaderboardsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/guide" element={<GuidePage />} />
       <Route path="/error" element={<ErrorPage />} />

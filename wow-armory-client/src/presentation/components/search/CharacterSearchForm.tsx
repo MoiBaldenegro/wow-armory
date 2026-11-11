@@ -7,6 +7,8 @@ import {
 } from '../../../application/character/SearchCharacter';
 import { searchErrorMessage } from '../../utils/searchErrorMessages';
 import { FormField } from '../ui/FormField';
+import type { RealmSummary } from '../../../domain/armory/Armory';
+import { useArmoryResource } from '../../hooks/useArmoryResource';
 
 interface CharacterSearchFormProps {
   initialRealm?: string;
@@ -51,11 +53,24 @@ export function CharacterSearchForm({
   const [name, setName] = useState(initialName);
   const [mode, setMode] = useState<'retail' | 'classic'>(initialMode);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const realmListId = `${id}-realms`;
+  const realms = useArmoryResource<RealmSummary[]>(mode, (armory) =>
+    armory.realms(mode),
+  );
+  const realmOptions = realms.status === 'success' ? realms.data : [];
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const realmResult = validate(() => normalizeRealmSlug(realm));
+    // Prefer the exact slug when the input matches a known realm name.
+    const knownRealm = realmOptions.find(
+      (option) =>
+        option.name.toLowerCase() === realm.trim().toLowerCase() ||
+        option.slug === realm.trim().toLowerCase(),
+    );
+    const realmResult = validate(() =>
+      knownRealm ? knownRealm.slug : normalizeRealmSlug(realm),
+    );
     const nameResult = validate(() => normalizeCharacterName(name));
 
     if (realmResult.error !== undefined || nameResult.error !== undefined) {
@@ -102,7 +117,15 @@ export function CharacterSearchForm({
           aria-invalid={errors.realm !== undefined}
           aria-describedby={errors.realm !== undefined ? realmErrorId : undefined}
           className="input"
+          list={realmOptions.length ? realmListId : undefined}
         />
+        {realmOptions.length > 0 && (
+          <datalist id={realmListId}>
+            {realmOptions.map((option) => (
+              <option key={option.slug} value={option.name} />
+            ))}
+          </datalist>
+        )}
       </FormField>
 
       <FormField

@@ -106,6 +106,7 @@ export class BlizzardMapper {
         lastLogin: asDate(data.last_login_timestamp),
         guild: this.mapGuild(data.guild),
         achievements: this.mapAchievements(data.achievements),
+        faction: asString(asRecord(data.faction)?.type),
       });
     } catch (error) {
       if (error instanceof BlizzardUnavailable) {
@@ -165,10 +166,12 @@ export class BlizzardMapper {
     }
 
     const realm = asString(asRecord(guild.realm)?.name);
+    const realmSlug = asString(asRecord(guild.realm)?.slug);
 
     return Guild.create({
       name,
       realm,
+      realmSlug,
       rank: asNonNegativeInteger(guild.rank),
       memberCount: asNonNegativeInteger(guild.member_count),
     });

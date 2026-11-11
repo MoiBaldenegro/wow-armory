@@ -39,6 +39,16 @@
   --radius-pill: 999px;
 
   --header-height: 68px;
+
+  /* Item quality colors, darkened for contrast on light surfaces. */
+  --quality-poor: #6b7280;
+  --quality-common: #344054;
+  --quality-uncommon: #0f7a12;
+  --quality-rare: #0057b8;
+  --quality-epic: #7b2cbf;
+  --quality-legendary: #b45309;
+  --quality-artifact: #9a7b2f;
+  --quality-heirloom: #0e7490;
 }
 
 .dark {
@@ -71,6 +81,15 @@
   --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.4), 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-lg:
     0 24px 48px -24px rgb(0 0 0 / 0.7), 0 8px 16px -12px rgb(0 0 0 / 0.5);
+
+  --quality-poor: #9d9d9d;
+  --quality-common: #f2f4f7;
+  --quality-uncommon: #1eff00;
+  --quality-rare: #4aa3ff;
+  --quality-epic: #c77dff;
+  --quality-legendary: #ff8000;
+  --quality-artifact: #e6cc80;
+  --quality-heirloom: #00ccff;
 }
 
 *,
@@ -817,13 +836,38 @@ button:disabled {
 }
 
 .equipment-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px;
   min-width: 0;
+}
+
+.equipment-item.is-open {
+  grid-column: 1 / -1;
+  border-color: var(--border-strong);
+}
+
+.equipment-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.equipment-toggle:hover {
+  background: var(--surface-muted);
+}
+
+.equipment-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .item-icon {
@@ -852,14 +896,18 @@ button:disabled {
   min-width: 0;
 }
 
-.item-body p:first-child {
+.item-body {
+  display: grid;
+}
+
+.item-name {
   font-weight: 650;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.item-body p:last-child {
+.item-meta {
   color: var(--muted);
   font-size: 0.82rem;
 }
@@ -1412,3 +1460,423 @@ button:disabled {
     margin-left: 60px;
   }
 }
+
+/* ---- Armory integrations ---------------------------------------------- */
+
+.armory-section {
+  margin-bottom: 24px;
+}
+
+.armory-section > .status-text,
+.armory-section > .empty-state {
+  margin-top: 16px;
+}
+
+.armory-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.character-render {
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 50% 30%, var(--accent-soft), transparent 70%),
+    var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.character-render img {
+  width: 100%;
+  max-height: 560px;
+  object-fit: contain;
+  margin-inline: auto;
+}
+
+.equipment-hint {
+  margin-top: 6px;
+  font-size: 0.85rem;
+}
+
+.item-tooltip {
+  display: grid;
+  gap: 2px;
+  margin: 0 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  color: var(--text-soft);
+}
+
+.item-tooltip-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.item-tooltip-ilvl {
+  color: var(--accent-strong);
+}
+
+.item-enchant,
+.item-set-on {
+  color: var(--success);
+}
+
+.item-socket,
+.item-set-off,
+.item-stat-negated {
+  color: var(--muted);
+}
+
+.item-spell,
+.item-stat-bonus {
+  color: var(--success);
+}
+
+.item-set {
+  margin-top: 8px;
+}
+
+.item-set-name {
+  color: var(--accent-strong);
+  font-weight: 650;
+}
+
+.item-set ul {
+  margin: 2px 0 4px 12px;
+}
+
+.item-description {
+  margin-top: 6px;
+  color: var(--accent-strong);
+  font-style: italic;
+}
+
+.item-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  color: var(--text);
+}
+
+.quality-poor { color: var(--quality-poor); }
+.quality-common { color: var(--quality-common); }
+.quality-uncommon { color: var(--quality-uncommon); }
+.quality-rare { color: var(--quality-rare); }
+.quality-epic { color: var(--quality-epic); }
+.quality-legendary { color: var(--quality-legendary); }
+.quality-artifact { color: var(--quality-artifact); }
+.quality-heirloom { color: var(--quality-heirloom); }
+
+.stats-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.stats-group h3,
+.talent-tree h3 {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 6px 0;
+  font-size: 0.92rem;
+}
+
+.stats-row dt {
+  color: var(--text-soft);
+}
+
+.stats-row dd {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.segmented-option {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-soft);
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segmented-option[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.segmented-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.talent-trees {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.talent-tree {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  min-width: 0;
+}
+
+.talent-tree h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.talent-points {
+  color: var(--accent-strong);
+}
+
+.talent-tree li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.9rem;
+}
+
+.talent-rank {
+  flex: none;
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  padding: 0 8px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table thead th {
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.data-table tbody tr:last-child th,
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.data-table tbody th {
+  font-weight: 650;
+}
+
+.data-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.pet-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.pet-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.pet-image {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  object-fit: cover;
+}
+
+.pet-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+}
+
+.badge {
+  border-radius: var(--radius-pill);
+  background: var(--success-soft);
+  color: var(--success);
+  padding: 1px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.guild-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.guild-crest {
+  position: relative;
+  display: grid;
+  width: 96px;
+  height: 96px;
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+}
+
+.guild-crest-layer {
+  position: absolute;
+  inset: 6px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.guild-crest-initial {
+  color: var(--text);
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.guild-stats {
+  margin: 0 0 24px;
+}
+
+.roster-filter {
+  max-width: 360px;
+  margin-top: 16px;
+}
+
+.roster-more {
+  margin-top: 12px;
+}
+
+.activity-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.activity-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.page-section + .leaderboard-controls {
+  margin-top: 20px;
+}
+
+.leaderboard-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.leaderboard-controls .segmented {
+  margin-top: 0;
+}
+
+/* Class colors (WoW palette, adjusted per theme for contrast). */
+.class-color-1 { color: #8a5a2b; }
+.class-color-2 { color: #c2408c; }
+.class-color-3 { color: #4d7c0f; }
+.class-color-4 { color: #a16207; }
+.class-color-5 { color: #475467; }
+.class-color-6 { color: #b91c1c; }
+.class-color-7 { color: #0057b8; }
+.class-color-8 { color: #0e7490; }
+.class-color-9 { color: #6d28d9; }
+.class-color-10 { color: #047857; }
+.class-color-11 { color: #c2410c; }
+.class-color-12 { color: #86198f; }
+.class-color-13 { color: #0f766e; }
+
+.dark .class-color-1 { color: #c69b6d; }
+.dark .class-color-2 { color: #f48cba; }
+.dark .class-color-3 { color: #aad372; }
+.dark .class-color-4 { color: #fff468; }
+.dark .class-color-5 { color: #ffffff; }
+.dark .class-color-6 { color: #ff6b6b; }
+.dark .class-color-7 { color: #4aa3ff; }
+.dark .class-color-8 { color: #3fc7eb; }
+.dark .class-color-9 { color: #a78bfa; }
+.dark .class-color-10 { color: #00ff98; }
+.dark .class-color-11 { color: #ff7c0a; }
+.dark .class-color-12 { color: #d36cf0; }
+.dark .class-color-13 { color: #33c3a6; }
