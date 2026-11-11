@@ -76,9 +76,21 @@ export const BRACKET_LABELS: Record<string, string> = {
 };
 
 /** Classic has no rated battlegrounds; Retail has no 5v5. */
+const GAME_LABELS: Record<WowMode, string> = {
+  classic: 'Classic',
+  classicann: 'TBC Aniversario',
+  classic1x: 'Classic Era',
+  retail: 'Retail',
+};
+
+/** Display name of a game catalog. */
+export function gameLabel(mode: WowMode): string {
+  return GAME_LABELS[mode];
+}
+
 export function bracketsFor(mode: WowMode): string[] {
   return PVP_BRACKETS.filter((bracket) =>
-    mode === 'classic' ? bracket !== 'rbg' : bracket !== '5v5',
+    mode === 'retail' ? bracket !== '5v5' : bracket !== 'rbg',
   );
 }
 

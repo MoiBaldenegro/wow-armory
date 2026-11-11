@@ -6,12 +6,17 @@ import { QuickSearch } from './QuickSearch';
 
 function LocationDisplay() {
   const location = useLocation();
-  return <p data-testid="location">{location.pathname}</p>;
+  return (
+    <p data-testid="location">
+      {location.pathname}
+      {location.search}
+    </p>
+  );
 }
 
-function renderQuickSearch() {
+function renderQuickSearch(initialEntry = '/') {
   return render(
-    <MemoryRouter initialEntries={['/']}>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <QuickSearch isCompact={false} />
       <Routes>
         <Route path="/" element={null} />
@@ -29,6 +34,20 @@ describe('QuickSearch', () => {
     expect(
       screen.getByRole('textbox', { name: 'Buscar personaje' }),
     ).toHaveAttribute('placeholder', 'Buscar: reino/nombre');
+  });
+
+  it('keeps the game of the current page', async () => {
+    const user = userEvent.setup();
+    renderQuickSearch('/leaderboards?mode=retail');
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'Buscar personaje' }),
+      'Ragnaros/Thrallmar{Enter}',
+    );
+
+    expect(screen.getByTestId('location')).toHaveTextContent(
+      '/character/ragnaros/thrallmar?mode=retail',
+    );
   });
 
   it('navigates to the character route on Enter', async () => {

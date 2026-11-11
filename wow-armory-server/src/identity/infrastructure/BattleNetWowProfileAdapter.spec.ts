@@ -7,9 +7,21 @@ function createAdapter(token: AccessToken | null) {
     { getValidAccessToken: jest.fn().mockResolvedValue(token) },
     'eu',
     'en_US',
-    { retail: 'profile-eu', classic: 'profile-classic-eu' },
+    {
+      retail: 'profile-eu',
+      classic: 'profile-classic-eu',
+      classicann: 'profile-classicann-eu',
+      classic1x: 'profile-classic1x-eu',
+    },
   );
 }
+
+const NAMES: Record<string, string> = {
+  'profile-eu': 'Retailer',
+  'profile-classic-eu': 'Classicer',
+  'profile-classicann-eu': 'Anniversarian',
+  'profile-classic1x-eu': 'Eraer',
+};
 
 describe('BattleNetWowProfileAdapter', () => {
   afterEach(() => {
@@ -20,7 +32,7 @@ describe('BattleNetWowProfileAdapter', () => {
     await expect(createAdapter(null).getProfile()).resolves.toBeNull();
   });
 
-  it('sends the raw user token and merges both namespaces', async () => {
+  it('sends the raw user token and merges every game catalog', async () => {
     const get = jest
       .spyOn(axios, 'get')
       .mockImplementation(async (_url, config) => {
@@ -31,7 +43,7 @@ describe('BattleNetWowProfileAdapter', () => {
               {
                 characters: [
                   {
-                    name: namespace === 'profile-eu' ? 'Retailer' : 'Classicer',
+                    name: NAMES[namespace],
                     level: 60,
                     realm: { slug: 'firemaw', name: 'Firemaw' },
                     playable_class: { id: 1 },
@@ -47,16 +59,23 @@ describe('BattleNetWowProfileAdapter', () => {
       AccessToken.create('user-token'),
     ).getProfile();
 
-    expect(get).toHaveBeenCalledTimes(2);
+    expect(get).toHaveBeenCalledTimes(4);
     for (const [, config] of get.mock.calls) {
       expect(config?.headers?.Authorization).toBe('Bearer user-token');
     }
     expect(
       get.mock.calls.map(([, config]) => config?.params?.namespace),
-    ).toEqual(['profile-eu', 'profile-classic-eu']);
+    ).toEqual([
+      'profile-eu',
+      'profile-classic-eu',
+      'profile-classicann-eu',
+      'profile-classic1x-eu',
+    ]);
     expect(profile?.characters.map((c) => `${c.mode}:${c.name}`)).toEqual([
       'retail:Retailer',
       'classic:Classicer',
+      'classicann:Anniversarian',
+      'classic1x:Eraer',
     ]);
   });
 

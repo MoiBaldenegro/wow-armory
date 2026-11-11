@@ -24,20 +24,28 @@ import type { ArmoryRepository } from '../domain/armory/ports/ArmoryRepository';
 
 export class InMemoryCharacterRepository implements CharacterRepository {
   calls: Array<{ realmSlug: string; characterName: string }> = [];
+  /** Game requested by each call, in order. */
+  modes: WowMode[] = [];
   result: Character | null = null;
+  /** Per-game answers; a game missing here falls back to `result`. */
+  resultsByMode: Partial<Record<WowMode, Character | null>> = {};
   error: unknown;
 
   async findByRealmAndName(
     realmSlug: string,
     characterName: string,
+    mode: WowMode = 'classic',
   ): Promise<Character | null> {
     this.calls.push({ realmSlug, characterName });
+    this.modes.push(mode);
 
     if (this.error !== undefined) {
       throw this.error;
     }
 
-    return this.result;
+    return mode in this.resultsByMode
+      ? (this.resultsByMode[mode] ?? null)
+      : this.result;
   }
 }
 

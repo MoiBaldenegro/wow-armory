@@ -1,6 +1,11 @@
 import { useId } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import type { PvpLeaderboard, WowMode } from '../../domain/armory/Armory';
+import {
+  WOW_MODES,
+  parseWowMode,
+  type PvpLeaderboard,
+  type WowMode,
+} from '../../domain/armory/Armory';
 import { ErrorAlert } from '../components/ui/ErrorAlert';
 import { PageShell } from '../components/layout/PageShell';
 import { useArmoryResource } from '../hooks/useArmoryResource';
@@ -8,13 +13,14 @@ import {
   bracketLabel,
   bracketsFor,
   factionLabel,
+  gameLabel,
   winRate,
 } from '../utils/armoryFormat';
 
 export function LeaderboardsPage() {
   const modeId = useId();
   const [searchParams, setSearchParams] = useSearchParams();
-  const mode: WowMode = searchParams.get('mode') === 'retail' ? 'retail' : 'classic';
+  const mode: WowMode = parseWowMode(searchParams.get('mode')) ?? 'classic';
   const brackets = bracketsFor(mode);
   const requested = searchParams.get('bracket') ?? '';
   const bracket = brackets.includes(requested) ? requested : brackets[1];
@@ -70,8 +76,11 @@ export function LeaderboardsPage() {
               update({ mode: event.target.value, bracket: undefined, region: undefined })
             }
           >
-            <option value="classic">Classic</option>
-            <option value="retail">Retail</option>
+            {WOW_MODES.map((game) => (
+              <option key={game} value={game}>
+                {gameLabel(game)}
+              </option>
+            ))}
           </select>
         </div>
         {state.status === 'success' && state.data.pvpRegions.length > 1 && (

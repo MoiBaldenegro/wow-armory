@@ -1,8 +1,9 @@
+import type { WowMode } from '../armory/Armory';
 export interface WowProfileCharacter {
   name: string;
   realmSlug: string;
   realmName?: string;
-  mode: 'retail' | 'classic';
+  mode: WowMode;
   level?: number;
   playableClassId?: number;
   playableRaceId?: number;

@@ -10,7 +10,7 @@ export class GetCharacterUseCase {
   async execute(
     realm: string,
     name: string,
-    mode: 'retail' | 'classic' = 'classic',
+    mode: 'retail' | 'classic' | 'classicann' | 'classic1x' = 'classic',
   ): Promise<Character> {
     const realmSlug = RealmSlug.create(realm);
     const characterName = CharacterName.create(name);

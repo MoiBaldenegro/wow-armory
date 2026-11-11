@@ -6,6 +6,7 @@ import {
   CharacterValidation,
 } from '../../domain/character/errors/CharacterErrors';
 import { useUseCases } from './useUseCases';
+import type { WowMode } from '../../domain/armory/Armory';
 
 export type CharacterState =
   | { status: 'loading' }
@@ -52,7 +53,7 @@ interface ResolvedState {
 export function useCharacter(
   realmSlug: string,
   characterName: string,
-  mode: 'retail' | 'classic' = 'classic',
+  mode: WowMode = 'classic',
 ): UseCharacterResult {
   const { getCharacter } = useUseCases();
   const [attempt, setAttempt] = useState(0);

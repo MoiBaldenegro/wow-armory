@@ -2,6 +2,14 @@ import axios from 'axios';
 import { TokenProvider } from '../domain/ports/TokenProvider';
 import { WowMode } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 
+/** Every game catalog an account can have characters in, retail first. */
+const PROFILE_MODES: readonly WowMode[] = [
+  'retail',
+  'classic',
+  'classicann',
+  'classic1x',
+];
+
 type RawRecord = Record<string, unknown>;
 
 export interface WowProfileCharacter {
@@ -50,7 +58,7 @@ export class BattleNetWowProfileAdapter {
     }
 
     const results = await Promise.allSettled(
-      (['retail', 'classic'] as const).map(async (mode) => {
+      PROFILE_MODES.map(async (mode) => {
         const response = await axios.get<unknown>(
           `https://${this.region}.api.blizzard.com/profile/user/wow`,
           {

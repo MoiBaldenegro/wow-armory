@@ -72,6 +72,10 @@ Ambos proyectos se prueban y despliegan con Node 20 (ver los `Dockerfile`).
 - Los namespaces (`profile-*`, `static-*`) se derivan de `BLIZZARD_REGION` en
   `src/shared/infrastructure/blizzard/blizzard-api-config.ts`; no los
   hardcodees con `-us`.
+- Hay cuatro catálogos de juego (`WOW_MODES`): `classic` (progresión),
+  `classicann` (reinos Anniversary, hoy en TBC: Nightslayer, Thunderstrike…),
+  `classic1x` (Classic Era) y `retail`. Un personaje solo existe en el suyo; el
+  cliente manda el juego en `?mode=` y, si no viene, prueba todos en orden.
 - El resumen del personaje no incluye la lista de logros: los recientes
   vienen de `/achievements` (`recent_events`).
 - Las llamadas nuevas pasan por `BlizzardApiClient` (token, namespace por

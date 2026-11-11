@@ -1,6 +1,10 @@
 import { useId, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import type { GuildActivity, GuildProfile } from '../../domain/armory/Armory';
+import {
+  parseWowMode,
+  type GuildActivity,
+  type GuildProfile,
+} from '../../domain/armory/Armory';
 import { GuildCrest } from '../components/guild/GuildCrest';
 import { ProblemCard } from '../components/feedback/ProblemCard';
 import { PageShell } from '../components/layout/PageShell';
@@ -204,7 +208,7 @@ export function GuildPage() {
     guildSlug: string;
   }>();
   const [searchParams] = useSearchParams();
-  const mode = searchParams.get('mode') === 'retail' ? 'retail' : 'classic';
+  const mode = parseWowMode(searchParams.get('mode')) ?? 'classic';
   const state = useArmoryResource<GuildProfile>(
     `${mode}/${realmSlug}/${guildSlug}`,
     (armory) => armory.guild(realmSlug, guildSlug, mode),

@@ -9,6 +9,7 @@ import { CharacterMapper } from './CharacterMapper';
 import type { CharacterDto } from './CharacterDto';
 import { HttpError } from './HttpError';
 import type { HttpClient } from './HttpClient';
+import type { WowMode } from '../../domain/armory/Armory';
 
 export class HttpCharacterRepository implements CharacterRepository {
   constructor(private readonly http: HttpClient) {}
@@ -16,9 +17,10 @@ export class HttpCharacterRepository implements CharacterRepository {
   async findByRealmAndName(
     realmSlug: string,
     characterName: string,
-    mode: 'retail' | 'classic' = 'classic',
+    mode: WowMode = 'classic',
   ): Promise<Character | null> {
-    const modeQuery = mode === 'retail' ? '?mode=retail' : '';
+    // Classic is the server default; every other catalog is named explicitly.
+    const modeQuery = mode === 'classic' ? '' : `?mode=${mode}`;
     const path = `/characters/${encodeURIComponent(
       realmSlug,
     )}/${encodeURIComponent(characterName)}${modeQuery}`;

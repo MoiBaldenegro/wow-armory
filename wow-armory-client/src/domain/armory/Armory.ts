@@ -1,4 +1,18 @@
-export type WowMode = 'retail' | 'classic';
+/**
+ * Game catalogs of the Blizzard API, each with its own realms and characters:
+ * progression Classic, Classic Anniversary (now The Burning Crusade, e.g.
+ * Nightslayer), Classic Era and Retail.
+ */
+export const WOW_MODES = ['classic', 'classicann', 'classic1x', 'retail'] as const;
+
+export type WowMode = (typeof WOW_MODES)[number];
+
+/** Reads a `mode` value (query string, select); `null` when it is not a game. */
+export function parseWowMode(value: string | null | undefined): WowMode | null {
+  return (WOW_MODES as readonly string[]).includes(value ?? '')
+    ? (value as WowMode)
+    : null;
+}
 
 export type StatGroup =
   | 'general'

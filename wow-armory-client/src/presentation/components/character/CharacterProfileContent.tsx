@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { CharacterHero } from './CharacterHero';
 import { CharacterStats } from './CharacterStats';
 import { CharacterEquipment } from './CharacterEquipment';
@@ -7,7 +8,8 @@ import { CharacterStatsSheet } from './CharacterStatsSheet';
 import { CharacterTalents } from './CharacterTalents';
 import { CharacterPvp } from './CharacterPvp';
 import { HunterPets } from './HunterPets';
-import type { WowMode } from '../../../domain/armory/Armory';
+import { WOW_MODES, type WowMode } from '../../../domain/armory/Armory';
+import { gameLabel } from '../../utils/armoryFormat';
 import { CharacterSearchForm } from '../search/CharacterSearchForm';
 import { ProblemCard } from '../feedback/ProblemCard';
 import type { CharacterState } from '../../hooks/useCharacter';
@@ -124,7 +126,25 @@ export function CharacterProfileContent({
           <CharacterSearchForm
             initialRealm={realmSlug}
             initialName={characterName}
+            initialMode={mode}
           />
+          <p className="problem-alt">
+            Cada juego tiene su propio catálogo de reinos y personajes.
+          </p>
+          <ul className="problem-games">
+            {WOW_MODES.filter((game) => game !== mode).map((game) => (
+              <li key={game}>
+                <Link
+                  className="mx-link"
+                  to={`/character/${encodeURIComponent(realmSlug)}/${encodeURIComponent(
+                    characterName,
+                  )}?mode=${game}`}
+                >
+                  Buscar en {gameLabel(game)}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </ProblemCard>
       );
     case 'invalid':

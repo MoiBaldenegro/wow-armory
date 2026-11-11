@@ -8,14 +8,20 @@ export function testBlizzardSettings(region = 'eu'): BlizzardApiSettings {
     locale: 'en_US',
     namespaces: {
       classic: `profile-classic-${region}`,
+      classicann: `profile-classicann-${region}`,
+      classic1x: `profile-classic1x-${region}`,
       retail: `profile-${region}`,
     },
     staticNamespaces: {
       classic: `static-classic-${region}`,
+      classicann: `static-classicann-${region}`,
+      classic1x: `static-classic1x-${region}`,
       retail: `static-${region}`,
     },
     dynamicNamespaces: {
       classic: `dynamic-classic-${region}`,
+      classicann: `dynamic-classicann-${region}`,
+      classic1x: `dynamic-classic1x-${region}`,
       retail: `dynamic-${region}`,
     },
   };

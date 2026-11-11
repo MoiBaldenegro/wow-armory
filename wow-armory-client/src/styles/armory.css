@@ -194,6 +194,14 @@
 
 /* Character --------------------------------------------------------------- */
 
+.game-switch { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; }
+
+.problem-alt { color: var(--color-text-secondary); font-size: 0.92rem; }
+
+.problem-card form + .problem-alt { margin-top: var(--gap-card); }
+
+.problem-games { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; }
+
 .character-hero {
   position: relative;
   overflow: hidden;
@@ -700,6 +708,10 @@ article.fade-in > * + * { margin-top: var(--app-gap); }
   .hero { padding: calc(var(--gap-card) * 2) var(--gap-card); }
   .character-hero-body { flex-direction: column; align-items: flex-start; padding: 0 var(--gap-card) calc(var(--gap-card) * 1.5); }
   .character-hero-action { align-self: flex-start; margin-left: 0; }
+  .game-switch { justify-content: flex-start; }
+  .game-switch .mx-segmented { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .game-switch .mx-segmented__option:nth-child(even) { border-right: 0; }
+  .game-switch .mx-segmented__option:nth-child(-n + 2) { border-bottom: 1px solid var(--color-border-strong); }
   .achievement-item { flex-wrap: wrap; }
   .achievement-date { width: 100%; margin-left: 58px; }
   .centered-card,

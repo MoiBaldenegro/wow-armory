@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import { useWowProfile } from '../../hooks/useWowProfile';
 import { ErrorAlert } from '../ui/ErrorAlert';
 import { FormField } from '../ui/FormField';
+import {
+  WOW_MODES,
+  parseWowMode,
+  type WowMode,
+} from '../../../domain/armory/Armory';
+import { gameLabel } from '../../utils/armoryFormat';
 
 interface ProfileCharactersProps {
   enabled: boolean;
@@ -10,7 +16,7 @@ interface ProfileCharactersProps {
 
 export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
   const profileState = useWowProfile(enabled);
-  const [selectedMode, setSelectedMode] = useState<'all' | 'retail' | 'classic'>(
+  const [selectedMode, setSelectedMode] = useState<'all' | WowMode>(
     'all',
   );
   const [selectedRealm, setSelectedRealm] = useState('all');
@@ -62,15 +68,16 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
             id="profile-game-mode"
             value={selectedMode}
             onChange={(event) =>
-              setSelectedMode(
-                event.target.value as 'all' | 'retail' | 'classic',
-              )
+              setSelectedMode(parseWowMode(event.target.value) ?? 'all')
             }
             className="mx-input mx-select"
           >
             <option value="all">Todos los catálogos</option>
-            <option value="retail">Retail</option>
-            <option value="classic">Classic</option>
+            {WOW_MODES.map((game) => (
+              <option key={game} value={game}>
+                {gameLabel(game)}
+              </option>
+            ))}
           </select>
         </FormField>
 
@@ -125,7 +132,7 @@ export function ProfileCharacters({ enabled }: ProfileCharactersProps) {
                   {character.name}
                 </Link>
                 <p className="character-meta">
-                  <span className="mx-tag mx-tag--sm">{character.mode}</span>
+                  <span className="mx-tag mx-tag--sm">{gameLabel(character.mode)}</span>
                   <span>
                     {character.realmName ?? character.realmSlug}
                     {character.level !== undefined

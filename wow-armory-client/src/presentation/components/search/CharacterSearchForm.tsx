@@ -7,13 +7,19 @@ import {
 } from '../../../application/character/SearchCharacter';
 import { searchErrorMessage } from '../../utils/searchErrorMessages';
 import { FormField } from '../ui/FormField';
-import type { RealmSummary } from '../../../domain/armory/Armory';
+import {
+  WOW_MODES,
+  parseWowMode,
+  type RealmSummary,
+  type WowMode,
+} from '../../../domain/armory/Armory';
+import { gameLabel } from '../../utils/armoryFormat';
 import { useArmoryResource } from '../../hooks/useArmoryResource';
 
 interface CharacterSearchFormProps {
   initialRealm?: string;
   initialName?: string;
-  initialMode?: 'retail' | 'classic';
+  initialMode?: WowMode;
 }
 
 interface FieldErrors {
@@ -51,7 +57,7 @@ export function CharacterSearchForm({
   const nameRef = useRef<HTMLInputElement>(null);
   const [realm, setRealm] = useState(initialRealm);
   const [name, setName] = useState(initialName);
-  const [mode, setMode] = useState<'retail' | 'classic'>(initialMode);
+  const [mode, setMode] = useState<WowMode>(initialMode);
   const [errors, setErrors] = useState<FieldErrors>({});
   const realmListId = `${id}-realms`;
   const realms = useArmoryResource<RealmSummary[]>(mode, (armory) =>
@@ -158,12 +164,15 @@ export function CharacterSearchForm({
           id={modeId}
           value={mode}
           onChange={(event) =>
-            setMode(event.target.value as 'retail' | 'classic')
+            setMode(parseWowMode(event.target.value) ?? 'classic')
           }
           className="mx-input mx-select"
         >
-          <option value="classic">Classic</option>
-          <option value="retail">Retail</option>
+          {WOW_MODES.map((game) => (
+            <option key={game} value={game}>
+              {gameLabel(game)}
+            </option>
+          ))}
         </select>
       </FormField>
 

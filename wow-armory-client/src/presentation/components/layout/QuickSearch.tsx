@@ -1,9 +1,10 @@
 import { useId, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   InvalidSearchInput,
   parseCharacterQuery,
 } from '../../../application/character/SearchCharacter';
+import { parseWowMode } from '../../../domain/armory/Armory';
 import { searchErrorMessage } from '../../utils/searchErrorMessages';
 import { Icon } from '../ui/Icon';
 
@@ -13,6 +14,10 @@ interface QuickSearchProps {
 
 export function QuickSearch({ isCompact }: QuickSearchProps) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Keep the game of the current page (for example the Retail ranking).
+  const currentMode = parseWowMode(searchParams.get('mode'));
+  const modeQuery = currentMode ? `?mode=${currentMode}` : '';
   const errorId = useId();
   const [query, setQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +32,7 @@ export function QuickSearch({ isCompact }: QuickSearchProps) {
       navigate(
         `/character/${encodeURIComponent(realmSlug)}/${encodeURIComponent(
           characterName,
-        )}`,
+        )}${modeQuery}`,
       );
     } catch (caught) {
       if (caught instanceof InvalidSearchInput) {

@@ -1,6 +1,7 @@
 import type { CharacterDetails } from '../../domain/character/CharacterDetails';
 import type { CharacterDetailsRepository } from '../../domain/character/ports/CharacterDetailsRepository';
 import type { HttpClient } from './HttpClient';
+import type { WowMode } from '../../domain/armory/Armory';
 
 export class HttpCharacterDetailsRepository
   implements CharacterDetailsRepository
@@ -10,7 +11,7 @@ export class HttpCharacterDetailsRepository
   getDetails(
     realmSlug: string,
     characterName: string,
-    mode: 'retail' | 'classic',
+    mode: WowMode,
   ): Promise<CharacterDetails> {
     return this.http.get<CharacterDetails>(
       `/characters/${encodeURIComponent(realmSlug)}/${encodeURIComponent(

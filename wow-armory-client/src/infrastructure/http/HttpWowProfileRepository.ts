@@ -1,13 +1,14 @@
 import type { WowProfile } from '../../domain/profile/WowProfile';
 import type { WowProfileRepository } from '../../domain/profile/ports/WowProfileRepository';
 import type { HttpClient } from './HttpClient';
+import type { WowMode } from '../../domain/armory/Armory';
 
 interface WowProfileDto {
   characters?: Array<{
     name: string;
     realmSlug: string;
     realmName?: string;
-    mode?: 'retail' | 'classic';
+    mode?: WowMode;
     level?: number;
     playableClassId?: number;
     playableRaceId?: number;

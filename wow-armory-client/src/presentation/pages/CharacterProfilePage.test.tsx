@@ -82,6 +82,79 @@ describe('CharacterProfilePage', () => {
     await screen.findByRole('heading', { name: 'Billiemoi', level: 1 });
   });
 
+  it('shows the game switch and loads the other game on demand', async () => {
+    const user = userEvent.setup();
+    const { useCases, characterRepository } = createTestDependencies();
+    characterRepository.result = fullCharacter;
+
+    renderProfileAt('/character/grobbulus/billiemoi?mode=classic', useCases);
+
+    const games = screen.getByRole('group', { name: 'Juego' });
+    expect(within(games).getByRole('button', { name: 'Classic' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+
+    await user.click(within(games).getByRole('button', { name: 'Retail' }));
+
+    await waitFor(() => expect(characterRepository.modes).toContain('retail'));
+    expect(
+      within(screen.getByRole('group', { name: 'Juego' })).getByRole('button', {
+        name: 'Retail',
+      }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('tries the next game when no game is given and Classic has no character', async () => {
+    const { useCases, characterRepository } = createTestDependencies();
+    // An Anniversary (TBC) character, e.g. from Nightslayer, only exists in `classicann`.
+    characterRepository.resultsByMode = {
+      classic: null,
+      classicann: fullCharacter,
+    };
+
+    renderProfileAt('/character/nightslayer/billiemoi', useCases);
+
+    await screen.findByRole('heading', { name: 'Billiemoi', level: 1 });
+    expect(characterRepository.modes).toEqual(['classic', 'classicann']);
+    expect(
+      within(screen.getByRole('group', { name: 'Juego' })).getByRole('button', {
+        name: 'TBC Aniversario',
+      }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('reports not found only after trying every game', async () => {
+    const { useCases, characterRepository } = createTestDependencies();
+
+    renderProfileAt('/character/grobbulus/ghost', useCases);
+
+    await screen.findByRole('heading', { name: 'Personaje no encontrado' });
+    expect(characterRepository.modes).toEqual([
+      'classic',
+      'classicann',
+      'classic1x',
+      'retail',
+    ]);
+  });
+
+  it('offers the other game when an explicit game has no character', async () => {
+    const { useCases, characterRepository } = createTestDependencies();
+    characterRepository.resultsByMode = { classic: null, retail: fullCharacter };
+
+    renderProfileAt('/character/grobbulus/billiemoi?mode=classic', useCases);
+
+    await screen.findByRole('heading', { name: 'Personaje no encontrado' });
+    expect(characterRepository.modes).toEqual(['classic']);
+    expect(screen.getByRole('link', { name: 'Buscar en Retail' })).toHaveAttribute(
+      'href',
+      '/character/grobbulus/billiemoi?mode=retail',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Buscar en TBC Aniversario' }),
+    ).toHaveAttribute('href', '/character/grobbulus/billiemoi?mode=classicann');
+  });
+
   it('shows a loading status without character data', () => {
     const { useCases } = createTestDependencies({
       getCharacter: {

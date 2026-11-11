@@ -1,6 +1,8 @@
+import { WOW_MODES, parseWowMode } from '../../domain/armory/Armory';
 import { describe, expect, it } from 'vitest';
 import {
   bracketsFor,
+  gameLabel,
   classColorClass,
   factionLabel,
   formatGold,
@@ -25,6 +27,22 @@ describe('armoryFormat', () => {
   it('lists the brackets of each game', () => {
     expect(bracketsFor('classic')).toEqual(['2v2', '3v3', '5v5']);
     expect(bracketsFor('retail')).toEqual(['2v2', '3v3', 'rbg']);
+    // Anniversary (TBC) and Era are Classic catalogs: arenas up to 5v5, no rated battlegrounds.
+    expect(bracketsFor('classicann')).toEqual(['2v2', '3v3', '5v5']);
+    expect(bracketsFor('classic1x')).toEqual(['2v2', '3v3', '5v5']);
+  });
+
+  it('names every game catalog and parses the mode query', () => {
+    expect(WOW_MODES.map(gameLabel)).toEqual([
+      'Classic',
+      'TBC Aniversario',
+      'Classic Era',
+      'Retail',
+    ]);
+    expect(parseWowMode('classicann')).toBe('classicann');
+    expect(parseWowMode('classic1x')).toBe('classic1x');
+    expect(parseWowMode('nope')).toBeNull();
+    expect(parseWowMode(null)).toBeNull();
   });
 
   it('computes win rates and labels', () => {
