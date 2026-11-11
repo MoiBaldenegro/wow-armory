@@ -6,7 +6,7 @@ import {
 import type { CharacterRepository } from '../../domain/character/ports/CharacterRepository';
 
 export const REALM_SLUG_PATTERN = /^[a-z0-9-]{1,64}$/;
-export const CHARACTER_NAME_PATTERN = /^[A-Za-z0-9'-]{1,64}$/;
+export const CHARACTER_NAME_PATTERN = /^[\p{L}\p{M}0-9'-]{1,64}$/u;
 
 export class GetCharacter {
   constructor(private readonly repository: CharacterRepository) {}

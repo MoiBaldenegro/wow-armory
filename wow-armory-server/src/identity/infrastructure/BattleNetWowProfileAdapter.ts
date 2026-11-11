@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { TokenProvider } from '../domain/ports/TokenProvider';
+import { WowMode } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 
 type RawRecord = Record<string, unknown>;
-type WowMode = 'retail' | 'classic';
 
 export interface WowProfileCharacter {
   name: string;
@@ -39,6 +39,7 @@ export class BattleNetWowProfileAdapter {
     private readonly tokenProvider: TokenProvider,
     private readonly region: string,
     private readonly locale: string,
+    private readonly namespaces: Record<WowMode, string>,
   ) {}
 
   async getProfile(): Promise<WowProfile | null> {
@@ -53,12 +54,9 @@ export class BattleNetWowProfileAdapter {
         const response = await axios.get<unknown>(
           `https://${this.region}.api.blizzard.com/profile/user/wow`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token.value}` },
             params: {
-              namespace:
-                mode === 'retail'
-                  ? `profile-${this.region}`
-                  : `profile-classic-${this.region}`,
+              namespace: this.namespaces[mode],
               locale: this.locale,
             },
             timeout: 10_000,

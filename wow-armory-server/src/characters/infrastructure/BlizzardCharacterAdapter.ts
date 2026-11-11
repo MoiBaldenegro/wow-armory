@@ -9,16 +9,21 @@ import {
 } from '../domain/errors/CharacterError';
 import { CharacterRepository } from '../domain/ports/CharacterRepository';
 import { RealmSlug } from '../domain/RealmSlug';
+import {
+  toBlizzardPathSegment,
+  WowMode,
+} from '../../shared/infrastructure/blizzard/blizzard-api-config';
 import { BlizzardMapper } from './BlizzardMapper';
 
 const PROFILE_PATH = '/profile/wow/character';
 const REQUEST_TIMEOUT_MS = 10_000;
+const MAX_ACHIEVEMENT_ICONS = 12;
 
 export interface BlizzardApiConfig {
   region: string;
   namespace: string;
-  namespaces?: Partial<Record<'retail' | 'classic', string>>;
-  staticNamespaces?: Partial<Record<'retail' | 'classic', string>>;
+  namespaces?: Partial<Record<WowMode, string>>;
+  staticNamespaces?: Partial<Record<WowMode, string>>;
   locale?: string;
 }
 
@@ -32,25 +37,32 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
   async findByRealmAndName(
     realm: RealmSlug,
     name: CharacterName,
-    mode: 'retail' | 'classic' = 'classic',
+    mode: WowMode = 'classic',
   ): Promise<Character | null> {
     const token = await this.tokenProvider.getAccessToken();
-    const url = `https://${this.config.region}.api.blizzard.com${PROFILE_PATH}/${encodeURIComponent(realm.value)}/${encodeURIComponent(name.value)}`;
+    const url = `https://${this.config.region}.api.blizzard.com${PROFILE_PATH}/${toBlizzardPathSegment(realm.value)}/${toBlizzardPathSegment(name.value)}`;
+    const params = {
+      namespace: this.config.namespaces?.[mode] ?? this.config.namespace,
+      locale: this.config.locale ?? 'en_US',
+    };
+
+    let character: Character;
 
     try {
-      const response = await axios.get<unknown>(url, {
-        headers: { Authorization: `******` },
-        params: {
-          namespace: this.config.namespaces?.[mode] ?? this.config.namespace,
-          locale: this.config.locale ?? 'en_US',
-        },
-        timeout: REQUEST_TIMEOUT_MS,
-      });
+      const [profile, achievements] = await Promise.all([
+        axios.get<unknown>(url, {
+          headers: { Authorization: `Bearer ${token}` },
+          params,
+          timeout: REQUEST_TIMEOUT_MS,
+        }),
+        this.getRecentAchievements(`${url}/achievements`, token, params),
+      ]);
 
-      return this.enrichAchievementMedia(
-        this.mapper.toDomain(response.data, realm),
-        mode,
-      );
+      character = this.mapper.toDomain(profile.data, realm);
+
+      if (!character.achievements?.length && achievements.length > 0) {
+        character = this.withAchievements(character, achievements);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const status = error.response?.status;
@@ -68,13 +80,42 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
         }
       }
 
+      if (error instanceof BlizzardUnavailable) {
+        throw error;
+      }
+
       throw new BlizzardUnavailable();
+    }
+
+    return this.enrichAchievementMedia(character, mode, token);
+  }
+
+  /**
+   * The profile summary only links to achievements, so recent ones come from
+   * the dedicated endpoint. It is best effort: failures leave the list empty.
+   */
+  private async getRecentAchievements(
+    url: string,
+    token: string,
+    params: Record<string, string>,
+  ): Promise<Achievement[]> {
+    try {
+      const response = await axios.get<unknown>(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+        timeout: REQUEST_TIMEOUT_MS,
+      });
+
+      return this.mapper.toRecentAchievements(response.data);
+    } catch {
+      return [];
     }
   }
 
   private async enrichAchievementMedia(
     character: Character,
-    mode: 'retail' | 'classic',
+    mode: WowMode,
+    token: string,
   ): Promise<Character> {
     if (!character.achievements?.length) {
       return character;
@@ -83,9 +124,10 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
     const achievements = await Promise.all(
       character.achievements.map(async (achievement, index) => {
         const iconUrl =
-          index >= 12 || achievement.id === undefined
+          achievement.iconUrl ??
+          (index >= MAX_ACHIEVEMENT_ICONS || achievement.id === undefined
             ? undefined
-            : await this.getAchievementIcon(achievement.id, mode);
+            : await this.getAchievementIcon(achievement.id, mode, token));
 
         return Achievement.create({
           id: achievement.id,
@@ -97,6 +139,13 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
       }),
     );
 
+    return this.withAchievements(character, achievements);
+  }
+
+  private withAchievements(
+    character: Character,
+    achievements: Achievement[],
+  ): Character {
     return Character.create({
       name: character.name,
       realmSlug: character.realmSlug,
@@ -114,13 +163,14 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
 
   private async getAchievementIcon(
     achievementId: number,
-    mode: 'retail' | 'classic',
+    mode: WowMode,
+    token: string,
   ): Promise<string | undefined> {
     try {
       const response = await axios.get<unknown>(
         `https://${this.config.region}.api.blizzard.com/data/wow/media/achievement/${achievementId}`,
         {
-          headers: { Authorization: `******` },
+          headers: { Authorization: `Bearer ${token}` },
           params: {
             namespace:
               this.config.staticNamespaces?.[mode] ??
@@ -132,16 +182,13 @@ export class BlizzardCharacterAdapter implements CharacterRepository {
       );
       const assets = (response.data as Record<string, unknown>)?.assets;
       const asset = Array.isArray(assets)
-        ? assets.find(
+        ? (assets.find(
             (value) =>
               typeof (value as Record<string, unknown>)?.value === 'string',
-          )
+          ) as Record<string, unknown> | undefined)
         : undefined;
 
-      return typeof (asset as Record<string, unknown> | undefined)?.value ===
-        'string'
-        ? ((asset as Record<string, unknown>).value as string)
-        : undefined;
+      return typeof asset?.value === 'string' ? asset.value : undefined;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return undefined;

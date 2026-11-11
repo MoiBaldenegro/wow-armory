@@ -67,6 +67,84 @@ describe('BlizzardCharacterAdapter', () => {
     });
   });
 
+  it('lowercases the character name required by the Profile API', async () => {
+    const get = jest.spyOn(axios, 'get').mockResolvedValue({
+      data: {
+        name: 'Billiemoi',
+        level: 60,
+        character_class: { name: 'Warrior' },
+        race: { name: 'Orc' },
+      },
+    } as never);
+    const adapter = createAdapter();
+
+    await adapter.findByRealmAndName(REALM, CharacterName.create('Billiemoi'));
+
+    expect(get.mock.calls[0][0]).toBe(URL);
+  });
+
+  it('loads recent achievements from the achievements endpoint', async () => {
+    jest.spyOn(axios, 'get').mockImplementation(async (url: string) => {
+      if (url === `${URL}/achievements`) {
+        return {
+          data: {
+            recent_events: [
+              { achievement: { id: 1, name: 'Old' }, timestamp: 1000 },
+              { achievement: { id: 2, name: 'New' }, timestamp: 2000 },
+            ],
+          },
+        };
+      }
+
+      if (url.includes('/data/wow/media/achievement/')) {
+        return { data: { assets: [{ key: 'icon', value: `${url}.jpg` }] } };
+      }
+
+      return {
+        data: {
+          name: 'Billiemoi',
+          level: 60,
+          character_class: { name: 'Warrior' },
+          race: { name: 'Orc' },
+          achievements: { href: `${URL}/achievements` },
+        },
+      };
+    });
+    const adapter = createAdapter();
+
+    const character = await adapter.findByRealmAndName(REALM, NAME);
+
+    expect(character?.achievements?.map((item) => item.name)).toEqual([
+      'New',
+      'Old',
+    ]);
+    expect(character?.achievements?.[0].iconUrl).toContain(
+      '/data/wow/media/achievement/2',
+    );
+  });
+
+  it('keeps the profile when the achievements endpoint fails', async () => {
+    jest.spyOn(axios, 'get').mockImplementation(async (url: string) => {
+      if (url.endsWith('/achievements')) {
+        throw axiosError(404);
+      }
+
+      return {
+        data: {
+          name: 'Billiemoi',
+          level: 60,
+          character_class: { name: 'Warrior' },
+          race: { name: 'Orc' },
+        },
+      };
+    });
+
+    const character = await createAdapter().findByRealmAndName(REALM, NAME);
+
+    expect(character?.name.value).toBe('Billiemoi');
+    expect(character?.achievements).toBeUndefined();
+  });
+
   it('returns null when Blizzard answers 404', async () => {
     jest.spyOn(axios, 'get').mockRejectedValue(axiosError(404));
     const adapter = createAdapter();

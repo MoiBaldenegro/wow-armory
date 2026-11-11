@@ -71,7 +71,14 @@ describe('searchCharacter', () => {
     },
   );
 
-  it.each(['..', 'bil/lie', 'bil%2Flie', 'billie moi', 'Thrallë'])(
+  it('accepts accented names and lowercases them', () => {
+    expect(searchCharacter('grobbulus', 'Thrallë')).toEqual({
+      realmSlug: 'grobbulus',
+      characterName: 'thrallë',
+    });
+  });
+
+  it.each(['..', 'bil/lie', 'bil%2Flie', 'billie moi', 'bil.lie'])(
     'rejects the invalid name %s',
     (name) => {
       const error = captureError(() => searchCharacter('grobbulus', name));

@@ -5,12 +5,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { BattleNetWowProfileAdapter } from '../infrastructure/BattleNetWowProfileAdapter';
+import { RateLimit } from '../../shared/infrastructure/rate-limit/rate-limit';
 
 @Controller('profile/user')
 export class WowProfileController {
   constructor(private readonly profile: BattleNetWowProfileAdapter) {}
 
   @Get('wow')
+  @RateLimit('public')
   async getProfile() {
     try {
       const profile = await this.profile.getProfile();

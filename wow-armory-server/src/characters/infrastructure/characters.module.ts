@@ -11,6 +11,7 @@ import { CharactersController } from '../presentation/CharactersController';
 import { BlizzardCharacterAdapter } from './BlizzardCharacterAdapter';
 import { BlizzardCharacterDetailsAdapter } from './BlizzardCharacterDetailsAdapter';
 import { ClientCredentialsTokenProvider } from './ClientCredentialsTokenProvider';
+import { resolveBlizzardApiSettings } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 
 @Module({
   imports: [ConfigModule],
@@ -27,34 +28,17 @@ import { ClientCredentialsTokenProvider } from './ClientCredentialsTokenProvider
       useFactory: (
         tokenProvider: ApplicationTokenProvider,
         config: ConfigService,
-      ) =>
-        new BlizzardCharacterAdapter(tokenProvider, {
-          region: config.get<string>('BLIZZARD_REGION', 'us'),
-          namespace: config.get<string>(
-            'BLIZZARD_NAMESPACE',
-            'profile-classic-us',
-          ),
-          namespaces: {
-            classic: config.get<string>(
-              'BLIZZARD_NAMESPACE_CLASSIC',
-              config.get<string>('BLIZZARD_NAMESPACE', 'profile-classic-us'),
-            ),
-            retail: config.get<string>(
-              'BLIZZARD_NAMESPACE_RETAIL',
-              'profile-us',
-            ),
-          },
-          staticNamespaces: {
-            classic: config.get<string>(
-              'BLIZZARD_STATIC_NAMESPACE_CLASSIC',
-              'static-classic-us',
-            ),
-            retail: config.get<string>(
-              'BLIZZARD_STATIC_NAMESPACE_RETAIL',
-              'static-us',
-            ),
-          },
-        }),
+      ) => {
+        const settings = resolveBlizzardApiSettings(config);
+
+        return new BlizzardCharacterAdapter(tokenProvider, {
+          region: settings.region,
+          locale: settings.locale,
+          namespace: settings.namespaces.classic,
+          namespaces: settings.namespaces,
+          staticNamespaces: settings.staticNamespaces,
+        });
+      },
       inject: [CHARACTER_TOKEN_PROVIDER, ConfigService],
     },
     {
@@ -62,25 +46,16 @@ import { ClientCredentialsTokenProvider } from './ClientCredentialsTokenProvider
       useFactory: (
         tokenProvider: ApplicationTokenProvider,
         config: ConfigService,
-      ) =>
-        new BlizzardCharacterDetailsAdapter(tokenProvider, {
-          region: config.get<string>('BLIZZARD_REGION', 'us'),
-          namespace: config.get<string>(
-            'BLIZZARD_NAMESPACE',
-            'profile-classic-us',
-          ),
-          locale: config.get<string>('BLIZZARD_LOCALE', 'en_US'),
-          namespaces: {
-            classic: config.get<string>(
-              'BLIZZARD_NAMESPACE_CLASSIC',
-              'profile-classic-us',
-            ),
-            retail: config.get<string>(
-              'BLIZZARD_NAMESPACE_RETAIL',
-              'profile-us',
-            ),
-          },
-        }),
+      ) => {
+        const settings = resolveBlizzardApiSettings(config);
+
+        return new BlizzardCharacterDetailsAdapter(tokenProvider, {
+          region: settings.region,
+          locale: settings.locale,
+          namespace: settings.namespaces.classic,
+          namespaces: settings.namespaces,
+        });
+      },
       inject: [CHARACTER_TOKEN_PROVIDER, ConfigService],
     },
     {

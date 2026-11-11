@@ -9,6 +9,8 @@ import { RefreshToken } from '../application/RefreshToken';
 import { StartLogin } from '../application/StartLogin';
 import { OAuthProvider } from '../domain/ports/OAuthProvider';
 import { SessionRepository } from '../domain/ports/SessionRepository';
+import { TokenProvider } from '../domain/ports/TokenProvider';
+import { resolveBlizzardApiSettings } from '../../shared/infrastructure/blizzard/blizzard-api-config';
 import {
   OAUTH_PROVIDER,
   SESSION_REPOSITORY,
@@ -115,15 +117,16 @@ const DEFAULT_REFRESH_MARGIN_MS = 60_000;
     },
     {
       provide: BattleNetWowProfileAdapter,
-      useFactory: (
-        tokenProvider: import('../domain/ports/TokenProvider').TokenProvider,
-        config: ConfigService,
-      ) =>
-        new BattleNetWowProfileAdapter(
+      useFactory: (tokenProvider: TokenProvider, config: ConfigService) => {
+        const settings = resolveBlizzardApiSettings(config);
+
+        return new BattleNetWowProfileAdapter(
           tokenProvider,
-          config.get<string>('BLIZZARD_REGION', 'us'),
-          config.get<string>('BLIZZARD_LOCALE', 'en_US'),
-        ),
+          settings.region,
+          settings.locale,
+          settings.namespaces,
+        );
+      },
       inject: [TOKEN_PROVIDER, ConfigService],
       scope: Scope.REQUEST,
     },

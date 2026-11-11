@@ -116,6 +116,41 @@ export class BlizzardMapper {
     }
   }
 
+  /**
+   * Maps the `recent_events` list of the character achievements endpoint
+   * (`/profile/wow/character/{realm}/{name}/achievements`), newest first.
+   */
+  toRecentAchievements(payload: unknown, limit = 12): Achievement[] {
+    const events = asRecord(payload)?.recent_events;
+
+    if (!Array.isArray(events)) {
+      return [];
+    }
+
+    return events
+      .map((event) => {
+        const record = asRecord(event);
+        const achievement = asRecord(record?.achievement);
+        const name = asString(achievement?.name);
+
+        if (!name) {
+          return undefined;
+        }
+
+        return Achievement.create({
+          id: asNonNegativeInteger(achievement?.id),
+          name,
+          completedAt: asDate(record?.timestamp),
+        });
+      })
+      .filter((item): item is Achievement => item !== undefined)
+      .sort(
+        (a, b) =>
+          (b.completedAt?.getTime() ?? 0) - (a.completedAt?.getTime() ?? 0),
+      )
+      .slice(0, limit);
+  }
+
   private mapSpecialization(value: unknown): Specialization | undefined {
     const name = asString(asRecord(value)?.name);
     return name ? Specialization.create(name) : undefined;
